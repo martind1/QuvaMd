@@ -58,6 +58,8 @@ namespace Quva.Devices
             Log.Information($"testsvc.Test");
             var data1 = await svc.ScaleStatus("W1");
             Log.Information($"Status:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
+            var data21 = await svc.ScaleStatus("W2");
+            Log.Information($"Status:{data21.Display} Weight:{data21.Weight} Unit:{data21.Unit}");
             var data2 = await svc.ScaleRegister("W2");
             Log.Information($"Register:{data2.Display} Eichnr:{data2.CalibrationNumber} Weight:{data2.Weight} Unit:{data2.Unit}");
             await svc.DisposeAsync();

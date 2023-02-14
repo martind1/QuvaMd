@@ -86,12 +86,12 @@ namespace Quva.Devices
             T typedDevice;
             if (DeviceList.TryGetValue(devicecode, out Device? device))
             {
-                Log.Warning($"OpenDevice({typeof(T)}.{devicecode}): bereits vorhanden");
+                Log.Warning($"OpenDevice({typeof(T).Name}.{devicecode}): bereits vorhanden");
                 typedDevice = (T)device;  //bereits vorhanden
             }
             else
             {
-                Log.Information($"OpenDevice({devicecode}): add");
+                Log.Information($"OpenDevice({typeof(T).Name}.{devicecode}): add");
                 typedDevice = new T
                 {
                     Code = devicecode   //wicht weil nicht in Constructor
@@ -112,14 +112,14 @@ namespace Quva.Devices
         {
             if (DeviceList.TryGetValue(devicecode, out Device? device))
             {
-                Log.Information($"CloseDevice({typeof(T)}.{devicecode}): close");
+                Log.Information($"CloseDevice({typeof(T).Name}.{devicecode}): close");
                 T typedDevice = (T)device;
                 DeviceList.Remove(devicecode);
                 await typedDevice.Close();
             }
             else
             {
-                Log.Warning($"CloseDevice({typeof(T)}.{devicecode}): nicht vorhanden");
+                Log.Warning($"CloseDevice({typeof(T).Name}.{devicecode}): nicht vorhanden");
             }
         }
 
