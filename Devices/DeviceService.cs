@@ -9,6 +9,7 @@ namespace Quva.Devices
 {
     public class DeviceService : IAsyncDisposable
     {
+        private bool _disposeFlag = true;
         public IDictionary<string, Device> DeviceList { get; set; }
 
         public DeviceService()
@@ -17,15 +18,25 @@ namespace Quva.Devices
             Log.Information("creating DeviceService");
         }
 
+        protected virtual async ValueTask DisposeAsyncCore()
+        {
+            Log.Warning($"DisposeAsyncCore({_disposeFlag})");
+            if (_disposeFlag)
+            {
+                foreach (Device d in DeviceList.Values)
+                {
+                    await CloseDevice(d);
+                }
+            }
+            _disposeFlag = false;
+        }
+
         public async ValueTask DisposeAsync()
         {
-            Log.Warning("DisposeAsync");
-            //throw new NotImplementedException();
-            foreach (Device d in DeviceList.Values)
-            {
-                Type devicetype = d.GetType();
-                await CloseDevice(d);  
-            }
+            Log.Warning($"DisposeAsync()");
+            await DisposeAsyncCore().ConfigureAwait(false);
+
+            GC.SuppressFinalize(this);
         }
 
         public async Task<ScaleData> ScaleStatus(string devicecode)
@@ -81,8 +92,10 @@ namespace Quva.Devices
             else
             {
                 Log.Information($"OpenDevice({devicecode}): add");
-                typedDevice = new T();
-                typedDevice.Code= devicecode;   //wicht weil nicht in Constructor
+                typedDevice = new T
+                {
+                    Code = devicecode   //wicht weil nicht in Constructor
+                };
                 await typedDevice.Load();
                 DeviceList.Add(devicecode, typedDevice);
             }

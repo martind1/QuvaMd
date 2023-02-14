@@ -60,7 +60,7 @@ namespace Quva.Devices
             Log.Information($"Status:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
             var data2 = await svc.ScaleRegister("W2");
             Log.Information($"Register:{data2.Display} Eichnr:{data2.CalibrationNumber} Weight:{data2.Weight} Unit:{data2.Unit}");
-            //await svc.DisposeAsync();
+            await svc.DisposeAsync();
         }
     }
 }
