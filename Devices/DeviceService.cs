@@ -7,55 +7,110 @@ using Serilog;
 
 namespace Quva.Devices
 {
-    public class DeviceService
+    public class DeviceService : IAsyncDisposable
     {
-        public string Location { get; set; }  //falls Code nicht eindeutig
         public IDictionary<string, Device> DeviceList { get; set; }
 
         public DeviceService()
         {
             DeviceList = new Dictionary<string, Device>();
-            Location = string.Empty;
             Log.Information("creating DeviceService");
         }
 
-
-        public ScaleDevice OpenScale(string devicecode)
+        public async ValueTask DisposeAsync()
         {
-            if (DeviceList.TryGetValue(devicecode, out Device? device))
+            Log.Warning("DisposeAsync");
+            //throw new NotImplementedException();
+            foreach (Device d in DeviceList.Values)
             {
-                Log.Warning($"OpenScale({devicecode}): bereits vorhanden");
-                return (ScaleDevice)device;  //bereits vorhanden
+                Type devicetype = d.GetType();
+                await CloseDevice(d);  
             }
-            Log.Information($"OpenScale({devicecode}): add");
-            var scale = new ScaleDevice(Location, devicecode);
-            DeviceList.Add(devicecode, scale);
-            scale.Open();
-
-            return scale;
         }
 
-        public void CloseScale(ScaleDevice scale)
+        public async Task<ScaleData> ScaleStatus(string devicecode)
         {
-            CloseScale(scale.Code);
+            try
+            {
+                var scale = await OpenDevice<ScaleDevice>(devicecode);
+                var result = await scale.Status();
+                return await Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new ScaleData()
+                {
+                    ErrorNr = 99,
+                    ErrorText = ex.Message,
+                    Display = ex.Message
+                };
+            }
         }
 
-        public void CloseScale(string devicecode)
+        public async Task<ScaleData> ScaleRegister(string devicecode)
         {
+            try
+            {
+                var scale = await OpenDevice<ScaleDevice>(devicecode);
+                var result = await scale.Register();
+                return await Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new ScaleData()
+                {
+                    ErrorNr = 99,
+                    ErrorText = ex.Message,
+                    Display = ex.Message
+                };
+            }
+        }
+
+
+        #region Interne Aufrufe
+
+        //private async Task<ScaleDevice> OpenScale(string devicecode)
+        public async Task<T> OpenDevice<T>(string devicecode) where T : Device, new()
+        {
+            T typedDevice;
             if (DeviceList.TryGetValue(devicecode, out Device? device))
             {
-                Log.Information($"CloseScale({devicecode}): close");
-                ScaleDevice scale = (ScaleDevice)device;
-                DeviceList.Remove(devicecode);
-                scale.Close();
+                Log.Warning($"OpenDevice({typeof(T)}.{devicecode}): bereits vorhanden");
+                typedDevice = (T)device;  //bereits vorhanden
             }
             else
             {
-                Log.Warning($"CloseScale({devicecode}): nicht vorhanden");
+                Log.Information($"OpenDevice({devicecode}): add");
+                typedDevice = new T();
+                typedDevice.Code= devicecode;   //wicht weil nicht in Constructor
+                await typedDevice.Load();
+                DeviceList.Add(devicecode, typedDevice);
+            }
+            await typedDevice.Open();
+            return await Task.FromResult(typedDevice);
+        }
+
+        private async Task CloseDevice<T>(T typedDevice) where T : Device
+        {
+            await CloseDevice<T>(typedDevice.Code);
+        }
+
+        private async Task CloseDevice<T>(string devicecode) where T : Device
+        {
+            if (DeviceList.TryGetValue(devicecode, out Device? device))
+            {
+                Log.Information($"CloseDevice({typeof(T)}.{devicecode}): close");
+                T typedDevice = (T)device;
+                DeviceList.Remove(devicecode);
+                await typedDevice.Close();
+            }
+            else
+            {
+                Log.Warning($"CloseDevice({typeof(T)}.{devicecode}): nicht vorhanden");
             }
         }
 
-
+        #endregion
     }
 
 }

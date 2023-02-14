@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using System;
+using System.Threading.Tasks;
 
 namespace Quva.Devices
 {
@@ -31,24 +33,34 @@ namespace Quva.Devices
             //await host.RunAsync();
 
             // Service aufrufen:
-            var svc = new TestService(host.Services);
+            var testsvc = new TestDeviceService(host.Services);
+            testsvc.Test();
+            //var AsyncTimer = new TimerAsync(testsvc.Test, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(0));
+            Console.ReadLine();
         }
 
     }
 
-    internal class TestService
+    internal class TestDeviceService
     {
-        public TestService(IServiceProvider hostProvider)
+        public DeviceService svc { get; set; }
+
+        public TestDeviceService(IServiceProvider hostProvider)
         {
             using IServiceScope serviceScope = hostProvider.CreateScope();
             IServiceProvider provider = serviceScope.ServiceProvider;
-            DeviceService svc = provider.GetRequiredService<DeviceService>();
+            svc = provider.GetRequiredService<DeviceService>();
+        }
 
-            var scale = svc.OpenScale("WA1");
-            var data = scale.Status();
-            Log.Information($"Status:{data.Display} Weight:{data.Weight} Unit:{data.Unit}");
-
-            svc.CloseScale("WA1");
+        //public async Task Test(CancellationToken arg)
+        public async void Test()
+        {
+            Log.Information($"testsvc.Test");
+            var data1 = await svc.ScaleStatus("W1");
+            Log.Information($"Status:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
+            var data2 = await svc.ScaleRegister("W2");
+            Log.Information($"Register:{data2.Display} Eichnr:{data2.CalibrationNumber} Weight:{data2.Weight} Unit:{data2.Unit}");
+            //await svc.DisposeAsync();
         }
     }
 }

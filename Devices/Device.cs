@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,45 +13,55 @@ namespace Quva.Devices
         public ScaleUnit AppUnit { get; set; }
 
 
-        public ScaleDevice(string location, string devicecode) : base(location, devicecode)
+        public ScaleDevice() : base()
         {
         }
 
-        public override void Open()
+        public override async Task Open()
         {
             // TODO: ComProt usw öffnen
-            Id += 1;
+            Log.Information($"{Code}.ScaleDevice.Open");
             if (ModulCode == "IT6000")
             {
-                //ComProt = new IT6000(this)
+                //Protocol = new IT6000(this)
             }
+            await Task.Delay( 200 );
         }
 
-        public override void Close()
+        public override async Task Close()
         {
+            Log.Information($"{Code}.ScaleDevice.Close");
             // TODO: Dispose ComPort usw
-            Id += 10;
+            await Task.Delay(200);
         }
 
-        public ScaleData Status()
+        public async Task<ScaleData> Status()
         {
-            return new ScaleData()
+            Log.Information($"{Code}.ScaleDevice.Status");
+            var result = new ScaleData()
             {
                 Display = "Hallo",
                 Weight = 12.34,
                 Unit = AppUnit
             };
+            await Task.Delay(200);
+
+            return await Task.FromResult(result);
         }
 
-        public ScaleData Register()
+        public async Task<ScaleData> Register()
         {
-            return new ScaleData()
+            Log.Information($"{Code}.ScaleDevice.Register");
+            var result = new ScaleData()
             {
                 Display = "Hallo",
                 Weight = 12.34,
                 CalibrationNumber = 9999,
                 Unit = AppUnit
             };
+            await Task.Delay(200);
+
+            return await Task.FromResult(result);
         }
     }
 
@@ -74,23 +85,24 @@ namespace Quva.Devices
     {
 
 
-        public virtual void Open()
+        public virtual async Task Open()
         {
             // TODO: ComProt usw öffnen
-            Id = 2;
+            Log.Information($"{Code}.Device.Open");
+            await Task.Delay(200);
         }
 
-        public virtual void Close()
+        public virtual async Task Close()
         {
             // TODO: Dispose ComPort usw
-            Id = 30;
+            Log.Information($"{Code}.Device.Close");
+            await Task.Delay(200);
         }
 
-        public Device(string location, string devicecode)
+        public async Task Load()
         {
-            Options = new Dictionary<string, string>();
-            Code = devicecode;
-            // TODO: von DB laden
+            Log.Information($"{Code}.Device.Load");
+            // TODO: [Code] von DB laden
             Id = 1;
             Name = "Testdevice";
             Flags = DeviceFlags.None;
@@ -102,14 +114,23 @@ namespace Quva.Devices
             Options.Add("GerNr", "1");
             Options.Add("DeviceUnit", ScaleUnit.Kilogram.ToString());
             Options.Add("AppUnit", ScaleUnit.Ton.ToString());
+
+            await Task.Delay(200);
+        }
+
+        public Device()
+        {
+            Options = new Dictionary<string, string>();
+            //Code = devicecode; * kein Parameter wg CS0304
+            Code = string.Empty;
         }
 
         public int Id { get; set; }
         public string Code { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public DeviceFlags Flags { get; set; }
-        public string ParamString { get; set; }
-        public string ModulCode { get; set; }
+        public string ParamString { get; set; } = string.Empty;
+        public string ModulCode { get; set; } = string.Empty;
         public TransportType Transport { get; set; }
         public PackagingType Packaging { get; set; }
         public IDictionary<string, string> Options { get; set; }
