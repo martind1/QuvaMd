@@ -6,15 +6,12 @@ using System.Threading.Tasks;
 
 namespace Quva.Devices;
 
-public interface IComPort
+public interface IComPort : IAsyncDisposable
 {
-    /// <summary>
-    /// Setzt Parameter
-    /// </summary>
-    /// <param name="paramstring">
-    /// zB "COM1:9600:8:1:N" oder "localhost:1234" oder "listen:1234"
-    /// </param>
-    void SetParamString(string paramstring);
+    // Set Parameter
+    // like "COM1:9600:8:1:N" or "localhost:1234" or "listen:1234"
+    // void SetParamString(string paramstring);
+    // now see constructor 
 
     Task OpenAsync();
     Task CloseAsync();
@@ -26,9 +23,11 @@ public interface IComPort
     void Write(byte[] buffer, int count);
     void Flush();
 
+    PortType PortType { get; }
     ComParameter ComParameter { get; set; }
     //Runtime:
     uint Bcc { get; set; }
+    public bool IsConnected();
 }
 
 public class ComParameter
@@ -41,4 +40,12 @@ public enum Remote
 {
     Host,
     Client
+}
+
+public enum PortType
+{
+    None,
+    Tcp,
+    Udp,
+    Serial
 }

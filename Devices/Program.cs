@@ -34,10 +34,11 @@ namespace Quva.Devices
 
             // Service aufrufen:
             var testsvc = new TestDeviceService(host.Services);
-            testsvc.Test();
-            //var AsyncTimer = new TimerAsync(testsvc.Test, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(0));
-            Console.ReadLine();
+            Task T = testsvc.Test();
+            T.Wait();  //warten bis Task beendet
+            //Console.ReadLine();  //alt: warten bis Tasks beendet
         }
+
 
     }
 
@@ -53,7 +54,7 @@ namespace Quva.Devices
         }
 
         //public async Task Test(CancellationToken arg)
-        public async void Test()
+        public async Task Test()
         {
             Log.Information($"testsvc.Test");
             var data1 = await svc.ScaleStatus("W1");
@@ -62,7 +63,7 @@ namespace Quva.Devices
             Log.Information($"Status:{data21.Display} Weight:{data21.Weight} Unit:{data21.Unit}");
             var data2 = await svc.ScaleRegister("W2");
             Log.Information($"Register:{data2.Display} Eichnr:{data2.CalibrationNumber} Weight:{data2.Weight} Unit:{data2.Unit}");
-            await svc.DisposeAsync();
+            await svc.DisposeAsync(); 
         }
     }
 }

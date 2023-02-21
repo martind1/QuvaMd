@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Serilog;
 
@@ -9,26 +11,27 @@ namespace Quva.Devices
 {
     public class DeviceService : IAsyncDisposable
     {
-        private bool _disposeFlag = true;
-        public IDictionary<string, Device> DeviceList { get; set; }
+        private bool disposeFlag = true;
+        public IDictionary<string, ComDevice> DeviceList { get; set; }
+
 
         public DeviceService()
         {
-            DeviceList = new Dictionary<string, Device>();
+            DeviceList = new Dictionary<string, ComDevice>();
             Log.Information("creating DeviceService");
         }
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            Log.Warning($"DisposeAsyncCore({_disposeFlag})");
-            if (_disposeFlag)
+            Log.Warning($"DisposeAsyncCore({disposeFlag})");
+            if (disposeFlag)
             {
-                foreach (Device d in DeviceList.Values)
+                foreach (ComDevice d in DeviceList.Values)
                 {
                     await CloseDevice(d);
                 }
             }
-            _disposeFlag = false;
+            disposeFlag = false;
         }
 
         public async ValueTask DisposeAsync()
@@ -39,91 +42,109 @@ namespace Quva.Devices
             GC.SuppressFinalize(this);
         }
 
+        #region Scale
+
         public async Task<ScaleData> ScaleStatus(string devicecode)
         {
-            try
-            {
-                var scale = await OpenDevice<ScaleDevice>(devicecode);
-                var result = await scale.Status();
-                return await Task.FromResult(result);
-            }
-            catch (Exception ex)
-            {
-                return new ScaleData()
-                {
-                    ErrorNr = 99,
-                    ErrorText = ex.Message,
-                    Display = ex.Message
-                };
-            }
+            return await ScaleCommand(devicecode, ScaleCommands.Status.ToString());
         }
 
         public async Task<ScaleData> ScaleRegister(string devicecode)
         {
+            return await ScaleCommand(devicecode, ScaleCommands.Register.ToString());
+        }
+
+        // bevorzugter Rückgabewert: struct ScaleData
+        public async Task<ScaleData> ScaleCommand(string devicecode, string command)
+        {
+            ScaleData result;
             try
             {
-                var scale = await OpenDevice<ScaleDevice>(devicecode);
-                var result = await scale.Register();
-                return await Task.FromResult(result);
+                var device = await OpenDevice(devicecode);
+                result = await device.ScaleCommand(command);
             }
             catch (Exception ex)
             {
-                return new ScaleData()
+                result = new ScaleData(devicecode, command)
                 {
                     ErrorNr = 99,
                     ErrorText = ex.Message,
                     Display = ex.Message
                 };
             }
+            return await Task.FromResult(result);
         }
 
 
-        #region Interne Aufrufe
+        // alternativer Rückgabewerte: Json String
+        //public async Task<string> ScaleCommand(string devicecode, string command)
+        //{
+        //    try
+        //    {
+        //        var device = await OpenDevice<ComDevice>(devicecode);
+        //        var result = await device.Command(command);
+        //        return await Task.FromResult(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var data = new ScaleData()
+        //        {
+        //            ErrorNr = 99,
+        //            ErrorText = ex.Message,
+        //            Display = ex.Message
+        //        };
+        //        JsonSerializerOptions options = new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+        //        var result = JsonSerializer.Serialize<ScaleData>(data, options);
+        //        return await Task.FromResult(result);
+        //    }
+        //}
 
-        //private async Task<ScaleDevice> OpenScale(string devicecode)
-        public async Task<T> OpenDevice<T>(string devicecode) where T : Device, new()
+        #endregion Scale
+
+
+        #region internal calls
+
+        public async Task<ComDevice> OpenDevice(string devicecode)
         {
-            T typedDevice;
-            if (DeviceList.TryGetValue(devicecode, out Device? device))
+            ComDevice device;
+            if (DeviceList.TryGetValue(devicecode, out device))
             {
-                Log.Warning($"OpenDevice({typeof(T).Name}.{devicecode}): bereits vorhanden");
-                typedDevice = (T)device;  //bereits vorhanden
+                Log.Warning($"OpenDevice({devicecode}): bereits vorhanden");
             }
             else
             {
-                Log.Information($"OpenDevice({typeof(T).Name}.{devicecode}): add");
-                typedDevice = new T
+                Log.Information($"OpenDevice({devicecode}): add");
+                device = new ComDevice
                 {
-                    Code = devicecode   //wicht weil nicht in Constructor
+                    Code = devicecode   //wichtig weil nicht in Constructor
                 };
-                await typedDevice.Load();
-                DeviceList.Add(devicecode, typedDevice);
+                await device.Load();
+                DeviceList.Add(devicecode, device);
             }
-            await typedDevice.Open();
-            return await Task.FromResult(typedDevice);
+            await device.Open();
+            return await Task.FromResult(device);
         }
 
-        private async Task CloseDevice<T>(T typedDevice) where T : Device
+        private async Task CloseDevice(ComDevice device)
         {
-            await CloseDevice<T>(typedDevice.Code);
+            await CloseDevice(device.Code);
         }
 
-        private async Task CloseDevice<T>(string devicecode) where T : Device
+        private async Task CloseDevice(string devicecode)
         {
-            if (DeviceList.TryGetValue(devicecode, out Device? device))
+            if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
-                Log.Information($"CloseDevice({typeof(T).Name}.{devicecode}): close");
-                T typedDevice = (T)device;
+                Log.Information($"CloseDevice({devicecode}): close");
                 DeviceList.Remove(devicecode);
-                await typedDevice.Close();
+                await device.Close();
             }
             else
             {
-                Log.Warning($"CloseDevice({typeof(T).Name}.{devicecode}): nicht vorhanden");
+                Log.Warning($"CloseDevice({devicecode}): nicht vorhanden");
             }
         }
 
-        #endregion
+        #endregion internal calls
     }
 
 }
