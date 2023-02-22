@@ -58,13 +58,16 @@ namespace Quva.Devices
         public async Task<ScaleData> ScaleCommand(string devicecode, string command)
         {
             ScaleData result;
+            ComDevice? device = null;
             try
             {
-                var device = await OpenDevice(devicecode);
+                device = await OpenDevice(devicecode);
                 result = await device.ScaleCommand(command);
             }
             catch (Exception ex)
             {
+                if (device != null)
+                    await device.Close().ConfigureAwait(false); 
                 result = new ScaleData(devicecode, command)
                 {
                     ErrorNr = 99,
@@ -106,8 +109,7 @@ namespace Quva.Devices
 
         public async Task<ComDevice> OpenDevice(string devicecode)
         {
-            ComDevice device;
-            if (DeviceList.TryGetValue(devicecode, out device))
+            if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
                 Log.Warning($"OpenDevice({devicecode}): bereits vorhanden");
             }

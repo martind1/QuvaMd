@@ -95,8 +95,7 @@ namespace Quva.Devices
 
             try
             {
-                if (_timerTask == null)
-                    throw new ArgumentNullException("_timerTask", "StopAsync");
+                ArgumentNullException.ThrowIfNull(_timerTask, nameof(StopAsync));
                 await _timerTask
                         .ConfigureAwait(false);
             }

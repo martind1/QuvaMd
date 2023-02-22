@@ -20,9 +20,8 @@ namespace Quva.Devices
                 .ReadFrom.Configuration(configSerilog)
                 .CreateLogger();
             Log.Information("Initializing Serilog....");
-            //Console.ReadLine();
 
-            //Service DI:
+            //Service dependency injection:
             using IHost host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                     {
@@ -30,7 +29,6 @@ namespace Quva.Devices
                     })
                 .Build();
             Log.Information("added Service");
-            //await host.RunAsync();
 
             // Service aufrufen:
             var testsvc = new TestDeviceService(host.Services);

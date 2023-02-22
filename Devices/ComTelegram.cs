@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Quva.Devices;
 
-public class ComTelegram : IDisposable
+public class ComTelegram 
 {
     public ComProtocol Owner { get; set; }
     public int Id { get; set; }
@@ -22,39 +22,30 @@ public class ComTelegram : IDisposable
     public ComProtFlags Flags { get; set; }
     public ComProtStatus Status { get; set; }
     public ComProtError Error { get; set; }
+    public string ErrorText { get; set; }
     public bool DelimRead { get; set; }
-    Stopwatch StartTimer { get; set; }
+    public Stopwatch StartTimer { get; set; }
     public long SleepTime { get; set; }
     public string[] Description { get; set; }
 
-    static int TelIdCounter = 0;
-    static IList<ComTelegram> TelList = new List<ComTelegram>();
-
-    public object AppData { get; set; }
+    public object? AppData { get; set; }  //for callbacks and result
 
     public ComTelegram(ComProtocol owner)
     {
         Owner = owner;
         StartTimer = new Stopwatch();
         OutData = new byte[Owner.MaxDataLen + 1];
+        OutDataLen = 0;
         InData = new byte[Owner.MaxDataLen + 1];
+        InDataLen = 0;
         DummyData = new byte[Owner.MaxDataLen + 1];
+        DummyDataLen = 0;
         Description = new string[owner.Description.Length];
         owner.Description.CopyTo(Description, 0);
         Status = ComProtStatus.OK;
         Error = ComProtError.OK;
+        ErrorText = string.Empty;
         Step = 0;
         DelimRead = false;
-        Id = ++TelIdCounter;
-        TelList.Add(this);
-    }
-
-    public void Dispose()
-    {
-        var i = TelList.IndexOf(this);
-        if (i >= 0)
-        {
-            TelList.RemoveAt(i);
-        }
     }
 }

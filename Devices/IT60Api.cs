@@ -14,14 +14,7 @@ namespace Quva.Devices
     /// </summary>
     public class IT60Api : ComProtocol, IScaleApi
     {
-        public string[] IT60Description = new string[]
-        {
-          ";Automatische Erzeugung. Ändern nicht möglich.",
-          "I:",          //Clearinput
-          "T:11000",     //Stillstand
-          "B:",          //mit < >
-          "A:255,^J"     //LF ist Ende. Mit < >
-        };
+        private readonly ComDevice device;
 
         public IT60Api(ComDevice device) : base(device.ComPort)
         {
@@ -34,8 +27,7 @@ namespace Quva.Devices
 
         public async Task<ScaleData> ScaleCommand(string command)
         {
-            ScaleCommands cmd;
-            if (Enum.TryParse<ScaleCommands>(command, out cmd))
+            if (Enum.TryParse<ScaleCommands>(command, out ScaleCommands cmd))
             {
                 ScaleData data = cmd switch
                 {
@@ -55,43 +47,48 @@ namespace Quva.Devices
         public event EventHandler<JsonStringArgs>? OnCommandError;
         private void DoCommandAnswer(JsonStringArgs e) => OnCommandAnswer?.Invoke(this, e);
         private void DoCommandError(JsonStringArgs e) => OnCommandError?.Invoke(this, e);
+        private ScaleData? statusData;
+        private ScaleData? registerData;
+
+
+        public string[] IT60Description = new string[]
+        {
+          ";Automatische Erzeugung. Ändern nicht möglich.",
+          "I:",          //Clearinput
+          "T:11000",     //Stillstand
+          "B:",          //mit < >
+          "A:255,^J"     //LF ist Ende. Mit < >
+        };
 
         #region Commands
-
-        private ScaleData statusData;
-        private ScaleData registerData;
 
         public async Task<ScaleData> Status()
         {
             statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
-            var tel = await comProtocol.RunTelegram(statusData, "<RM>");
-            tel.mre.WaitOne();
-            return await Task.FromResult(statusData);
+            var tel = await RunTelegram(statusData, "<RM>");
+            //return await Task.FromResult(statusData)
+            ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Status));
+            return await Task.FromResult((ScaleData)tel.AppData);
+
         }
 
         public async Task<ScaleData> Register()
         {
-            registerData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
-            var tel = await comProtocol.RunTelegram(registerData, "<RN>");
-            tel.mre.WaitOne();
-            return await Task.FromResult(registerData);
+            registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
+            var tel = await RunTelegram(registerData, "<RN>");
+            ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Register));
+            return await Task.FromResult((ScaleData)tel.AppData);
         }
-
-        #endregion
-
-        #region ComProt
-
-        private ComDevice device;
-        private ComProtocol comProtocol;
 
         #endregion
 
         #region Callbacks
 
-        private void IT60Answer(object sender, TelEventArgs telEventArgs) 
+        private void IT60Answer(object? sender, TelEventArgs telEventArgs)
         {
-            var comTelegram = telEventArgs.tel;
-            ScaleData data = (ScaleData)comTelegram.AppData;
+            var tel = telEventArgs.tel;
+            ArgumentNullException.ThrowIfNull(tel.AppData, nameof(IT60Answer));
+            ScaleData data = (ScaleData)tel.AppData;
         }
 
 

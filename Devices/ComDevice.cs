@@ -132,8 +132,7 @@ public class ComDevice
     public async Task<ScaleData> ScaleCommand(string command)
     {
         Log.Information($"{Code}.Device.ScaleCommand({command})");
-        if (ScaleApi == null)
-            throw new ArgumentNullException(nameof(ScaleApi));
+        ArgumentNullException.ThrowIfNull(ScaleApi);
         var result = await ScaleApi.ScaleCommand(command);
 
         return await Task.FromResult(result);

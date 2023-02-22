@@ -11,6 +11,11 @@ namespace Quva.Devices;
 public class TelEventArgs : EventArgs
 {
     public ComTelegram tel { get; set; }
+
+    public TelEventArgs(ComTelegram tel)
+    {
+        this.tel = tel;
+    }
 }
 
 public class ComSimulEventArgs : EventArgs

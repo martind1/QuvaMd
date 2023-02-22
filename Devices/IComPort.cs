@@ -34,6 +34,7 @@ public class ComParameter
 {
     public int TimeoutMs { get; set; }
     public bool DoubleDle { get; set; }
+    public bool Echo { get; set; }
 }
 
 public enum Remote
