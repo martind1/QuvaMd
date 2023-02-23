@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace Quva.Devices
 {
     /// <summary>
-    /// Interface for concrete Device Dialog Api
+    /// IT6000, IT9000 scale device api
     /// </summary>
-    public class IT60Api : ComProtocol, IScaleApi
+    public class IT6000Api : ComProtocol, IScaleApi
     {
         private readonly ComDevice device;
 
-        public IT60Api(ComDevice device) : base(device.ComPort)
+        public IT6000Api(ComDevice device) : base(device.ComPort)
         {
             this.device = device;
 
@@ -86,7 +86,7 @@ namespace Quva.Devices
 
         private void IT60Answer(object? sender, TelEventArgs telEventArgs)
         {
-            var tel = telEventArgs.tel;
+            var tel = telEventArgs.Tel;
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(IT60Answer));
             ScaleData data = (ScaleData)tel.AppData;
         }

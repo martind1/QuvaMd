@@ -18,10 +18,10 @@ public class ComProtocol : IAsyncDisposable
     public ComProtErrorActions ErrorActions { get; set; }
     public event EventHandler<TelEventArgs>? OnAnswer;
     public event EventHandler? OnError;
-    public event EventHandler<TelEventArgs>? OnUserFn;
+    public event EventHandler<UserFnEventArgs>? OnUserFn;
     private void DoAnswer(TelEventArgs e) => OnAnswer?.Invoke(this, e);
     private void DoError(EventArgs e) => OnError?.Invoke(this, e);
-    private void DoUserFnk(TelEventArgs e) => OnUserFn?.Invoke(this, e);
+    private void DoUserFnk(UserFnEventArgs e) => OnUserFn?.Invoke(this, e);
     //Config:
     public int MaxDataLen { get; set; } = 2048;
     public int ProtTelId { get; set; } = -1;
@@ -60,15 +60,56 @@ public class ComProtocol : IAsyncDisposable
 
     #region i/o operations
 
+    /// <summary>
+    /// send control bytes. Call UserFnc (blockchecks and other)
+    /// ^C -> 0x03
+    /// $28 -> 0x28
+    /// 'c' -> (byte)c
+    /// [FncName] -> UserFnc(tel, FncName) -> sends via ComPort
+    /// </summary>
+    /// <param name="tel"></param>
+    /// <param name="descParam"></param>
     private void Send(ComTelegram tel, string descParam)
     {
-        // TODO: evaluate params and send bytes
+        byte[] tempBuff = new byte[1024];
+        int n = 0;
+        // evaluate params and send bytes
+        for (int i = 0; i < descParam.Length; i++)
+        {
+            if (descParam[i] == '^' && i < descParam.Length - 1 && (byte)descParam[i+1] > 64)
+            {
+                i++;
+                tempBuff[n++] = (byte)(((byte)descParam[i]) - 64);
+            }
+            else if (descParam[i] == '$' && i < descParam.Length - 2)
+            {
+                tempBuff[n++] = Convert.ToByte(descParam[(i + 1)..(i + 2)], 16);
+                i += 2;
+            }
+            // abc[def]g  i=3, p=4 -> i=7, userFn=4..6='def'
+            // 012345678
+            else if (descParam[i] == '[' && descParam[i..].IndexOf(']') > 0)
+            {
+                var p = descParam[i..].IndexOf(']');
+                string userFnk = descParam[(i+1)..(i + p - 1)];
+                i += p;
+                DoUserFnk(new UserFnEventArgs(tel, userFnk));
+            }
+            else
+            {
+                tempBuff[n++] = (byte)descParam[i];
+            }
+        }
+        if (n > 0)
+        {
+            ComPort.Write(tempBuff, n);
+        }
     }
 
     /// <summary>
     /// Clear input buffer
     /// </summary>
-    /// <returns></returns>
+    /// <returns>cleared readed bytes</returns>
     private byte[] ClearInput()
     {
         byte[] buff = Array.Empty<byte>();
@@ -225,6 +266,23 @@ public class ComProtocol : IAsyncDisposable
         {
             await Task.Delay(int.Parse(descParam));
         }
+        else
+        {
+            tel.Status = ComProtStatus.Error;
+            tel.Error = ComProtError.Length;
+            tel.ErrorText = $"syntax error in description {descCmd}:{descParam}";
+        }
+        /* if ATel.Reseting then
+            begin
+              if ComPort <> nil then
+                ComPort.Reset;
+              ATel.Status := cpsError;
+              ATel.Error := cpeReset;
+            end;
+        */
+
+        // answer data to tel.AppData
+        DoAnswer(new TelEventArgs(tel));
 
         return await Task.FromResult(tel);
     }

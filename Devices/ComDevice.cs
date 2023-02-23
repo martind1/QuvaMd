@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Devices.Data;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +12,9 @@ namespace Quva.Devices;
 
 public class ComDevice
 {
-    // from database table Device:
-    public int Id { get; set; }
+    private Device? device;    // from database table 
+    public Device Device { get => device ?? throw new ArgumentNullException(); set => device = value; }
     public string Code { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public DeviceRoles Roles { get; set; }
-    public string ParamString { get; set; } = string.Empty;
-    public DeviceType DeviceType { get; set; }
-    public string ModulCode { get; set; } = string.Empty;
-    public TransportType Transport { get; set; }
-    public PackagingType Packaging { get; set; }
-    public PortType PortType { get; set; }
-    public IDictionary<string, string> Options { get; set; }
     // work items:
     public IComPort? ComPort { get; set; }
     public IScaleApi? ScaleApi { get; set; }
@@ -30,7 +22,6 @@ public class ComDevice
 
     public ComDevice()
     {
-        Options = new Dictionary<string, string>();
         //Code = devicecode; * kein Parameter wg CS0304
         Code = string.Empty;
     }
@@ -46,7 +37,6 @@ public class ComDevice
             await ComPort.OpenAsync();
             Log.Information($"{Code}.ComDevice.Open OK");
         }
-            
     }
 
     public virtual async Task Close()
@@ -58,45 +48,37 @@ public class ComDevice
             await ComPort.CloseAsync();
             Log.Information($"{Code}.ComDevice.Close OK");
         }
-            
     }
 
     public async Task Load()
     {
         Log.Information($"{Code}.ComDevice.Load");
-        // TODO: [Code] von DB laden
-        await Task.Delay( 200 );
-        Id = 1;
-        Name = "Testdevice";
-        Roles = DeviceRoles.None;
-        PortType = PortType.Tcp;
-        ParamString = "111.111.111.111:9999";
-        DeviceType = DeviceType.Scale;
-        ModulCode = "IT6000";
-        Transport = TransportType.Truck;
-        Packaging = PackagingType.Bulk;
-        Options.Add("GerNr", "1");
-        Options.Add("Unit", ScaleUnit.Ton.ToString());
+        // [Code] von DB laden - erstmal von Test Service laden:
+        var dataService = new DataService();
+        device = await dataService.GetDevice(Code);
 
-        ComPort = PortType switch
+        ArgumentNullException.ThrowIfNull(Device.ParamString);
+        ComPort = device.PortType switch
         {
-            PortType.Tcp => new TcpPort(ParamString),
+            PortType.Tcp => new TcpPort(Device.ParamString),
             PortType.None => null,
             _ => throw new NotImplementedException("only TCP implemented")
         };
-        if (DeviceType == DeviceType.Scale)
+        if (device.DeviceType == DeviceType.Scale)
         {
-            ScaleApi = ModulCode switch
+            ScaleApi = Device.ModulCode switch
             {
-                "IT6000" => new IT60Api(this),
-                _ => throw new NotImplementedException($"Modulcode {ModulCode}")
+                "IT6000" => new IT6000Api(this),
+                "FAWAWS" => new FawaWsApi(this),
+                _ => throw new NotImplementedException($"Modulcode {Device.ModulCode}")
             };
         }
     }
 
     public string Option(string key, string dflt)
     {
-        if (!Options.TryGetValue(key, out var result))
+        ArgumentNullException.ThrowIfNull(Device.Options);
+        if (!Device.Options.TryGetValue(key, out var result))
         {
             result = dflt;
         }

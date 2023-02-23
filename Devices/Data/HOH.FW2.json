@@ -1,0 +1,17 @@
+{
+  "Id": 1,
+  "Code": "HOH.FW2",
+  "Name": "Test IT6000",
+  "Roles": 0,
+  "ParamString": "10.171.149.31:1234",
+  "DeviceType": "Scale",
+  "ModulCode": "IT6000",
+  "Transport": "Truck",
+  "Packaging": "Bulk",
+  "PortType": "Tcp",
+  "Options": {
+    "GerNr": "1",
+    "Unit": "Ton"
+  },
+  "Comment": "Original HOH IT6000 Scale"
+}

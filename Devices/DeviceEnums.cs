@@ -47,3 +47,19 @@ public enum ScaleUnit
     Kilogram,
     Gram
 }
+
+public static class DeviceUtils
+{
+    public static string UnitShort(ScaleUnit scaleUnit)
+    {
+        string result = scaleUnit switch
+        {
+            ScaleUnit.Ton => "t",
+            ScaleUnit.Kilogram => "kg",
+            ScaleUnit.Gram => "gr",
+            _ => throw new NotImplementedException()
+        };
+        return result;
+    }
+
+}

@@ -17,7 +17,7 @@ namespace Quva.Devices
         public TcpParameter TcpParameter { get; set; }
         //Runtime:
         public uint Bcc { get; set; }
-        public bool IsConnected() => _Client != null;
+        public bool IsConnected() => client != null;
 
         public TcpPort(string paramstring)
         {
@@ -28,12 +28,12 @@ namespace Quva.Devices
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            Log.Warning($"{nameof(TcpPort)}.DisposeAsyncCore({_Client != null})");
-            if (_Client != null)
+            Log.Warning($"{nameof(TcpPort)}.DisposeAsyncCore({client != null})");
+            if (client != null)
             {
-                await Task.Run(() => { _Client.Dispose(); });
+                await Task.Run(() => { client.Dispose(); });
             }
-            _Client = null;
+            client = null;
             if (_Server != null)
             {
                 await Task.Run(() => { _Server.Stop(); });
@@ -68,9 +68,9 @@ namespace Quva.Devices
             }
         }
 
-        private IPHostEntry? _IPHostEntry;
-        private IPAddress? _IPAddress;
-        private IPEndPoint? _IPEndPoint;
+        private IPHostEntry? ipHostEntry;
+        private IPAddress? ipAddress;
+        private IPEndPoint? ipEndPoint;
         private NetworkStream? stream;
 
         public async Task OpenAsync()
@@ -81,18 +81,23 @@ namespace Quva.Devices
                 return;
             }
             //https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/sockets/tcp-classes?source=recommendations
-            _IPHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
-            _IPAddress = _IPHostEntry.AddressList[0];
-            _IPEndPoint = new IPEndPoint(_IPAddress, TcpParameter.Port);
+            Log.Information($"TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
+            ipHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
+            //ipAddress = ipHostEntry.AddressList[0];
+            // only IPV4:
+            ipAddress = ipHostEntry.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) 
+                ?? ipHostEntry.AddressList[0];
+            ipEndPoint = new IPEndPoint(ipAddress, TcpParameter.Port);
 
             if (TcpParameter.Remote == Remote.Host) 
                 throw new NotImplementedException($"TCP({TcpParameter.ParamString}): Remote.Host");
 
-            _Client = new TcpClient();
+            client = new TcpClient();
             try
             {
-                await _Client.ConnectAsync(_IPEndPoint);
-                stream = _Client.GetStream();
+                Log.Debug($"ConnectAsync EndPoint:{ipEndPoint}");
+                await client.ConnectAsync(ipEndPoint);
+                stream = client.GetStream();
                 if (ComParameter.TimeoutMs == 0)
                     ComParameter.TimeoutMs = 10000;  //overwritable in Desc. Bevore: Timeout.Infinite;
                 stream.ReadTimeout = ComParameter.TimeoutMs;
@@ -101,7 +106,7 @@ namespace Quva.Devices
             }
             catch
             {
-                _Client = null;
+                client = null;
                 throw;
             }
         }
@@ -119,11 +124,11 @@ namespace Quva.Devices
 
             try
             {
-                await Task.Run(() => { _Client?.Close(); });
+                await Task.Run(() => { client?.Close(); });
             }
             finally
             {
-                _Client = null;
+                client = null;
                 stream = null;
             }
         }
@@ -159,7 +164,7 @@ namespace Quva.Devices
 
         #region internal stuff
 
-        private TcpClient? _Client;
+        private TcpClient? client;
         private TcpListener? _Server;
         
 

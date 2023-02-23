@@ -1,0 +1,17 @@
+{
+  "Id": 1,
+  "Code": "HOH.FW1",
+  "Name": "Test FawaWS",
+  "Roles": 0,
+  "ParamString": "127.0.0.1:12002",
+  "DeviceType": "Scale",
+  "ModulCode": "FAWAWS",
+  "Transport": "Truck",
+  "Packaging": "Bulk",
+  "PortType": "Tcp",
+  "Options": {
+    "GerNr": "1",
+    "Unit": "Ton"
+  },
+  "Comment": "localer ShTcpSvr.exe"
+}
