@@ -17,11 +17,11 @@ public interface IComPort : IAsyncDisposable
     Task CloseAsync();
     Task ResetAsync();
 
-    int InCount();
-    void Read(byte[] buffer, int count);
+    Task<int> InCountAsync();
+    Task<int> ReadAsync(ByteBuff buffer);  //Buff+Len
 
-    void Write(byte[] buffer, int count);
-    void Flush();
+    Task<bool> WriteAsync(ByteBuff buffer);
+    Task FlushAsync();
 
     PortType PortType { get; }
     ComParameter ComParameter { get; set; }

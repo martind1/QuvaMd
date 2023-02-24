@@ -45,6 +45,56 @@ public class UserFnkEventArgs : EventArgs
     public string? FnkName { get; set; }
 }
 
+public class ByteBuff
+{
+    public byte[] Buff { get; set; }
+    public int Cnt { get; set; } = 0;
+
+    public ByteBuff(int buffSize)
+    {
+        Buff = new byte[buffSize];
+        Cnt = 0;
+    }
+
+    public ByteBuff(byte[] buff, int len)
+    {
+        Buff = buff;
+        Cnt = len;
+    }
+
+    public int CopyFrom(ByteBuff src)
+    {
+        src.Buff.CopyTo(Buff, 0);
+        Cnt = src.Cnt;
+        return Cnt;
+    }
+
+    /// <summary>
+    /// moves max [dst.Cnt] Bytes to empty [dst]. Deletes moved bytes in [src], set [Cnt] on bothe sides.
+    /// </summary>
+    /// <returns>Count of moved bytes</returns>
+    public int MoveTo(ByteBuff dst)
+    {
+        int maxCnt = dst.Cnt;
+        int movedCnt = 0;
+        while (Cnt > 0 && movedCnt < maxCnt)
+        {
+            dst.Buff[movedCnt] = Buff[movedCnt];
+            movedCnt++;
+            Cnt --;
+        }
+        dst.Cnt = movedCnt;
+        // 123, m:1 c:2 -> 0<-1, 1<-2
+        for (int i = 0; i < Cnt; i++)
+        {
+            Buff[i] = Buff[i + movedCnt];
+        }
+
+
+        return movedCnt;
+    }
+}
+
 public enum ComProtStatus
 {
     OK,      // successfully completed
@@ -82,4 +132,11 @@ public enum ComProtFlags
     UseId = 32,     // Bestehende ID nochmal verwenden
     Dummy = 64,     // ohne Kommunikation gleich onAntwort
     Start = 128     // Sofortstart
+}
+
+public enum ReadDataResult
+{
+    OK,
+    NoMinLen,
+    DelimiterMissing
 }

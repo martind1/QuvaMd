@@ -13,12 +13,9 @@ public class ComTelegram
     public ComProtocol Owner { get; set; }
     public int Id { get; set; }
     public int Step { get; set; }
-    public byte[] OutData { get; set; }
-    public int OutDataLen { get; set; }
-    public byte[] InData { get; set; }
-    public int InDataLen { get; set; }
-    public byte[] DummyData { get; set; }
-    public int DummyDataLen { get; set; }
+    public ByteBuff OutData { get; set; }
+    public ByteBuff InData { get; set; }
+    public ByteBuff DummyData { get; set; }
     public ComProtFlags Flags { get; set; }
     public ComProtStatus Status { get; set; }
     public ComProtError Error { get; set; }
@@ -34,12 +31,9 @@ public class ComTelegram
     {
         Owner = owner;
         StartTimer = new Stopwatch();
-        OutData = new byte[Owner.MaxDataLen + 1];
-        OutDataLen = 0;
-        InData = new byte[Owner.MaxDataLen + 1];
-        InDataLen = 0;
-        DummyData = new byte[Owner.MaxDataLen + 1];
-        DummyDataLen = 0;
+        OutData = new ByteBuff(Owner.MaxDataLen + 1);
+        InData = new ByteBuff(Owner.MaxDataLen + 1);
+        DummyData = new ByteBuff(Owner.MaxDataLen + 1);
         Description = new string[owner.Description.Length];
         owner.Description.CopyTo(Description, 0);
         Status = ComProtStatus.OK;

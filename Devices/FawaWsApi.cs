@@ -65,7 +65,7 @@ namespace Quva.Devices
         public async Task<ScaleData> Status()
         {
             statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
-            var tel = await RunTelegram(statusData, "<RM>");
+            var tel = await RunTelegram(statusData, "Holestatus=?");
             //return await Task.FromResult(statusData)
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Status));
             return await Task.FromResult((ScaleData)tel.AppData);
@@ -75,7 +75,7 @@ namespace Quva.Devices
         public async Task<ScaleData> Register()
         {
             registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
-            var tel = await RunTelegram(registerData, "<RN>");
+            var tel = await RunTelegram(registerData, "ProtGewicht=?");
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Register));
             return await Task.FromResult((ScaleData)tel.AppData);
         }

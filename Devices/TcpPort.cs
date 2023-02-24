@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -17,28 +18,30 @@ namespace Quva.Devices
         public TcpParameter TcpParameter { get; set; }
         //Runtime:
         public uint Bcc { get; set; }
-        public bool IsConnected() => client != null;
+        public bool IsConnected() => tcpClient != null;
 
         public TcpPort(string paramstring)
         {
             ComParameter = new();
             TcpParameter = new();
             SetParamString(paramstring);
+            inBuff = new(4096);
+            outBuff = new(4096);
         }
 
-        protected virtual async ValueTask DisposeAsyncCore()
+    protected virtual async ValueTask DisposeAsyncCore()
         {
-            Log.Warning($"{nameof(TcpPort)}.DisposeAsyncCore({client != null})");
-            if (client != null)
+            Log.Warning($"{nameof(TcpPort)}.DisposeAsyncCore({tcpClient != null})");
+            if (tcpClient != null)
             {
-                await Task.Run(() => { client.Dispose(); });
+                await Task.Run(() => { tcpClient.Dispose(); });
             }
-            client = null;
-            if (_Server != null)
+            tcpClient = null;
+            if (tcpServer != null)
             {
-                await Task.Run(() => { _Server.Stop(); });
+                await Task.Run(() => { tcpServer.Stop(); });
             }
-            _Server = null;
+            tcpServer = null;
         }
 
         public async ValueTask DisposeAsync()
@@ -68,10 +71,14 @@ namespace Quva.Devices
             }
         }
 
+        private TcpClient? tcpClient;
+        private TcpListener? tcpServer;
         private IPHostEntry? ipHostEntry;
         private IPAddress? ipAddress;
         private IPEndPoint? ipEndPoint;
         private NetworkStream? stream;
+        private ByteBuff inBuff;
+        private ByteBuff outBuff;
 
         public async Task OpenAsync()
         {
@@ -80,7 +87,6 @@ namespace Quva.Devices
                 Log.Warning($"TCP({TcpParameter.ParamString}): allready opened");
                 return;
             }
-            //https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/sockets/tcp-classes?source=recommendations
             Log.Information($"TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
             ipHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
             //ipAddress = ipHostEntry.AddressList[0];
@@ -92,12 +98,12 @@ namespace Quva.Devices
             if (TcpParameter.Remote == Remote.Host) 
                 throw new NotImplementedException($"TCP({TcpParameter.ParamString}): Remote.Host");
 
-            client = new TcpClient();
+            tcpClient = new TcpClient();
             try
             {
-                Log.Debug($"ConnectAsync EndPoint:{ipEndPoint}");
-                await client.ConnectAsync(ipEndPoint);
-                stream = client.GetStream();
+                Log.Debug($"ConnectAsync EndPoint:{ipEndPoint} - {ipAddress.AddressFamily}");
+                await tcpClient.ConnectAsync(ipEndPoint);
+                stream = tcpClient.GetStream();
                 if (ComParameter.TimeoutMs == 0)
                     ComParameter.TimeoutMs = 10000;  //overwritable in Desc. Bevore: Timeout.Infinite;
                 stream.ReadTimeout = ComParameter.TimeoutMs;
@@ -106,7 +112,7 @@ namespace Quva.Devices
             }
             catch
             {
-                client = null;
+                tcpClient = null;
                 throw;
             }
         }
@@ -118,20 +124,23 @@ namespace Quva.Devices
                 Log.Warning($"TCP({TcpParameter.ParamString}): allready closed");
                 return;
             }
+            Log.Debug($"TCP({TcpParameter.ParamString}): CloseAsync");
 
             if (TcpParameter.Remote == Remote.Host)
                 throw new NotImplementedException($"TCP({TcpParameter.ParamString}): Remote.Host");
 
             try
             {
-                await Task.Run(() => { client?.Close(); });
+                await Task.Run(() => { tcpClient?.Close(); });
             }
             finally
             {
-                client = null;
+                tcpClient = null;
                 stream = null;
             }
         }
+
+        #region input/output
 
         public async Task ResetAsync()
         {
@@ -141,34 +150,58 @@ namespace Quva.Devices
         }
 
         //muss vor Read aufgerufen werden. Ruft Flush auf.
-        public int InCount()
+        public async Task<int> InCountAsync()
         {
-            return 0;
+            await FlushAsync();
+            if (tcpClient.Available > 0)
+            {
+                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff, inBuff.Cnt, inBuff.Buff.Length - inBuff.Cnt);
+                inBuff.Cnt += n;
+            }
+            return await Task.FromResult(inBuff.Cnt);
         }
 
-        public void Read(byte[] buffer, int count)
+        // reads with timeout. Max buffer.Cnt bytes
+        public async Task<int> ReadAsync(ByteBuff buffer)
         {
+            int result = 0;
 
+            // read from network if internal buffer not enough:
+            if (inBuff.Cnt < buffer.Cnt)
+            {
+                ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
+                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff, inBuff.Cnt, inBuff.Buff.Length - inBuff.Cnt);
+                inBuff.Cnt += n;
+            }
+
+            // read from internal buffer:
+            if (inBuff.Cnt > 0)
+            {
+                result = inBuff.MoveTo(buffer);  //max buffer.Cnt
+            }
+
+            return await Task.FromResult(result);
         }
 
-        public void Write(byte[] buffer, int count)
+        public async Task<bool> WriteAsync(ByteBuff buffer)
         {
+            bool result = false;
 
+            await Task.Delay(100);//test
+
+            return await Task.FromResult(result);
         }
 
         //muss nach Write aufgerufen werden (bzw. per InCount)
-        public void Flush()
+        public async Task FlushAsync()
         {
-
+            await Task.Delay(100);//test
         }
 
-        #region internal stuff
+        #endregion
 
-        private TcpClient? client;
-        private TcpListener? _Server;
         
 
-        #endregion
     }
 
     public class TcpParameter
