@@ -125,33 +125,72 @@ public class ComProtocol : IAsyncDisposable
     }
 
     /// <summary>
-    /// ReadData: Daten von Port lesen mit Bedingungen (Länge, Endezeichen)
+    /// ReadData: read from Port min characters or until delim1/delim2 got
+    ///   into data.Buff offset data.Cnt
     /// </summary>
-    /// <param name="data">Puffer für Empfangsdaten</param>
-    /// <param name="len">bekommt Sollwert, liefert Istwert</param>
+    /// <param name="data">Buff, Cnt</param>
     /// <returns>false bedeutet nur daß noch nicht alle Zeichen eingelesen wurden und kein Abbruch des Telegramms</returns>
-    private async Task<ReadDataResult> ReadDataAsync(ByteBuff data, int minLen, byte delim1, byte delim2, bool delimReached)
+    private async Task<ReadDataResult> ReadDataAsync(ByteBuff data, int minLen, int maxLen, byte delim1, byte delim2)
     {
         ReadDataResult result = ReadDataResult.OK;
+        ByteBuff tmpBuff = new ByteBuff(MaxDataLen);
 
         // erstes Zeichen lesen mit timeout. Danach nur wenn InCount > 0.
-        await Task.Delay(100);//test
-
+        tmpBuff.Cnt = Math.Max(1, minLen);
+        int n = await ComPort.ReadAsync(tmpBuff);
+        tmpBuff.AppendTo(data);
+        if (n == 0 || n < minLen)
+        {
+            result = ReadDataResult.NoMinLen;
+            return await Task.FromResult(result);
+        }
+        if (delim1 != 0)
+            result = ReadDataResult.DelimiterMissing;
+        while (await ComPort.InCountAsync() > 0)
+        {
+            tmpBuff.Cnt = 1;
+            await ComPort.ReadAsync(tmpBuff);
+            if (delim1 != 0 && tmpBuff.Buff[0] == delim1)
+            {
+                if (delim2 == 0)
+                {
+                    result = ReadDataResult.OK;
+                    break;
+                }
+                else
+                {
+                    tmpBuff.Cnt = 1;
+                    await ComPort.ReadAsync(tmpBuff);
+                    if (tmpBuff.Buff[0] == delim2)
+                    {
+                        result = ReadDataResult.OK;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                tmpBuff.AppendTo(data);
+                if (data.Cnt >= maxLen)
+                    break;
+            }
+        }
         return await Task.FromResult(result);
     }
 
     /// <summary>
-    /// Receive answer and/or control character into data.Buff and data.Len
+    /// Receive answer and/or control character into data.Buff offest 0. Increments data.Cnt.
     /// maxcount, mincount, delimiter1, delimiter2
     /// n[:m],d1,d2
     /// </summary>
     /// <param name="answer">true = get answer data, false = only wait for tokens</param>
+    /// <returns>true = ok, false = timeout error</returns>
     private async Task<bool> Receive(ByteBuff data, bool answer, string descParam)
     {
         var delimiter = new byte[] { 0, 0 };
         int nDelim = 0;
         bool delimReached;
-        int MaxLen = 0;
+        int MaxLen = MaxDataLen;
         int MinLen = 0;
         var slTok = descParam.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         try
@@ -179,16 +218,15 @@ public class ComProtocol : IAsyncDisposable
             throw new ArgumentException($"error description({descParam})", nameof(descParam), ex);
         }
 
-        delimReached = false;
-        data.Cnt = 0;
+        data.Cnt = 0;  //read from 0. Moves Cnt.
         ReadDataResult rdResult;
-        rdResult = await ReadDataAsync(data, MinLen, delimiter[0], delimiter[1], delimReached);
+        rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
         //nochmal timeout lesen wenn mindestens 1 Zeichen gelesen und Len<minLen oder delimiter nicht erreicht
         if (rdResult != ReadDataResult.OK && data.Cnt > 0 && (data.Cnt < MinLen || rdResult == ReadDataResult.DelimiterMissing))
         {
             delimReached = rdResult != ReadDataResult.DelimiterMissing;
             MinLen = Math.Max(0, MinLen - data.Cnt);
-            rdResult = await ReadDataAsync(data, MinLen, delimiter[0], delimiter[1], delimReached);
+            rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
         }
         return await Task.FromResult(rdResult == ReadDataResult.OK);
     }

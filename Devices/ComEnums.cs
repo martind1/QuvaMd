@@ -70,6 +70,19 @@ public class ByteBuff
     }
 
     /// <summary>
+    /// appends dst offset dst.Cnt with this.Buff offset 0 len Cnt
+    /// </summary>
+    /// <returns>Count of copied bytes</returns>
+    public int AppendTo(ByteBuff dst)
+    {
+        for (int i = 0; i < Cnt; i++)
+        {
+            dst.Buff[dst.Cnt++] = Buff[i];
+        }
+        return Cnt;
+    }
+
+    /// <summary>
     /// moves max [dst.Cnt] Bytes to empty [dst]. Deletes moved bytes in [src], set [Cnt] on bothe sides.
     /// </summary>
     /// <returns>Count of moved bytes</returns>

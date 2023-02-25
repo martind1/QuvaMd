@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Quva.Devices
@@ -153,6 +154,7 @@ namespace Quva.Devices
         public async Task<int> InCountAsync()
         {
             await FlushAsync();
+            ArgumentNullException.ThrowIfNull(tcpClient);
             if (tcpClient.Available > 0)
             {
                 int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff, inBuff.Cnt, inBuff.Buff.Length - inBuff.Cnt);
@@ -161,46 +163,80 @@ namespace Quva.Devices
             return await Task.FromResult(inBuff.Cnt);
         }
 
-        // reads with timeout. Max buffer.Cnt bytes
+        // read with timeout. into Buffer offset 0; max buffer.Cnt bytes. Returns 0 when no data available
         public async Task<int> ReadAsync(ByteBuff buffer)
         {
             int result = 0;
-
-            // read from network if internal buffer not enough:
+            // read from network into internal buffer, with timeout, only if internal buffer not long enough:
             if (inBuff.Cnt < buffer.Cnt)
             {
+                await FlushAsync();
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
-                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff, inBuff.Cnt, inBuff.Buff.Length - inBuff.Cnt);
-                inBuff.Cnt += n;
+                Task<int> readTask = tcpClient.GetStream().ReadAsync(inBuff.Buff, inBuff.Cnt, inBuff.Buff.Length - inBuff.Cnt);
+                await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
+                if (!readTask.IsCompleted)
+                {
+                    try
+                    {
+                        tcpClient.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
+                        Log.Warning($"error closing TcpPort at ReadAsync {TcpParameter.ParamString}", ex);
+                    }
+                }
+                else
+                {
+                    inBuff.Cnt += await readTask;
+                }
             }
-
-            // read from internal buffer:
+            // move from internal buffer[0..] to buffer[0..]; shift internal buffer
             if (inBuff.Cnt > 0)
             {
                 result = inBuff.MoveTo(buffer);  //max buffer.Cnt
             }
-
             return await Task.FromResult(result);
         }
 
+        // write only to internal buffer. Write to network later in flush.
         public async Task<bool> WriteAsync(ByteBuff buffer)
         {
             bool result = false;
 
-            await Task.Delay(100);//test
+            buffer.AppendTo(outBuff);
 
             return await Task.FromResult(result);
         }
 
-        //muss nach Write aufgerufen werden (bzw. per InCount)
+        //muss vor Read und vor InCount und am Telegram Ende aufgerufen werden
         public async Task FlushAsync()
         {
-            await Task.Delay(100);//test
+            if (outBuff.Cnt > 0)
+            {
+                ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
+                Task writeTask = tcpClient.GetStream().WriteAsync(outBuff.Buff, 0, outBuff.Cnt);
+                await Task.WhenAny(writeTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
+                outBuff.Cnt = 0;
+                if (!writeTask.IsCompleted)
+                {
+                    try
+                    {
+                        tcpClient.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
+                        Log.Warning($"error closing TcpPort at WriteAsync {TcpParameter.ParamString}", ex);
+                    }
+                }
+
+            }
         }
 
-        #endregion
+        #endregion input/output
 
-        
+
 
     }
 
