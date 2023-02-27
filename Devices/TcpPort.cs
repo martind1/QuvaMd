@@ -157,8 +157,10 @@ namespace Quva.Devices
             ArgumentNullException.ThrowIfNull(tcpClient);
             if (tcpClient.Available > 0)
             {
-                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff, inBuff.Cnt, inBuff.Buff.Length - inBuff.Cnt);
+                int offset = inBuff.Cnt;
+                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff, offset, inBuff.Buff.Length - inBuff.Cnt);
                 inBuff.Cnt += n;
+                Log.Debug($"[{ipEndPoint}] READ {inBuff.DebugString(offset)}");
             }
             return await Task.FromResult(inBuff.Cnt);
         }
@@ -170,14 +172,18 @@ namespace Quva.Devices
             // read from network into internal buffer, with timeout, only if internal buffer not long enough:
             if (inBuff.Cnt < buffer.Cnt)
             {
+                int offset = inBuff.Cnt;
                 await FlushAsync();
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
-                Task<int> readTask = tcpClient.GetStream().ReadAsync(inBuff.Buff, inBuff.Cnt, inBuff.Buff.Length - inBuff.Cnt);
+                Log.Debug($"[{ipEndPoint}] READ offs:{offset} len:{inBuff.Buff.Length - inBuff.Cnt}");
+                Task<int> readTask = tcpClient.GetStream().ReadAsync(inBuff.Buff, offset, inBuff.Buff.Length - inBuff.Cnt);
                 await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
                 if (!readTask.IsCompleted)
                 {
                     try
                     {
+                        //beware! int n = await readTask;
+                        Log.Warning($"[{ipEndPoint}] Read Timeout. Close tcpClient:");
                         tcpClient.Close();
                     }
                     catch (Exception ex)
@@ -188,7 +194,9 @@ namespace Quva.Devices
                 }
                 else
                 {
-                    inBuff.Cnt += await readTask;
+                    int n = await readTask;
+                    inBuff.Cnt += n;
+                    Log.Debug($"[{ipEndPoint}] READ {inBuff.DebugString(offset)}");
                 }
             }
             // move from internal buffer[0..] to buffer[0..]; shift internal buffer
@@ -199,14 +207,31 @@ namespace Quva.Devices
             return await Task.FromResult(result);
         }
 
-        // write only to internal buffer. Write to network later in flush.
+        /// <summary>
+        /// write only to internal buffer. Write to network later in flush.
+        /// </summary>
+        /// <returns>new Count in internal buffer</returns>
         public async Task<bool> WriteAsync(ByteBuff buffer)
         {
-            bool result = false;
-
+            for (int i = 0; i < buffer.Cnt; i++)
+            {
+              Bcc ^= buffer.Buff[i];
+            }
             buffer.AppendTo(outBuff);
 
-            return await Task.FromResult(result);
+            return await Task.FromResult(true);
+        }
+
+        // write only to internal buffer. Write to network later in flush.
+        public bool Write(ByteBuff buffer)
+        {
+            for (int i = 0; i < buffer.Cnt; i++)
+            {
+                Bcc ^= buffer.Buff[i];
+            }
+            buffer.AppendTo(outBuff);
+
+            return true;
         }
 
         //muss vor Read und vor InCount und am Telegram Ende aufgerufen werden
@@ -214,10 +239,11 @@ namespace Quva.Devices
         {
             if (outBuff.Cnt > 0)
             {
+                Log.Debug($"[{ipEndPoint}] WRITE {outBuff.DebugString()}"); 
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
                 Task writeTask = tcpClient.GetStream().WriteAsync(outBuff.Buff, 0, outBuff.Cnt);
-                await Task.WhenAny(writeTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
                 outBuff.Cnt = 0;
+                await Task.WhenAny(writeTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
                 if (!writeTask.IsCompleted)
                 {
                     try

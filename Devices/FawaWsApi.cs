@@ -1,6 +1,7 @@
 ﻿using Quva.Devices;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -66,9 +67,15 @@ namespace Quva.Devices
         {
             statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
             var tel = await RunTelegram(statusData, "Holestatus=?");
-            //return await Task.FromResult(statusData)
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Status));
-            return await Task.FromResult((ScaleData)tel.AppData);
+            statusData = (ScaleData)tel.AppData;
+            if (tel.Error != 0)
+            {
+                statusData.ErrorNr = 99;
+                statusData.ErrorText = tel.ErrorText;
+                statusData.Display = tel.ErrorText; //"Error99";
+            }
+            return await Task.FromResult(statusData);
 
         }
 
@@ -90,13 +97,41 @@ namespace Quva.Devices
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(FawaWsAnswer));
             ScaleData data = (ScaleData)tel.AppData;
             var rnd = new Random();
-
             if (data.Command == ScaleCommands.Status.ToString())
             {
-                data.Weight = float.Parse(DateTime.Now.ToString("ss")) + Math.Round(rnd.NextDouble(), 2);
+                var inBuff = tel.InData;  //HoleStatus=<StatusStr>;<GewichtStr>;<Meldung>
+                string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+                int p = inStr.IndexOf('=');
+                var sl = inStr[(p + 1)..].Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                string StatusStr = sl[0];
+                string GewichtStr = sl[1];
+                string Meldung = sl[2];
+                int StatusNo = int.Parse(StatusStr);
+                ScaleStatus Status = 0;
+
+                data.Weight = float.Parse(GewichtStr, new CultureInfo("de-DE"));  //Dezimalkomma!
                 data.Unit = ScaleUnit.Ton;
                 data.CalibrationNumber = 0;
-                data.Display = $"{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}";
+                if (StatusNo == 0 || StatusNo == 1 || StatusNo == 2 || StatusNo == 5)
+                {
+                    Status |= ScaleStatus.WeightOK;
+                    if (StatusNo == 1 || StatusNo == 5)
+                    {
+                        Status |= ScaleStatus.Underload;
+                    }
+                    if (StatusNo == 2)
+                    {
+                        Status |= ScaleStatus.NoStandstill;
+                    }
+                    data.Display = $"{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}";
+                    data.ErrorNr = 0;
+                }
+                else
+                {
+                    Status |= ScaleStatus.NoWeight;
+                    data.Display = Meldung ?? "Error";
+                    data.ErrorNr = 1;
+                }
             }
 
             else if (data.Command == ScaleCommands.Register.ToString())

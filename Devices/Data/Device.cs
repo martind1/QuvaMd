@@ -13,7 +13,7 @@ public class Device
     public int Id { get; set; }
     public string? Code { get; set; }
     public string? Name { get; set; }
-    public DeviceRoles Roles { get; set; }  //must bei int because Flags
+    public int Roles { get; set; }  //DeviceRoles  - must be int because Flags
     public string? ParamString { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

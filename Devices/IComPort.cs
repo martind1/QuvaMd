@@ -21,6 +21,7 @@ public interface IComPort : IAsyncDisposable
     Task<int> ReadAsync(ByteBuff buffer);  //Buff+Len
 
     Task<bool> WriteAsync(ByteBuff buffer);
+    bool Write(ByteBuff buffer);
     Task FlushAsync();
 
     PortType PortType { get; }
