@@ -29,30 +29,30 @@ public class ComDevice
     public virtual async Task Open()
     {
         // ComPort öffnen
-        Log.Information($"{Code}.ComDevice.Open:");
+        Log.Information($"[{Code}] ComDevice.Open:");
         if (ComPort == null) 
             throw new NullReferenceException(nameof(ComPort));
         if (!ComPort.IsConnected())
         {
             await ComPort.OpenAsync();
-            Log.Information($"{Code}.ComDevice.Open OK");
+            Log.Information($"[{Code}] ComDevice.Open OK");
         }
     }
 
     public virtual async Task Close()
     {
         // Dispose ComPort 
-        Log.Information($"{Code}.ComDevice.Close:");
+        Log.Information($"[{Code}] ComDevice.Close:");
         if (ComPort != null && ComPort.IsConnected())
         {
             await ComPort.CloseAsync();
-            Log.Information($"{Code}.ComDevice.Close OK");
+            Log.Information($"[{Code}] ComDevice.Close OK");
         }
     }
 
     public async Task Load()
     {
-        Log.Information($"{Code}.ComDevice.Load");
+        Log.Information($"[{Code}] ComDevice.Load");
         // [Code] von DB laden - erstmal von Test Service laden:
         var dataService = new DataService();
         device = await dataService.GetDevice(Code);
@@ -60,7 +60,7 @@ public class ComDevice
         ArgumentNullException.ThrowIfNull(Device.ParamString);
         ComPort = device.PortType switch
         {
-            PortType.Tcp => new TcpPort(Device.ParamString),
+            PortType.Tcp => new TcpPort(Code, Device.ParamString),
             PortType.None => null,
             _ => throw new NotImplementedException("only TCP implemented")
         };
@@ -68,8 +68,8 @@ public class ComDevice
         {
             ScaleApi = Device.ModulCode switch
             {
-                "IT6000" => new IT6000Api(this),
-                "FAWAWS" => new FawaWsApi(this),
+                "IT6000" => new IT6000Api(Code, this),
+                "FAWAWS" => new FawaWsApi(Code, this),
                 _ => throw new NotImplementedException($"Modulcode {Device.ModulCode}")
             };
         }
@@ -93,7 +93,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            Log.Warning($"Fehler bei int Device({Code}).Option({key})", ex);
+            Log.Warning($"[{Code}] Fehler bei int Device.Option({key})", ex);
             return dflt;
         }
     }
@@ -106,14 +106,14 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            Log.Warning($"Fehler bei float Device({Code}).Option({key})", ex);
+            Log.Warning($"[{Code}] Fehler bei float Device.Option({key})", ex);
             return dflt;
         }
     }
 
     public async Task<ScaleData> ScaleCommand(string command)
     {
-        Log.Information($"{Code}.Device.ScaleCommand({command})");
+        Log.Information($"[{Code}] Device.ScaleCommand({command})");
         ArgumentNullException.ThrowIfNull(ScaleApi);
         var result = await ScaleApi.ScaleCommand(command);
 

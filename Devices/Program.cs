@@ -57,10 +57,13 @@ namespace Quva.Devices
             Log.Information($"testsvc.Test");
             var data1 = await svc.ScaleStatus("HOH.FW1");
             Log.Information($"Err:{data1.ErrorNr} Status:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
-            var data21 = await svc.ScaleStatus("HOH.FW2");
-            Log.Information($"Err:{data21.ErrorNr} Status:{data21.Display} Weight:{data21.Weight} Unit:{data21.Unit}");
-            var data2 = await svc.ScaleRegister("HOH.FW1");
-            Log.Information($"Err:{data2.ErrorNr} Register:{data2.Display} Eichnr:{data2.CalibrationNumber} Weight:{data2.Weight} Unit:{data2.Unit}");
+
+            var data2 = await svc.ScaleStatus("HOH.FW2");
+            Log.Information($"Err:{data2.ErrorNr} Status:{data2.Display} Weight:{data2.Weight} Unit:{data2.Unit}");
+
+            var data12 = await svc.ScaleRegister("HOH.FW1");
+            Log.Information($"Err:{data12.ErrorNr} Register:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
+
             await svc.DisposeAsync(); 
         }
     }

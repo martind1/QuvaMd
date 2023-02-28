@@ -111,11 +111,11 @@ namespace Quva.Devices
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
-                Log.Warning($"OpenDevice({devicecode}): bereits vorhanden");
+                Log.Warning($"[{devicecode}] OpenDevice: bereits vorhanden");
             }
             else
             {
-                Log.Information($"OpenDevice({devicecode}): add");
+                Log.Information($"[{devicecode}] OpenDevice: add");
                 device = new ComDevice
                 {
                     Code = devicecode   //wichtig weil nicht in Constructor

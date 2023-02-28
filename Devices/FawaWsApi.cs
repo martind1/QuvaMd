@@ -17,7 +17,7 @@ namespace Quva.Devices
     {
         private readonly ComDevice device;
 
-        public FawaWsApi(ComDevice device) : base(device.ComPort)
+        public FawaWsApi(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
         {
             this.device = device;
 
@@ -136,10 +136,43 @@ namespace Quva.Devices
 
             else if (data.Command == ScaleCommands.Register.ToString())
             {
-                data.Weight = float.Parse(DateTime.Now.ToString("ss")) + Math.Round(rnd.NextDouble(), 2);
+                var inBuff = tel.InData;  //ProtGewicht=<StatusStr>;<GewichtStr>;<EichNrStr>;<Meldung>
+                string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+                int p = inStr.IndexOf('=');
+                var sl = inStr[(p + 1)..].Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                string StatusStr = sl[0];
+                string GewichtStr = sl[1];
+                string EichNrStr = sl[2];
+                string Meldung = sl[3];
+                int StatusNo = int.Parse(StatusStr);
+                ScaleStatus Status = 0;
+
+                data.Weight = float.Parse(GewichtStr, new CultureInfo("de-DE"));  //Dezimalkomma!
                 data.Unit = ScaleUnit.Ton;
-                data.CalibrationNumber = (int)rnd.NextInt64(10000, 99999);
-                data.Display = $"<{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}>";  //mit Eichklammern<>
+                data.CalibrationNumber = int.Parse(EichNrStr);
+                if (StatusNo == 0)
+                {
+                    Status |= ScaleStatus.WeightOK;
+                    data.Display = $"<{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}>";
+                }
+                else
+                {
+                    data.Display = Meldung ?? $"Error {StatusNo}";
+                    Status |= ScaleStatus.WeightOK;
+                    if (StatusNo == 1 || StatusNo == 5)
+                    {
+                        Status |= ScaleStatus.Underload;
+                    }
+                    if (StatusNo == 2)
+                    {
+                        Status |= ScaleStatus.PositionError;
+                    }
+                    else
+                    {
+                        Status |= ScaleStatus.NoWeight;
+                    }
+                    data.ErrorNr = 1;
+                }
             }
         }
 

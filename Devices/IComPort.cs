@@ -24,6 +24,7 @@ public interface IComPort : IAsyncDisposable
     bool Write(ByteBuff buffer);
     Task FlushAsync();
 
+    string DeviceCode { get; }
     PortType PortType { get; }
     ComParameter ComParameter { get; set; }
     //Runtime:

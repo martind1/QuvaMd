@@ -12,7 +12,7 @@ namespace Quva.Devices;
 
 public class ComProtocol : IAsyncDisposable
 {
-    private TimerAsync? AsyncTimer { get; set; }
+    public string DeviceCode { get; }
     private IComPort? comPort = null;
     public IComPort ComPort { get => comPort ?? throw new ArgumentNullException(nameof(comPort)); set => comPort = value; }
     public string[] Description { get; set; }
@@ -29,20 +29,16 @@ public class ComProtocol : IAsyncDisposable
     public bool Echo { get; set; } = false;
 
 
-    public ComProtocol(IComPort? comPort)
+    public ComProtocol(string deviceCode, IComPort? comPort)
     {
+        DeviceCode = deviceCode;
         this.comPort = comPort;
         Description = new string[] { "B:", "S:^M", "A:128,^M" }; //nur Demo
     }
 
     protected virtual async ValueTask DisposeAsyncCore()
     {
-        Log.Warning($"{GetType().Name}.DisposeAsyncCore({AsyncTimer != null})");
-        if (AsyncTimer != null)
-        {
-            await Task.Run(() => { AsyncTimer.Dispose(); });
-        }
-        AsyncTimer = null;
+        Log.Warning($"{GetType().Name}.DisposeAsyncCore({comPort != null})");
         if (comPort != null)
         {
             await comPort.CloseAsync();

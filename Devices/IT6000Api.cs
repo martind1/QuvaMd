@@ -16,7 +16,7 @@ namespace Quva.Devices
     {
         private readonly ComDevice device;
 
-        public IT6000Api(ComDevice device) : base(device.ComPort)
+        public IT6000Api(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
         {
             this.device = device;
 

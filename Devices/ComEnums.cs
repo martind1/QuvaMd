@@ -67,26 +67,28 @@ public class ByteBuff
         return DebugString(0);
     }
 
+    // for Debug Output
     public string DebugString(int offset)
     {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder(256);
         for (int i = offset; i < Cnt; i++)
         {
             byte b = Buff[i];
             if (b < 32)
             {
-                sb.Append("^");  //01 -> ^A
+                sb.Append('^');  //01 -> ^A
                 b += 64;
             }
             else if (b == 94)
             {
-                sb.Append(@"\"); //^ -> \^
+                sb.Append('\\'); //^ -> \^
             }
             sb.Append((char)b);
         }
         return sb.ToString();
     }
 
+    // Duplicate other ByteBuff
     public int CopyFrom(ByteBuff src)
     {
         src.Buff.CopyTo(Buff, 0);

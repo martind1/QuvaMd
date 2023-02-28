@@ -14,6 +14,7 @@ namespace Quva.Devices
 {
     public class TcpPort : IComPort, IAsyncDisposable
     {
+        public string DeviceCode { get; }
         public PortType PortType { get; } = PortType.Tcp;
         public ComParameter ComParameter { get; set; }
         public TcpParameter TcpParameter { get; set; }
@@ -21,8 +22,9 @@ namespace Quva.Devices
         public uint Bcc { get; set; }
         public bool IsConnected() => tcpClient != null;
 
-        public TcpPort(string paramstring)
+        public TcpPort(string deviceCode, string paramstring)
         {
+            DeviceCode = deviceCode;  //for Debug Output
             ComParameter = new();
             TcpParameter = new();
             SetParamString(paramstring);
