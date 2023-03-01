@@ -14,6 +14,7 @@ namespace Quva.Devices
 {
     public class TcpPort : IComPort, IAsyncDisposable
     {
+        private readonly ILogger CLog;
         public string DeviceCode { get; }
         public PortType PortType { get; } = PortType.Tcp;
         public ComParameter ComParameter { get; set; }
@@ -24,6 +25,7 @@ namespace Quva.Devices
 
         public TcpPort(string deviceCode, string paramstring)
         {
+            CLog = Log.ForContext<DeviceService>();
             DeviceCode = deviceCode;  //for Debug Output
             ComParameter = new();
             TcpParameter = new();
@@ -34,7 +36,7 @@ namespace Quva.Devices
 
     protected virtual async ValueTask DisposeAsyncCore()
         {
-            Log.Warning($"{nameof(TcpPort)}.DisposeAsyncCore({tcpClient != null})");
+            CLog.Warning($"[{DeviceCode}] {nameof(TcpPort)}.DisposeAsyncCore({tcpClient != null})");
             if (tcpClient != null)
             {
                 await Task.Run(() => { tcpClient.Dispose(); });
@@ -49,7 +51,7 @@ namespace Quva.Devices
 
         public async ValueTask DisposeAsync()
         {
-            Log.Warning($"{nameof(TcpPort)}.DisposeAsync()");
+            CLog.Warning($"[{DeviceCode}] {nameof(TcpPort)}.DisposeAsync()");
             await DisposeAsyncCore().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
@@ -80,17 +82,17 @@ namespace Quva.Devices
         private IPAddress? ipAddress;
         private IPEndPoint? ipEndPoint;
         private NetworkStream? stream;
-        private ByteBuff inBuff;
-        private ByteBuff outBuff;
+        private readonly ByteBuff inBuff;
+        private readonly ByteBuff outBuff;
 
         public async Task OpenAsync()
         {
             if (IsConnected())
             {
-                Log.Warning($"TCP({TcpParameter.ParamString}): allready opened");
+                CLog.Warning($"[{DeviceCode}] TCP({TcpParameter.ParamString}): allready opened");
                 return;
             }
-            Log.Information($"TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
+            CLog.Information($"[{DeviceCode}] TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
             ipHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
             //ipAddress = ipHostEntry.AddressList[0];
             // only IPV4:
@@ -104,7 +106,7 @@ namespace Quva.Devices
             tcpClient = new TcpClient();
             try
             {
-                Log.Debug($"ConnectAsync EndPoint:{ipEndPoint} - {ipAddress.AddressFamily}");
+                CLog.Debug($"[{DeviceCode}] ConnectAsync EndPoint:{ipEndPoint} - {ipAddress.AddressFamily}");
                 await tcpClient.ConnectAsync(ipEndPoint);
                 stream = tcpClient.GetStream();
                 if (ComParameter.TimeoutMs == 0)
@@ -124,10 +126,10 @@ namespace Quva.Devices
         {
             if (!IsConnected())
             {
-                Log.Warning($"TCP({TcpParameter.ParamString}): allready closed");
+                CLog.Warning($"[{DeviceCode}] TCP({TcpParameter.ParamString}): allready closed");
                 return;
             }
-            Log.Debug($"TCP({TcpParameter.ParamString}): CloseAsync");
+            CLog.Debug($"[{DeviceCode}] TCP({TcpParameter.ParamString}): CloseAsync");
 
             if (TcpParameter.Remote == Remote.Host)
                 throw new NotImplementedException($"TCP({TcpParameter.ParamString}): Remote.Host");
@@ -160,9 +162,9 @@ namespace Quva.Devices
             if (tcpClient.Available > 0)
             {
                 int offset = inBuff.Cnt;
-                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff, offset, inBuff.Buff.Length - inBuff.Cnt);
+                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff.AsMemory(offset, inBuff.Buff.Length - inBuff.Cnt));
                 inBuff.Cnt += n;
-                Log.Debug($"[{ipEndPoint}] READ {inBuff.DebugString(offset)}");
+                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ {inBuff.DebugString(offset)}");
             }
             return await Task.FromResult(inBuff.Cnt);
         }
@@ -177,7 +179,7 @@ namespace Quva.Devices
                 int offset = inBuff.Cnt;
                 await FlushAsync();
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
-                Log.Debug($"[{ipEndPoint}] READ offs:{offset} len:{inBuff.Buff.Length - inBuff.Cnt}");
+                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ offs:{offset} len:{inBuff.Buff.Length - inBuff.Cnt}");
                 Task<int> readTask = tcpClient.GetStream().ReadAsync(inBuff.Buff, offset, inBuff.Buff.Length - inBuff.Cnt);
                 await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
                 if (!readTask.IsCompleted)
@@ -185,20 +187,20 @@ namespace Quva.Devices
                     try
                     {
                         //beware! int n = await readTask;
-                        Log.Warning($"[{ipEndPoint}] Read Timeout. Close tcpClient:");
+                        CLog.Warning($"[{DeviceCode}] [{ipEndPoint}] Read Timeout. Close tcpClient:");
                         tcpClient.Close();
                     }
                     catch (Exception ex)
                     {
                         // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
-                        Log.Warning($"error closing TcpPort at ReadAsync {TcpParameter.ParamString}", ex);
+                        CLog.Warning($"[{DeviceCode}] error closing TcpPort at ReadAsync {TcpParameter.ParamString}", ex);
                     }
                 }
                 else
                 {
                     int n = await readTask;
                     inBuff.Cnt += n;
-                    Log.Debug($"[{ipEndPoint}] READ {inBuff.DebugString(offset)}");
+                    CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ {inBuff.DebugString(offset)}");
                 }
             }
             // move from internal buffer[0..] to buffer[0..]; shift internal buffer
@@ -241,7 +243,7 @@ namespace Quva.Devices
         {
             if (outBuff.Cnt > 0)
             {
-                Log.Debug($"[{ipEndPoint}] WRITE {outBuff.DebugString()}"); 
+                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] WRITE {outBuff.DebugString()}"); 
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
                 Task writeTask = tcpClient.GetStream().WriteAsync(outBuff.Buff, 0, outBuff.Cnt);
                 outBuff.Cnt = 0;
@@ -255,7 +257,7 @@ namespace Quva.Devices
                     catch (Exception ex)
                     {
                         // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
-                        Log.Warning($"error closing TcpPort at WriteAsync {TcpParameter.ParamString}", ex);
+                        CLog.Warning($"[{DeviceCode}] error closing TcpPort at WriteAsync {TcpParameter.ParamString}", ex);
                     }
                 }
 

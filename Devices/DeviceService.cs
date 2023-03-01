@@ -11,6 +11,7 @@ namespace Quva.Devices
 {
     public class DeviceService : IAsyncDisposable
     {
+        private readonly ILogger CLog;
         private bool disposeFlag = true;
         public IDictionary<string, ComDevice> DeviceList { get; set; }
 
@@ -18,12 +19,13 @@ namespace Quva.Devices
         public DeviceService()
         {
             DeviceList = new Dictionary<string, ComDevice>();
-            Log.Information("creating DeviceService");
+            CLog = Log.ForContext<DeviceService>();
+            CLog.Information("creating DeviceService");
         }
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            Log.Warning($"DisposeAsyncCore({disposeFlag})");
+            CLog.Warning($"DisposeAsyncCore({disposeFlag})");
             if (disposeFlag)
             {
                 foreach (ComDevice d in DeviceList.Values)
@@ -36,7 +38,7 @@ namespace Quva.Devices
 
         public async ValueTask DisposeAsync()
         {
-            Log.Warning($"DisposeAsync()");
+            CLog.Warning($"DisposeAsync()");
             await DisposeAsyncCore().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
@@ -111,11 +113,11 @@ namespace Quva.Devices
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
-                Log.Warning($"[{devicecode}] OpenDevice: bereits vorhanden");
+                CLog.Warning($"[{devicecode}] OpenDevice: bereits vorhanden");
             }
             else
             {
-                Log.Information($"[{devicecode}] OpenDevice: add");
+                CLog.Information($"[{devicecode}] OpenDevice: add");
                 device = new ComDevice
                 {
                     Code = devicecode   //wichtig weil nicht in Constructor
@@ -136,13 +138,13 @@ namespace Quva.Devices
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
-                Log.Information($"CloseDevice({devicecode}): close");
+                CLog.Information($"CloseDevice({devicecode}): close");
                 DeviceList.Remove(devicecode);
                 await device.Close();
             }
             else
             {
-                Log.Warning($"CloseDevice({devicecode}): nicht vorhanden");
+                CLog.Warning($"CloseDevice({devicecode}): nicht vorhanden");
             }
         }
 

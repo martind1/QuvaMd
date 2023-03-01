@@ -12,6 +12,7 @@ namespace Quva.Devices;
 
 public class ComDevice
 {
+    private readonly ILogger CLog;
     private Device? device;    // from database table 
     public Device Device { get => device ?? throw new ArgumentNullException(); set => device = value; }
     public string Code { get; set; }
@@ -23,36 +24,38 @@ public class ComDevice
     public ComDevice()
     {
         //Code = devicecode; * kein Parameter wg CS0304
+        CLog = Log.ForContext<DeviceService>();
         Code = string.Empty;
+        slim = new SemaphoreSlim(1);
     }
 
     public virtual async Task Open()
     {
         // ComPort öffnen
-        Log.Information($"[{Code}] ComDevice.Open:");
+        CLog.Information($"[{Code}] ComDevice.Open:");
         if (ComPort == null) 
             throw new NullReferenceException(nameof(ComPort));
         if (!ComPort.IsConnected())
         {
             await ComPort.OpenAsync();
-            Log.Information($"[{Code}] ComDevice.Open OK");
+            CLog.Information($"[{Code}] ComDevice.Open OK");
         }
     }
 
     public virtual async Task Close()
     {
         // Dispose ComPort 
-        Log.Information($"[{Code}] ComDevice.Close:");
+        CLog.Information($"[{Code}] ComDevice.Close:");
         if (ComPort != null && ComPort.IsConnected())
         {
             await ComPort.CloseAsync();
-            Log.Information($"[{Code}] ComDevice.Close OK");
+            CLog.Information($"[{Code}] ComDevice.Close OK");
         }
     }
 
     public async Task Load()
     {
-        Log.Information($"[{Code}] ComDevice.Load");
+        CLog.Information($"[{Code}] ComDevice.Load");
         // [Code] von DB laden - erstmal von Test Service laden:
         var dataService = new DataService();
         device = await dataService.GetDevice(Code);
@@ -93,7 +96,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            Log.Warning($"[{Code}] Fehler bei int Device.Option({key})", ex);
+            CLog.Warning($"[{Code}] Fehler bei int Device.Option({key})", ex);
             return dflt;
         }
     }
@@ -106,17 +109,30 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            Log.Warning($"[{Code}] Fehler bei float Device.Option({key})", ex);
+            CLog.Warning($"[{Code}] Fehler bei float Device.Option({key})", ex);
             return dflt;
         }
     }
 
+    private readonly SemaphoreSlim slim;
+
     public async Task<ScaleData> ScaleCommand(string command)
     {
-        Log.Information($"[{Code}] Device.ScaleCommand({command})");
-        ArgumentNullException.ThrowIfNull(ScaleApi);
-        var result = await ScaleApi.ScaleCommand(command);
-
+        ScaleData result;
+        CLog.Debug($"[{Code}] WAIT Device.ScaleCommand({command})");
+        // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
+        await slim.WaitAsync();
+        try
+        {
+            CLog.Information($"[{Code}] START Device.ScaleCommand({command})");
+            ArgumentNullException.ThrowIfNull(ScaleApi);
+            result = await ScaleApi.ScaleCommand(command);
+            CLog.Debug($"[{Code}] END Device.ScaleCommand({command})");
+        }
+        finally
+        {
+            slim.Release();
+        }
         return await Task.FromResult(result);
     }
 

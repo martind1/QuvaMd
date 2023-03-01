@@ -1,4 +1,5 @@
 ﻿using Quva.Devices;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -55,6 +56,7 @@ namespace Quva.Devices
         public string[] FawaWsDescription = new string[]
         {
           ";Automatische Erzeugung. Ändern nicht möglich.",
+          "P:50",
           "I:",          //Clearinput
           "T:11000",     //Stillstand
           "B:",          //HoleStatus=?
@@ -84,7 +86,14 @@ namespace Quva.Devices
             registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
             var tel = await RunTelegram(registerData, "ProtGewicht=?");
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Register));
-            return await Task.FromResult((ScaleData)tel.AppData);
+            registerData = (ScaleData)tel.AppData;
+            if (tel.Error != 0)
+            {
+                registerData.ErrorNr = 99;
+                registerData.ErrorText = tel.ErrorText;
+                registerData.Display = tel.ErrorText; //"Error99";
+            }
+            return await Task.FromResult(registerData);
         }
 
         #endregion
@@ -101,6 +110,7 @@ namespace Quva.Devices
             {
                 var inBuff = tel.InData;  //HoleStatus=<StatusStr>;<GewichtStr>;<Meldung>
                 string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+                CLog.Debug($"[{DeviceCode}] FawaWsAnswer.Status:{inStr}");
                 int p = inStr.IndexOf('=');
                 var sl = inStr[(p + 1)..].Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 string StatusStr = sl[0];
@@ -138,6 +148,7 @@ namespace Quva.Devices
             {
                 var inBuff = tel.InData;  //ProtGewicht=<StatusStr>;<GewichtStr>;<EichNrStr>;<Meldung>
                 string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+                CLog.Debug($"[{DeviceCode}] FawaWsAnswer.Register:{inStr}"); 
                 int p = inStr.IndexOf('=');
                 var sl = inStr[(p + 1)..].Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 string StatusStr = sl[0];

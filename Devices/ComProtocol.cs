@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,16 +13,15 @@ namespace Quva.Devices;
 
 public class ComProtocol : IAsyncDisposable
 {
+    protected ILogger CLog;
     public string DeviceCode { get; }
     private IComPort? comPort = null;
     public IComPort ComPort { get => comPort ?? throw new ArgumentNullException(nameof(comPort)); set => comPort = value; }
     public string[] Description { get; set; }
     public ComProtErrorActions ErrorActions { get; set; }
     public event EventHandler<TelEventArgs>? OnAnswer;
-    public event EventHandler? OnError;
     public event EventHandler<UserFnEventArgs>? OnUserFn;
     private void DoAnswer(TelEventArgs e) => OnAnswer?.Invoke(this, e);
-    private void DoError(EventArgs e) => OnError?.Invoke(this, e);
     //Config:
     public int MaxDataLen { get; set; } = 2048;
     public int ProtTelId { get; set; } = -1;
@@ -31,6 +31,7 @@ public class ComProtocol : IAsyncDisposable
 
     public ComProtocol(string deviceCode, IComPort? comPort)
     {
+        CLog = Log.ForContext<DeviceService>();
         DeviceCode = deviceCode;
         this.comPort = comPort;
         Description = new string[] { "B:", "S:^M", "A:128,^M" }; //nur Demo
@@ -38,7 +39,7 @@ public class ComProtocol : IAsyncDisposable
 
     protected virtual async ValueTask DisposeAsyncCore()
     {
-        Log.Warning($"{GetType().Name}.DisposeAsyncCore({comPort != null})");
+        CLog.Warning($"[{DeviceCode}] {GetType().Name}.DisposeAsyncCore({comPort != null})");
         if (comPort != null)
         {
             await comPort.CloseAsync();
@@ -48,7 +49,7 @@ public class ComProtocol : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        Log.Warning($"{GetType().Name}.DisposeAsync()");
+        CLog.Warning($"[{DeviceCode}] {GetType().Name}.DisposeAsync()");
         await DisposeAsyncCore().ConfigureAwait(false);
 
         GC.SuppressFinalize(this);
@@ -68,7 +69,7 @@ public class ComProtocol : IAsyncDisposable
     private async Task<bool> SendAsync(ComTelegram tel, string descParam)
     {
         bool result = false;
-        ByteBuff tempBuff = new ByteBuff(1024);  //Len = 0
+        ByteBuff tempBuff = new(1024);  //Len = 0
         // evaluate params and send bytes
         for (int i = 0; i < descParam.Length; i++)
         {
@@ -128,10 +129,11 @@ public class ComProtocol : IAsyncDisposable
     private async Task<ReadDataResult> ReadDataAsync(ByteBuff data, int minLen, int maxLen, byte delim1, byte delim2)
     {
         ReadDataResult result = ReadDataResult.OK;
-        ByteBuff tmpBuff = new ByteBuff(MaxDataLen);
-
+        var tmpBuff = new ByteBuff(MaxDataLen)
+        {
+            Cnt = Math.Max(1, minLen)
+        };
         // erstes Zeichen lesen mit timeout. Danach nur wenn InCount > 0.
-        tmpBuff.Cnt = Math.Max(1, minLen);
         int n = await ComPort.ReadAsync(tmpBuff);
         tmpBuff.AppendTo(data);
         if (n == 0 || n < minLen)
@@ -180,11 +182,10 @@ public class ComProtocol : IAsyncDisposable
     /// </summary>
     /// <param name="answer">true = get answer data, false = only wait for tokens</param>
     /// <returns>true = ok, false = timeout error</returns>
-    private async Task<bool> Receive(ByteBuff data, bool answer, string descParam)
+    private async Task<bool> Receive(ByteBuff data, string descParam)
     { 
         var delimiter = new byte[] { 0, 0 };
         int nDelim = 0;
-        bool delimReached;
         int MaxLen = MaxDataLen;
         int MinLen = 0;
         var slTok = descParam.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -219,7 +220,6 @@ public class ComProtocol : IAsyncDisposable
         //nochmal timeout lesen wenn mindestens 1 Zeichen gelesen und Len<minLen oder delimiter nicht erreicht
         if (rdResult != ReadDataResult.OK && data.Cnt > 0 && (data.Cnt < MinLen || rdResult == ReadDataResult.DelimiterMissing))
         {
-            delimReached = rdResult != ReadDataResult.DelimiterMissing;
             MinLen = Math.Max(0, MinLen - data.Cnt);
             rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
         }
@@ -239,9 +239,11 @@ public class ComProtocol : IAsyncDisposable
     public async Task<ComTelegram> RunTelegram(object appData, ByteBuff byteCmd)
     {
         // in constructor: description, buffer, ..
-        var tel = new ComTelegram(this);
-        tel.Status = ComProtStatus.OK;
-        tel.AppData = appData;
+        var tel = new ComTelegram(this)
+        {
+            Status = ComProtStatus.OK,
+            AppData = appData
+        };
         tel.InData.Cnt = 0;
         tel.DummyData.Cnt = 0;
         tel.OutData.CopyFrom(byteCmd);
@@ -261,8 +263,8 @@ public class ComProtocol : IAsyncDisposable
             var descLine = tel.Description[descIdx];
             if (descLine.StartsWith(";"))
                 continue;  // ;comment
-            string descCmd = string.Empty;
-            string descParam = string.Empty;
+            string descCmd;
+            string descParam;
             int splitPos = descLine.IndexOf(':');  //first occurance
             try
             {
@@ -309,7 +311,7 @@ public class ComProtocol : IAsyncDisposable
     private async Task<bool> RunDescLine(ComTelegram tel, string descCmd, string descParam)
     {
         bool bResult = false;
-        Log.Debug($"{GetType().Name}.RunDescLine({descCmd}:{descParam})");
+        CLog.Debug($"[{DeviceCode}] {GetType().Name}.RunDescLine({descCmd}:{descParam})");
         if (descCmd == "T")  //T:m
         {
             ComPort.ComParameter.TimeoutMs = int.Parse(descParam);
@@ -352,7 +354,7 @@ public class ComProtocol : IAsyncDisposable
         }
         else if (descCmd == "W")  //W:n[:m],d1,d2
         {
-            bResult = await Receive(tel.DummyData, false, descParam);
+            bResult = await Receive(tel.DummyData, descParam);
             if (!bResult)
             {
                 tel.Status = ComProtStatus.Error;
@@ -362,7 +364,7 @@ public class ComProtocol : IAsyncDisposable
         }
         else if (descCmd == "A")  //A:n[:m],d1,d2
         {
-            bResult = await Receive(tel.InData, false, descParam);
+            bResult = await Receive(tel.InData, descParam);
             if (!bResult)
             {
                 tel.Status = ComProtStatus.Error;
@@ -399,7 +401,7 @@ public class ComProtocol : IAsyncDisposable
     /// <param name="e"></param>
     private void DoUserFn(UserFnEventArgs e)
     {
-        ByteBuff bb = new ByteBuff(1);
+        var bb = new ByteBuff(1);
         if (e.UserFn.Equals("BCC", StringComparison.OrdinalIgnoreCase))
         {
             bb.Buff[0] = (byte)ComPort.Bcc;
