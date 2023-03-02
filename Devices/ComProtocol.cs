@@ -183,7 +183,7 @@ public class ComProtocol : IAsyncDisposable
     /// <param name="answer">true = get answer data, false = only wait for tokens</param>
     /// <returns>true = ok, false = timeout error</returns>
     private async Task<bool> Receive(ByteBuff data, string descParam)
-    { 
+    {
         var delimiter = new byte[] { 0, 0 };
         int nDelim = 0;
         int MaxLen = MaxDataLen;
@@ -201,17 +201,21 @@ public class ComProtocol : IAsyncDisposable
                 {
                     delimiter[nDelim++] = Convert.ToByte(slTok[i][1..2], 16);
                 }
-                else
+                else if (i == 0 && char.IsDigit(slTok[i][0]))
                 {
                     var slLen = slTok[i].Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                     MaxLen = int.Parse(slLen[0]);
-                    MinLen = slLen.Length >= 2 ? int.Parse(slLen[1]) : 0;
+                    MinLen = slLen.Length > 1 ? int.Parse(slLen[1]) : 0;
+                }
+                else
+                {
+                    delimiter[nDelim++] = (byte)slTok[i][0];  //zB < (IT6000)
                 }
             }
         }
         catch (Exception ex)
         {
-            throw new ArgumentException($"error description({descParam})", nameof(descParam), ex);
+            throw new ArgumentException($"[{DeviceCode}] error description({descParam})", nameof(descParam), ex);
         }
 
         data.Cnt = 0;  //read from 0. Moves Cnt.
@@ -220,8 +224,22 @@ public class ComProtocol : IAsyncDisposable
         //nochmal timeout lesen wenn mindestens 1 Zeichen gelesen und Len<minLen oder delimiter nicht erreicht
         if (rdResult != ReadDataResult.OK && data.Cnt > 0 && (data.Cnt < MinLen || rdResult == ReadDataResult.DelimiterMissing))
         {
+            CLog.Warning($"[{DeviceCode}] Receive 2nd ReadData {data.Cnt}:");
             MinLen = Math.Max(0, MinLen - data.Cnt);
             rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
+        }
+        while (data.Cnt > 0 && data.Cnt < MaxLen && (delimiter[0] == 0 || rdResult == ReadDataResult.DelimiterMissing))
+        {
+            MinLen = 0;
+            //wait 100ms, then try receive next bunches of data when available
+            await Task.Delay(100);
+            if (await ComPort.InCountAsync() > 0)
+            {
+                CLog.Warning($"[{DeviceCode}] Receive bunch ReadData {data.Cnt}:");
+                rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
+            }
+            else
+                break;
         }
         return await Task.FromResult(rdResult == ReadDataResult.OK);
     }
@@ -294,14 +312,15 @@ public class ComProtocol : IAsyncDisposable
     }
 
     /* *** Description: *** keine Leerzeichen! ***
-    T:m             m = TimeOut in ms
+    L:              Host:Listen - warte bis Client verbunden
+    T:m             m = TimeOut in ms (0 = infinity)
     C:              Block Check Character auf 0 zurücksetzen
     D:b             b: 1=DoubleDle, 0=no DoubleDle
     I:              Empfangspuffer löschen (ClearInput)
     S:^c|a|$xx      Sende Steuerzeichen. c=A..Z, a=0..9,a..z,A..Z, x=0..9,a..f
     B:              Befehl senden
     W:n[:m],d1,d2   Warte auf Steuerzeichen. n=Anzahl[:Mindestanzahl], d1,d2=max. 2 Steuerzeichen
-                        die das Ende markieren i.d.F, ^c: c=A..Z,[,\,] oder $xx
+                        die das Ende markieren i.d.F, ^c: c=A..Z,[,\,] oder $xx oder ASCII Zeichen
     A:n[:m],d1,d2   Antwort empfangen. Mit Anzahl oder Steuerzeichen wie bei W:
     ;               Kommentar
     P:m             Pause. m = Zeit in ms

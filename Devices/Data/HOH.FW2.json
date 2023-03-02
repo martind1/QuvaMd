@@ -3,7 +3,7 @@
   "Code": "HOH.FW2",
   "Name": "Test Tecri FawaWs",
   "Roles": 0,
-  "ParamString": "TECRI:12002",
+  "ParamString": "SH-PR-W005:12002",
   "DeviceType": "Scale",
   "ModulCode": "FAWAWS",
   "Transport": "Truck",

@@ -15,11 +15,11 @@ namespace Devices.Data
 {
     public class DataService
     {
-        private MapperConfiguration mapperConfiguration;
+        //private readonly MapperConfiguration mapperConfiguration;
 
         public DataService()
         {
-            mapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Device, ComDevice>());
+            //mapperConfiguration = new MapperConfiguration(cfg => cfg.CreateMap<Device, ComDevice>());
         }
 
         public async Task<Device> GetDevice(string code)
@@ -31,6 +31,7 @@ namespace Devices.Data
             return await Task.FromResult(device);
         }
 
+        //Test: JSON erzeugen
         public void TestDevice()
         {
             var device = new Device()

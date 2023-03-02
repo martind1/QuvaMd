@@ -33,9 +33,9 @@ namespace Quva.Devices
 
             // Service aufrufen:
             var testsvc = new TestDeviceService(host.Services);
-            //Task T = testsvc.Test();
-            //T.Wait();  //warten bis Task beendet
-            testsvc.Test2();
+            Task T = testsvc.Test1();
+            T.Wait();  //warten bis Task beendet
+            //testsvc.Test2();
         }
 
 
@@ -54,6 +54,7 @@ namespace Quva.Devices
 
         public void Test2()
         {
+            Log.Information($"testsvc.Test2");
             ScaleData d1;
             ScaleData d2;
             int registerTrigger = 10;
@@ -72,19 +73,23 @@ namespace Quva.Devices
             } while (d1.Weight != 99);
         }
 
-        //public async Task Test(CancellationToken arg)
-        public async Task Test()
+        public async Task Test1()
         {
-            Log.Information($"testsvc.Test");
+            Log.Information($"testsvc.Test1");
 
             //var data1 = await svc.ScaleStatus("HOH.FW1");
             //Log.Information($"Status Err:{data1.ErrorNr} Display:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
 
-            //var data2 = await svc.ScaleStatus("HOH.FW2");
-            //Log.Information($"Status Err:{data2.ErrorNr} Display:{data2.Display} Weight:{data2.Weight} Unit:{data2.Unit}");
+            var data2 = await svc.ScaleStatus("HOH.FW2");
+            Log.Information($"Status Err:{data2.ErrorNr} Display:{data2.Display} Weight:{data2.Weight} Unit:{data2.Unit}");
 
             //var data12 = await svc.ScaleRegister("HOH.FW1");
             //Log.Information($"Register Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
+        }
+
+        public async Task Test3()
+        {
+            Log.Information($"testsvc.Test3");
 
             var T1 = svc.ScaleStatus("HOH.FW1");
 
@@ -97,11 +102,11 @@ namespace Quva.Devices
 
             var data1 = await T1;
             Log.Information($"Status 1 Err:{data1.ErrorNr} Display:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
-            var data2 = await T2; 
+            var data2 = await T2;
             Log.Information($"Status 2 Err:{data2.ErrorNr} Display:{data2.Display} Weight:{data2.Weight} Unit:{data2.Unit}");
-            var data12 = await T12; 
+            var data12 = await T12;
             Log.Information($"Register 1 Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
-            await svc.DisposeAsync(); 
+            await svc.DisposeAsync();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Quva.Devices
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            CLog.Warning($"DisposeAsyncCore({disposeFlag})");
+            CLog.Information($"{nameof(DeviceService)}.DisposeAsyncCore({disposeFlag})");
             if (disposeFlag)
             {
                 foreach (ComDevice d in DeviceList.Values)
@@ -38,7 +38,7 @@ namespace Quva.Devices
 
         public async ValueTask DisposeAsync()
         {
-            CLog.Warning($"DisposeAsync()");
+            CLog.Information($"{nameof(DeviceService)}.DisposeAsync()");
             await DisposeAsyncCore().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
@@ -113,7 +113,7 @@ namespace Quva.Devices
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
-                CLog.Warning($"[{devicecode}] OpenDevice: bereits vorhanden");
+                CLog.Information($"[{devicecode}] OpenDevice: bereits vorhanden");
             }
             else
             {

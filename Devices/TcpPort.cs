@@ -94,20 +94,29 @@ namespace Quva.Devices
             }
             CLog.Information($"[{DeviceCode}] TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
             ipHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
-            //ipAddress = ipHostEntry.AddressList[0];
             // only IPV4:
             ipAddress = ipHostEntry.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) 
                 ?? ipHostEntry.AddressList[0];
             ipEndPoint = new IPEndPoint(ipAddress, TcpParameter.Port);
 
-            if (TcpParameter.Remote == Remote.Host) 
-                throw new NotImplementedException($"TCP({TcpParameter.ParamString}): Remote.Host");
-
-            tcpClient = new TcpClient();
-            try
+            if (TcpParameter.Remote == Remote.Host)
             {
+                CLog.Debug($"[{DeviceCode}] Listen {TcpParameter.Port}");
+                tcpServer = new TcpListener(IPAddress.Any, TcpParameter.Port);  //auf allen lokalen IPAdressen
+                tcpServer.Start();
+                tcpClient = await tcpServer.AcceptTcpClientAsync();
+                CLog.Debug($"[{DeviceCode}] AcceptAsync EndPoint:{tcpClient.Client.RemoteEndPoint}");
+            }
+            else
+            {
+                tcpClient = new TcpClient();
                 CLog.Debug($"[{DeviceCode}] ConnectAsync EndPoint:{ipEndPoint} - {ipAddress.AddressFamily}");
                 await tcpClient.ConnectAsync(ipEndPoint);
+            }
+
+
+            try
+            {
                 stream = tcpClient.GetStream();
                 if (ComParameter.TimeoutMs == 0)
                     ComParameter.TimeoutMs = 10000;  //overwritable in Desc. Bevore: Timeout.Infinite;
@@ -131,9 +140,6 @@ namespace Quva.Devices
             }
             CLog.Debug($"[{DeviceCode}] TCP({TcpParameter.ParamString}): CloseAsync");
 
-            if (TcpParameter.Remote == Remote.Host)
-                throw new NotImplementedException($"TCP({TcpParameter.ParamString}): Remote.Host");
-
             try
             {
                 await Task.Run(() => { tcpClient?.Close(); });
@@ -142,6 +148,17 @@ namespace Quva.Devices
             {
                 tcpClient = null;
                 stream = null;
+            }
+            if (TcpParameter.Remote == Remote.Host)
+            {
+                try
+                {
+                    await Task.Run(() => { tcpServer?.Stop(); });
+                }
+                finally
+                {
+                    tcpServer = null;
+                }
             }
         }
 
@@ -181,7 +198,10 @@ namespace Quva.Devices
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
                 CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ offs:{offset} len:{inBuff.Buff.Length - inBuff.Cnt}");
                 Task<int> readTask = tcpClient.GetStream().ReadAsync(inBuff.Buff, offset, inBuff.Buff.Length - inBuff.Cnt);
-                await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
+                if (ComParameter.TimeoutMs > 0)
+                    await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
+                else
+                    await readTask;  //ohne timeout
                 if (!readTask.IsCompleted)
                 {
                     try
@@ -201,6 +221,12 @@ namespace Quva.Devices
                     int n = await readTask;
                     inBuff.Cnt += n;
                     CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ {inBuff.DebugString(offset)}");
+                    if (n == 0)
+                    {
+                        //reading zero bytes - blog.stephencleary.com/2009/06/using-socket-as-connected-socket.html
+                        CLog.Warning($"[{DeviceCode}] [{ipEndPoint}] Read 0bytes. Close tcpClient:");
+                        tcpClient.Close();
+                    }
                 }
             }
             // move from internal buffer[0..] to buffer[0..]; shift internal buffer
