@@ -17,7 +17,7 @@ public interface IComPort : IAsyncDisposable
     Task CloseAsync();
     Task ResetAsync();
 
-    Task<int> InCountAsync();
+    Task<int> InCountAsync(int WaitMs);
     Task<int> ReadAsync(ByteBuff buffer);  //Buff+Len
 
     Task<bool> WriteAsync(ByteBuff buffer);
@@ -35,6 +35,7 @@ public interface IComPort : IAsyncDisposable
 public class ComParameter
 {
     public int TimeoutMs { get; set; }
+    public int Timeout2Ms { get; set; }  //between characters in input stream
     public bool DoubleDle { get; set; }
     public bool Echo { get; set; }
 }

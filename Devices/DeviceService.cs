@@ -44,6 +44,38 @@ namespace Quva.Devices
             GC.SuppressFinalize(this);
         }
 
+        #region Card
+
+        public async Task<CardData> CardRead(string devicecode)
+        {
+            return await CardCommand(devicecode, CardCommands.Read.ToString());
+        }
+
+        // bevorzugter Rückgabewert: struct ScaleData
+        public async Task<CardData> CardCommand(string devicecode, string command)
+        {
+            CardData result;
+            ComDevice? device = null;
+            try
+            {
+                device = await OpenDevice(devicecode);
+                result = await device.CardCommand(command);
+            }
+            catch (Exception ex)
+            {
+                if (device != null)
+                    await device.Close().ConfigureAwait(false);
+                result = new CardData(devicecode, command)
+                {
+                    ErrorNr = 99,
+                    ErrorText = ex.Message,
+                };
+            }
+            return await Task.FromResult(result);
+        }
+
+        #endregion Card
+
         #region Scale
 
         public async Task<ScaleData> ScaleStatus(string devicecode)

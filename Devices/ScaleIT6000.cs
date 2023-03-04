@@ -12,11 +12,11 @@ namespace Quva.Devices
     /// <summary>
     /// IT6000, IT9000 scale device api
     /// </summary>
-    public class IT6000Api : ComProtocol, IScaleApi
+    public class ScaleIT6000 : ComProtocol, IScaleApi
     {
         private readonly ComDevice device;
 
-        public IT6000Api(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
+        public ScaleIT6000(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
         {
             this.device = device;
 
@@ -65,19 +65,16 @@ namespace Quva.Devices
         public async Task<ScaleData> Status()
         {
             statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
-            var tel = await RunTelegram(statusData, "<RM>");
-            //return await Task.FromResult(statusData)
-            ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Status));
-            return await Task.FromResult((ScaleData)tel.AppData);
+            _ = await RunTelegram(statusData, "<RM>");
+            return await Task.FromResult(statusData);
 
         }
 
         public async Task<ScaleData> Register()
         {
             registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
-            var tel = await RunTelegram(registerData, "<RN>");
-            ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Register));
-            return await Task.FromResult((ScaleData)tel.AppData);
+            _ = await RunTelegram(registerData, "<RN>");
+            return await Task.FromResult(registerData);
         }
 
         #endregion

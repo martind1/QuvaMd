@@ -14,11 +14,11 @@ namespace Quva.Devices
     /// <summary>
     /// Api for Winsocket ComSvr general truck scale
     /// </summary>
-    public class FawaWsApi : ComProtocol, IScaleApi
+    public class ScaleFawaWs : ComProtocol, IScaleApi
     {
         private readonly ComDevice device;
 
-        public FawaWsApi(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
+        public ScaleFawaWs(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
         {
             this.device = device;
 
@@ -69,8 +69,6 @@ namespace Quva.Devices
         {
             statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
             var tel = await RunTelegram(statusData, "Holestatus=?");
-            ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Status));
-            statusData = (ScaleData)tel.AppData;
             if (tel.Error != 0)
             {
                 statusData.ErrorNr = 99;
@@ -85,8 +83,6 @@ namespace Quva.Devices
         {
             registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
             var tel = await RunTelegram(registerData, "ProtGewicht=?");
-            ArgumentNullException.ThrowIfNull(tel.AppData, nameof(Register));
-            registerData = (ScaleData)tel.AppData;
             if (tel.Error != 0)
             {
                 registerData.ErrorNr = 99;
@@ -106,30 +102,31 @@ namespace Quva.Devices
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(FawaWsAnswer));
             ScaleData data = (ScaleData)tel.AppData;
             var rnd = new Random();
+            var inBuff = tel.InData;
+            string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
             if (data.Command == ScaleCommands.Status.ToString())
             {
-                var inBuff = tel.InData;  //HoleStatus=<StatusStr>;<GewichtStr>;<Meldung>
-                string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
                 CLog.Debug($"[{DeviceCode}] FawaWsAnswer.Status:{inStr}");
+                //HoleStatus=StatusStr;GewichtStr;Meldung
                 int p = inStr.IndexOf('=');
                 var sl = inStr[(p + 1)..].Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 string StatusStr = sl[0];
                 string GewichtStr = sl[1];
                 string Meldung = sl[2];
-                int StatusNo = int.Parse(StatusStr);
+                int StatusNr = int.Parse(StatusStr);
                 ScaleStatus Status = 0;
 
                 data.Weight = float.Parse(GewichtStr, new CultureInfo("de-DE"));  //Dezimalkomma!
                 data.Unit = ScaleUnit.Ton;
                 data.CalibrationNumber = 0;
-                if (StatusNo == 0 || StatusNo == 1 || StatusNo == 2 || StatusNo == 5)
+                if (StatusNr == 0 || StatusNr == 1 || StatusNr == 2 || StatusNr == 5)
                 {
                     Status |= ScaleStatus.WeightOK;
-                    if (StatusNo == 1 || StatusNo == 5)
+                    if (StatusNr == 1 || StatusNr == 5)
                     {
                         Status |= ScaleStatus.Underload;
                     }
-                    if (StatusNo == 2)
+                    if (StatusNr == 2)
                     {
                         Status |= ScaleStatus.NoStandstill;
                     }
@@ -146,35 +143,34 @@ namespace Quva.Devices
 
             else if (data.Command == ScaleCommands.Register.ToString())
             {
-                var inBuff = tel.InData;  //ProtGewicht=<StatusStr>;<GewichtStr>;<EichNrStr>;<Meldung>
-                string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
-                CLog.Debug($"[{DeviceCode}] FawaWsAnswer.Register:{inStr}"); 
+                CLog.Debug($"[{DeviceCode}] FawaWsAnswer.Register:{inStr}");
+                //ProtGewicht=StatusStr;GewichtStr;EichNrStr;Meldung
                 int p = inStr.IndexOf('=');
                 var sl = inStr[(p + 1)..].Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 string StatusStr = sl[0];
                 string GewichtStr = sl[1];
                 string EichNrStr = sl[2];
                 string Meldung = sl[3];
-                int StatusNo = int.Parse(StatusStr);
+                int StatusNr = int.Parse(StatusStr);
                 ScaleStatus Status = 0;
 
                 data.Weight = float.Parse(GewichtStr, new CultureInfo("de-DE"));  //Dezimalkomma!
                 data.Unit = ScaleUnit.Ton;
                 data.CalibrationNumber = int.Parse(EichNrStr);
-                if (StatusNo == 0)
+                if (StatusNr == 0)
                 {
                     Status |= ScaleStatus.WeightOK;
                     data.Display = $"<{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}>";
                 }
                 else
                 {
-                    data.Display = Meldung ?? $"Error {StatusNo}";
+                    data.Display = Meldung ?? $"Error {StatusNr}";
                     Status |= ScaleStatus.WeightOK;
-                    if (StatusNo == 1 || StatusNo == 5)
+                    if (StatusNr == 1 || StatusNr == 5)
                     {
                         Status |= ScaleStatus.Underload;
                     }
-                    if (StatusNo == 2)
+                    if (StatusNr == 2)
                     {
                         Status |= ScaleStatus.PositionError;
                     }

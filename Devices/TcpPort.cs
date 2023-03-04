@@ -34,18 +34,19 @@ namespace Quva.Devices
             outBuff = new(4096);
         }
 
-    protected virtual async ValueTask DisposeAsyncCore()
+        protected virtual async ValueTask DisposeAsyncCore()
         {
             CLog.Warning($"[{DeviceCode}] {nameof(TcpPort)}.DisposeAsyncCore({tcpClient != null})");
-            if (tcpClient != null)
-            {
-                await Task.Run(() => { tcpClient.Dispose(); });
-            }
-            tcpClient = null;
-            if (tcpServer != null)
-            {
-                await Task.Run(() => { tcpServer.Stop(); });
-            }
+            //if (tcpClient != null)
+            //{
+            //    await Task.Run(() => { tcpClient.Dispose(); });
+            //}
+            //tcpClient = null;
+            //if (tcpServer != null)
+            //{
+            //    await Task.Run(() => { tcpServer.Stop(); });
+            //}
+            await CloseAsync();
             tcpServer = null;
         }
 
@@ -95,17 +96,18 @@ namespace Quva.Devices
             CLog.Information($"[{DeviceCode}] TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
             ipHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
             // only IPV4:
-            ipAddress = ipHostEntry.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork) 
+            ipAddress = ipHostEntry.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
                 ?? ipHostEntry.AddressList[0];
             ipEndPoint = new IPEndPoint(ipAddress, TcpParameter.Port);
 
             if (TcpParameter.Remote == Remote.Host)
             {
                 CLog.Debug($"[{DeviceCode}] Listen {TcpParameter.Port}");
-                tcpServer = new TcpListener(IPAddress.Any, TcpParameter.Port);  //auf allen lokalen IPAdressen
-                tcpServer.Start();
+                tcpServer ??= new TcpListener(IPAddress.Any, TcpParameter.Port);  //on all local IPV4 addresses
+                tcpServer.Start(1);  //only 1 connection. No problem when already active
                 tcpClient = await tcpServer.AcceptTcpClientAsync();
                 CLog.Debug($"[{DeviceCode}] AcceptAsync EndPoint:{tcpClient.Client.RemoteEndPoint}");
+                tcpServer.Stop();  //no more listen
             }
             else
             {
@@ -122,7 +124,8 @@ namespace Quva.Devices
                     ComParameter.TimeoutMs = 10000;  //overwritable in Desc. Bevore: Timeout.Infinite;
                 stream.ReadTimeout = ComParameter.TimeoutMs;
                 stream.WriteTimeout = ComParameter.TimeoutMs;
-
+                if (ComParameter.Timeout2Ms == 0)
+                    ComParameter.Timeout2Ms = 500;  //overwritable in Desc (T2:500)
             }
             catch
             {
@@ -140,26 +143,29 @@ namespace Quva.Devices
             }
             CLog.Debug($"[{DeviceCode}] TCP({TcpParameter.ParamString}): CloseAsync");
 
-            try
-            {
-                await Task.Run(() => { tcpClient?.Close(); });
-            }
-            finally
-            {
-                tcpClient = null;
-                stream = null;
-            }
-            if (TcpParameter.Remote == Remote.Host)
+            if (tcpClient != null)
             {
                 try
                 {
-                    await Task.Run(() => { tcpServer?.Stop(); });
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            tcpClient.Client.Shutdown(SocketShutdown.Both);
+                        }
+                        finally
+                        {
+                            tcpClient.Close();
+                        }
+                    });
                 }
                 finally
                 {
-                    tcpServer = null;
+                    tcpClient = null;
+                    stream = null;
                 }
             }
+            //tcpServer remains (is stopped). see dispose
         }
 
         #region input/output
@@ -171,17 +177,38 @@ namespace Quva.Devices
             await OpenAsync();
         }
 
-        //muss vor Read aufgerufen werden. Ruft Flush auf.
-        public async Task<int> InCountAsync()
+        private static bool ClientIsConnected(Socket socket)
         {
+            return !socket.Poll(1000, SelectMode.SelectRead) || socket.Available > 0;
+        }
+
+        //muss vor Read aufgerufen werden. Ruft Flush auf.
+        public async Task<int> InCountAsync(int WaitMs)
+        {
+            int waitedMs = 0;
             await FlushAsync();
             ArgumentNullException.ThrowIfNull(tcpClient);
-            if (tcpClient.Available > 0)
+            while (true)
             {
-                int offset = inBuff.Cnt;
-                int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff.AsMemory(offset, inBuff.Buff.Length - inBuff.Cnt));
-                inBuff.Cnt += n;
-                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ {inBuff.DebugString(offset)}");
+                if (tcpClient.Available > 0)
+                {
+                    int offset = inBuff.Cnt;
+                    int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff.AsMemory(offset, inBuff.Buff.Length - inBuff.Cnt));
+                    inBuff.Cnt += n;
+                    CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] AVAIL \'{inBuff.DebugString(offset)}\'");
+                    break;
+                }
+                if (!ClientIsConnected(tcpClient.Client))
+                {
+                    await CloseAsync();
+                    break;
+                }
+                if (WaitMs == 0)
+                    break;
+                if (waitedMs >= WaitMs)
+                    break;
+                waitedMs += 100;
+                await Task.Delay(100);
             }
             return await Task.FromResult(inBuff.Cnt);
         }
@@ -196,7 +223,7 @@ namespace Quva.Devices
                 int offset = inBuff.Cnt;
                 await FlushAsync();
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
-                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ offs:{offset} len:{inBuff.Buff.Length - inBuff.Cnt}");
+                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ offs:{offset} len:{inBuff.Buff.Length - inBuff.Cnt} timeout:{ComParameter.TimeoutMs}");
                 Task<int> readTask = tcpClient.GetStream().ReadAsync(inBuff.Buff, offset, inBuff.Buff.Length - inBuff.Cnt);
                 if (ComParameter.TimeoutMs > 0)
                     await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
@@ -208,7 +235,7 @@ namespace Quva.Devices
                     {
                         //beware! int n = await readTask;
                         CLog.Warning($"[{DeviceCode}] [{ipEndPoint}] Read Timeout. Close tcpClient:");
-                        tcpClient.Close();
+                        await CloseAsync();
                     }
                     catch (Exception ex)
                     {
@@ -220,12 +247,12 @@ namespace Quva.Devices
                 {
                     int n = await readTask;
                     inBuff.Cnt += n;
-                    CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ {inBuff.DebugString(offset)}");
+                    CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] READ \'{inBuff.DebugString(offset)}\'");
                     if (n == 0)
                     {
                         //reading zero bytes - blog.stephencleary.com/2009/06/using-socket-as-connected-socket.html
                         CLog.Warning($"[{DeviceCode}] [{ipEndPoint}] Read 0bytes. Close tcpClient:");
-                        tcpClient.Close();
+                        await CloseAsync();
                     }
                 }
             }
@@ -245,7 +272,7 @@ namespace Quva.Devices
         {
             for (int i = 0; i < buffer.Cnt; i++)
             {
-              Bcc ^= buffer.Buff[i];
+                Bcc ^= buffer.Buff[i];
             }
             buffer.AppendTo(outBuff);
 
@@ -269,11 +296,14 @@ namespace Quva.Devices
         {
             if (outBuff.Cnt > 0)
             {
-                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] WRITE {outBuff.DebugString()}"); 
+                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] WRITE \'{outBuff.DebugString()}\'");
                 ArgumentNullException.ThrowIfNull(tcpClient, nameof(tcpClient));
                 Task writeTask = tcpClient.GetStream().WriteAsync(outBuff.Buff, 0, outBuff.Cnt);
                 outBuff.Cnt = 0;
-                await Task.WhenAny(writeTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
+                if (ComParameter.TimeoutMs > 0)
+                    await Task.WhenAny(writeTask, Task.Delay(ComParameter.TimeoutMs));  //<-- timeout
+                else
+                    await writeTask;  //ohne timeout
                 if (!writeTask.IsCompleted)
                 {
                     try

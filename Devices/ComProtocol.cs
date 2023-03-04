@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -113,7 +114,7 @@ public class ComProtocol : IAsyncDisposable
         dummydata.Cnt = 0;
         if (comPort != null)
         {
-            dummydata.Cnt = await ComPort.InCountAsync();
+            dummydata.Cnt = await ComPort.InCountAsync(0);
             if (dummydata.Cnt > 0)
                 await ComPort.ReadAsync(dummydata);
         }
@@ -136,14 +137,16 @@ public class ComProtocol : IAsyncDisposable
         // erstes Zeichen lesen mit timeout. Danach nur wenn InCount > 0.
         int n = await ComPort.ReadAsync(tmpBuff);
         tmpBuff.AppendTo(data);
-        if (n == 0 || n < minLen)
+        //if (n == 0 || n < minLen)
+        if (n == 0)
         {
             result = ReadDataResult.NoMinLen;
             return await Task.FromResult(result);
         }
         if (delim1 != 0)
             result = ReadDataResult.DelimiterMissing;
-        while (await ComPort.InCountAsync() > 0)
+        while (await ComPort.InCountAsync((result == ReadDataResult.DelimiterMissing || delim1 == 0) 
+            ? ComPort.ComParameter.Timeout2Ms : 0) > 0)
         {
             tmpBuff.Cnt = 1;
             await ComPort.ReadAsync(tmpBuff);
@@ -188,6 +191,8 @@ public class ComProtocol : IAsyncDisposable
         int nDelim = 0;
         int MaxLen = MaxDataLen;
         int MinLen = 0;
+        int RemainingMinLen;
+        //int OldTimeout;
         var slTok = descParam.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         try
         {
@@ -220,27 +225,39 @@ public class ComProtocol : IAsyncDisposable
 
         data.Cnt = 0;  //read from 0. Moves Cnt.
         ReadDataResult rdResult;
-        rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
-        //nochmal timeout lesen wenn mindestens 1 Zeichen gelesen und Len<minLen oder delimiter nicht erreicht
-        if (rdResult != ReadDataResult.OK && data.Cnt > 0 && (data.Cnt < MinLen || rdResult == ReadDataResult.DelimiterMissing))
+        RemainingMinLen = MinLen;
+        rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
+        /*
+        OldTimeout = ComPort.ComParameter.TimeoutMs;
+        ComPort.ComParameter.TimeoutMs = ComPort.ComParameter.Timeout2Ms;
+        try
         {
-            CLog.Warning($"[{DeviceCode}] Receive 2nd ReadData {data.Cnt}:");
-            MinLen = Math.Max(0, MinLen - data.Cnt);
-            rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
-        }
-        while (data.Cnt > 0 && data.Cnt < MaxLen && (delimiter[0] == 0 || rdResult == ReadDataResult.DelimiterMissing))
-        {
-            MinLen = 0;
-            //wait 100ms, then try receive next bunches of data when available
-            await Task.Delay(100);
-            if (await ComPort.InCountAsync() > 0)
+            //nochmal timeout2 lesen wenn mindestens 1 Zeichen gelesen und Len<minLen oder delimiter nicht erreicht
+            while (rdResult != ReadDataResult.OK && data.Cnt > 0 && (data.Cnt < MinLen || rdResult == ReadDataResult.DelimiterMissing))
             {
-                CLog.Warning($"[{DeviceCode}] Receive bunch ReadData {data.Cnt}:");
-                rdResult = await ReadDataAsync(data, MinLen, MaxLen, delimiter[0], delimiter[1]);
+                RemainingMinLen = Math.Max(0, MinLen - data.Cnt);
+                CLog.Warning($"[{DeviceCode}] Receive 2nd ReadData {data.Cnt}\\{RemainingMinLen}:");
+                rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
             }
-            else
-                break;
+            while (data.Cnt > 0 && data.Cnt < MaxLen && (delimiter[0] == 0 || rdResult == ReadDataResult.DelimiterMissing))
+            {
+                RemainingMinLen = 0;
+                //wait 500ms, then try receive next bunches of data when available
+                await Task.Delay(ComPort.ComParameter.Timeout2Ms);
+                if (await ComPort.InCountAsync() > 0)
+                {
+                    CLog.Warning($"[{DeviceCode}] Receive bunch ReadData {data.Cnt}:");
+                    rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
+                }
+                else
+                    break;
+            }
         }
+        finally
+        {
+            ComPort.ComParameter.TimeoutMs = OldTimeout;
+        }
+        */
         return await Task.FromResult(rdResult == ReadDataResult.OK);
     }
 
@@ -272,6 +289,7 @@ public class ComProtocol : IAsyncDisposable
             tel.Status = ComProtStatus.Error;
             tel.Error = ComProtError.Reset;
             tel.ErrorText = $"Error ComPort not connected";
+            CLog.Warning($"{tel.ErrorText}");
             return await Task.FromResult(tel);
         }
 
@@ -308,11 +326,15 @@ public class ComProtocol : IAsyncDisposable
             // answer data to tel.AppData
             DoAnswer(new TelEventArgs(tel));
         }
+        else
+        {
+            CLog.Warning($"RunTelegram [{tel.Error}] {tel.ErrorText}");
+        }
         return await Task.FromResult(tel);
     }
 
     /* *** Description: *** keine Leerzeichen! ***
-    L:              Host:Listen - warte bis Client verbunden
+    L:              Host:Listen - warte bis (Client verbunden und) Empfangsdaten anliegen
     T:m             m = TimeOut in ms (0 = infinity)
     C:              Block Check Character auf 0 zurücksetzen
     D:b             b: 1=DoubleDle, 0=no DoubleDle
@@ -334,6 +356,16 @@ public class ComProtocol : IAsyncDisposable
         if (descCmd == "T")  //T:m
         {
             ComPort.ComParameter.TimeoutMs = int.Parse(descParam);
+        }
+        else if (descCmd == "L")  //L:
+        {
+            await Task.Run(async () =>
+            {
+                while (await ComPort.InCountAsync(0) == 0)
+                {
+                    await Task.Delay(1000);
+                }
+            });
         }
         else if (descCmd == "C")  //C:
         {

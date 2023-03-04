@@ -52,6 +52,23 @@ namespace Quva.Devices
             svc = provider.GetRequiredService<DeviceService>();
         }
 
+        public async Task Test1()
+        {
+            Log.Information($"testsvc.Test1");
+
+            //var data1 = await svc.ScaleStatus("HOH.FW1");
+            //Log.Information($"Status Err:{data1.ErrorNr} Display:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
+
+            //var data2 = await svc.ScaleStatus("HOH.FW2");
+            //Log.Information($"Status Err:{data2.ErrorNr} Display:{data2.Display} Weight:{data2.Weight} Unit:{data2.Unit}");
+
+            //var data12 = await svc.ScaleRegister("HOH.FW1");
+            //Log.Information($"Register Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
+
+            var data3 = await svc.CardRead("HOH.TRANSP1");
+            Log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
+        }
+
         public void Test2()
         {
             Log.Information($"testsvc.Test2");
@@ -71,20 +88,6 @@ namespace Quva.Devices
                     Console.Write($"\r\n{d2.Display}\r\n");
                 }
             } while (d1.Weight != 99);
-        }
-
-        public async Task Test1()
-        {
-            Log.Information($"testsvc.Test1");
-
-            //var data1 = await svc.ScaleStatus("HOH.FW1");
-            //Log.Information($"Status Err:{data1.ErrorNr} Display:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
-
-            var data2 = await svc.ScaleStatus("HOH.FW2");
-            Log.Information($"Status Err:{data2.ErrorNr} Display:{data2.Display} Weight:{data2.Weight} Unit:{data2.Unit}");
-
-            //var data12 = await svc.ScaleRegister("HOH.FW1");
-            //Log.Information($"Register Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
         }
 
         public async Task Test3()

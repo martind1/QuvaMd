@@ -22,6 +22,9 @@
     <None Update="Data\HOH.FW2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\HOH.TRANSP1.JSON">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

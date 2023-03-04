@@ -19,6 +19,7 @@ public class ComDevice
     // work items:
     public IComPort? ComPort { get; set; }
     public IScaleApi? ScaleApi { get; set; }
+    public ICardApi? CardApi { get; set; }
 
 
     public ComDevice()
@@ -71,8 +72,16 @@ public class ComDevice
         {
             ScaleApi = Device.ModulCode switch
             {
-                "IT6000" => new IT6000Api(Code, this),
-                "FAWAWS" => new FawaWsApi(Code, this),
+                "IT6000" => new ScaleIT6000(Code, this),
+                "FAWAWS" => new ScaleFawaWs(Code, this),
+                _ => throw new NotImplementedException($"Modulcode {Device.ModulCode}")
+            };
+        }
+        if (device.DeviceType == DeviceType.Card)
+        {
+            CardApi = Device.ModulCode switch
+            {
+                "READER" => new CardReader(Code, this),
                 _ => throw new NotImplementedException($"Modulcode {Device.ModulCode}")
             };
         }
@@ -136,4 +145,23 @@ public class ComDevice
         return await Task.FromResult(result);
     }
 
+    public async Task<CardData> CardCommand(string command)
+    {
+        CardData result;
+        CLog.Debug($"[{Code}] WAIT Device.CardCommand({command})");
+        // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
+        await slim.WaitAsync();
+        try
+        {
+            CLog.Information($"[{Code}] START Device.CardCommand({command})");
+            ArgumentNullException.ThrowIfNull(CardApi);
+            result = await CardApi.CardCommand(command);
+            CLog.Debug($"[{Code}] END Device.CardCommand({command})");
+        }
+        finally
+        {
+            slim.Release();
+        }
+        return await Task.FromResult(result);
+    }
 }
