@@ -11,7 +11,6 @@ public interface ICardApi
 {
     public Task<CardData> CardCommand(string command);
 
-    public event EventHandler<CardDataArgs>? OnCommandAnswer;
 }
 
 public class CardDataArgs : EventArgs

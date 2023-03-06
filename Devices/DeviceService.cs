@@ -6,6 +6,8 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Serilog;
+using Microsoft.AspNetCore.Http;
+using static Quva.Devices.ComDevice;
 
 namespace Quva.Devices
 {
@@ -74,6 +76,34 @@ namespace Quva.Devices
             return await Task.FromResult(result);
         }
 
+        //with callback:
+
+        public async Task<IResult> CardReadStart(string devicecode, ComDevice.OnCardRead onCardRead)
+        {
+            return await CardCommandStart(devicecode, CardCommands.Read.ToString(), onCardRead);
+        }
+
+        public async Task<IResult> CardCommandStart(string devicecode, string command, ComDevice.OnCardRead onCardRead)
+        {
+            ComDevice? device = null;
+            IResult? result;
+            try
+            {
+                result = Results.Ok();
+                device = await OpenDevice(devicecode);
+                device.CardCommandStart(command, onCardRead);
+            }
+            catch (Exception ex)
+            {
+                result = Results.NotFound(ex.Message);
+                if (device != null)
+                    await device.Close().ConfigureAwait(false);
+            }
+            return await Task.FromResult(result);
+        }
+
+
+
         #endregion Card
 
         #region Scale
@@ -108,6 +138,27 @@ namespace Quva.Devices
                     ErrorText = ex.Message,
                     Display = ex.Message
                 };
+            }
+            return await Task.FromResult(result);
+        }
+
+        // with callback:
+
+        public async Task<IResult> ScaleStatusStart(string devicecode, ComDevice.OnScaleStatus onScaleStatus)
+        {
+            ComDevice? device = null;
+            IResult? result;
+            try
+            {
+                result = Results.Ok();
+                device = await OpenDevice(devicecode);
+                device.ScaleCommandStart(ScaleCommands.Status.ToString(), onScaleStatus);
+            }
+            catch (Exception ex)
+            {
+                result = Results.NotFound(ex.Message);
+                if (device != null)
+                    await device.Close().ConfigureAwait(false);
             }
             return await Task.FromResult(result);
         }
@@ -161,12 +212,12 @@ namespace Quva.Devices
             return await Task.FromResult(device);
         }
 
-        private async Task CloseDevice(ComDevice device)
+        public async Task CloseDevice(ComDevice device)
         {
             await CloseDevice(device.Code);
         }
 
-        private async Task CloseDevice(string devicecode)
+        public async Task CloseDevice(string devicecode)
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {

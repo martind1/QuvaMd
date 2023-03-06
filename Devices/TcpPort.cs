@@ -105,7 +105,7 @@ namespace Quva.Devices
                 CLog.Debug($"[{DeviceCode}] Listen {TcpParameter.Port}");
                 tcpServer ??= new TcpListener(IPAddress.Any, TcpParameter.Port);  //on all local IPV4 addresses
                 tcpServer.Start(1);  //only 1 connection. No problem when already active
-                tcpClient = await tcpServer.AcceptTcpClientAsync();
+                tcpClient = await tcpServer.AcceptTcpClientAsync();  //waiting until connected
                 CLog.Debug($"[{DeviceCode}] AcceptAsync EndPoint:{tcpClient.Client.RemoteEndPoint}");
                 tcpServer.Stop();  //no more listen
             }
@@ -141,8 +141,7 @@ namespace Quva.Devices
                 CLog.Warning($"[{DeviceCode}] TCP({TcpParameter.ParamString}): allready closed");
                 return;
             }
-            CLog.Debug($"[{DeviceCode}] TCP({TcpParameter.ParamString}): CloseAsync");
-
+            CLog.Debug($"[{DeviceCode}] TCP({TcpParameter.ParamString}): CloseAsync({tcpClient != null})");
             if (tcpClient != null)
             {
                 try
@@ -185,6 +184,10 @@ namespace Quva.Devices
         //muss vor Read aufgerufen werden. Ruft Flush auf.
         public async Task<int> InCountAsync(int WaitMs)
         {
+            if (inBuff.Cnt > 0)
+            {
+                return inBuff.Cnt;
+            }
             int waitedMs = 0;
             await FlushAsync();
             ArgumentNullException.ThrowIfNull(tcpClient);
@@ -195,7 +198,7 @@ namespace Quva.Devices
                     int offset = inBuff.Cnt;
                     int n = await tcpClient.GetStream().ReadAsync(inBuff.Buff.AsMemory(offset, inBuff.Buff.Length - inBuff.Cnt));
                     inBuff.Cnt += n;
-                    CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] AVAIL \'{inBuff.DebugString(offset)}\'");
+                    CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] AVAIL({WaitMs}) \'{inBuff.DebugString(offset)}\'");
                     break;
                 }
                 if (!ClientIsConnected(tcpClient.Client))
@@ -208,6 +211,7 @@ namespace Quva.Devices
                 if (waitedMs >= WaitMs)
                     break;
                 waitedMs += 100;
+                CLog.Debug($"[{DeviceCode}] [{ipEndPoint}] AVAIL delay(100/{waitedMs})");
                 await Task.Delay(100);
             }
             return await Task.FromResult(inBuff.Cnt);

@@ -33,11 +33,13 @@ public class ComDevice
     public virtual async Task Open()
     {
         // ComPort öffnen
-        CLog.Information($"[{Code}] ComDevice.Open:");
-        if (ComPort == null) 
-            throw new NullReferenceException(nameof(ComPort));
+        if (ComPort == null)
+        {
+            throw new NullReferenceException("ComPort is null");
+        }
         if (!ComPort.IsConnected())
         {
+            CLog.Information($"[{Code}] ComDevice.Open:");
             await ComPort.OpenAsync();
             CLog.Information($"[{Code}] ComDevice.Open OK");
         }
@@ -46,11 +48,16 @@ public class ComDevice
     public virtual async Task Close()
     {
         // Dispose ComPort 
-        CLog.Information($"[{Code}] ComDevice.Close:");
+        CLog.Information($"[{Code}] ComDevice.Close({ComPort != null},{ComPort?.IsConnected()}):");
         if (ComPort != null && ComPort.IsConnected())
         {
             await ComPort.CloseAsync();
             CLog.Information($"[{Code}] ComDevice.Close OK");
+        }
+        if (timerAsync != null)
+        {
+            timerAsync.Dispose();
+            timerAsync = null;
         }
     }
 
@@ -163,5 +170,79 @@ public class ComDevice
             slim.Release();
         }
         return await Task.FromResult(result);
+    }
+
+
+    private TimerAsync? timerAsync;
+    private string timerCommand = string.Empty;
+
+    public delegate void OnCardRead(CardData cardData);
+    public OnCardRead? onCardRead { get; set; }
+
+    public void CardCommandStart(string command, OnCardRead onCardRead)
+    {
+        CLog.Debug($"[{Code}] CALLBACK Device.CardCommandStart({command})");
+        ArgumentNullException.ThrowIfNull(CardApi);
+        this.onCardRead = onCardRead;
+        timerCommand = command;
+        timerAsync = new TimerAsync(OnCardCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+    }
+
+    private async Task OnCardCommand(CancellationToken arg)
+    {
+        CardData result;
+        CLog.Debug($"[{Code}] OnCardCommand({timerCommand})");
+        try
+        {
+            await Open();
+            result = await CardCommand(timerCommand);
+        }
+        catch (Exception ex)
+        {
+            CLog.Warning($"[{Code}] Fehler OnCardCommand({ex.Message})");
+            await Close().ConfigureAwait(false);
+            result = new CardData(Code, timerCommand)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message,
+            };
+        }
+        ArgumentNullException.ThrowIfNull(onCardRead);
+        onCardRead(result);
+    }
+
+    public delegate void OnScaleStatus(ScaleData scaleData);
+    public OnScaleStatus? onScaleStatus { get; set; }
+
+    public void ScaleCommandStart(string command, OnScaleStatus onScaleStatus)
+    {
+        CLog.Debug($"[{Code}] CALLBACK Device.ScaleCommandStart({command})");
+        ArgumentNullException.ThrowIfNull(ScaleApi);
+        this.onScaleStatus = onScaleStatus;
+        timerCommand = command;
+        timerAsync = new TimerAsync(OnScaleCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+    }
+
+    private async Task OnScaleCommand(CancellationToken arg)
+    {
+        ScaleData result;
+        CLog.Debug($"[{Code}] OnScaleCommand({timerCommand})");
+        try
+        {
+            await Open();
+            result = await ScaleCommand(timerCommand);
+        }
+        catch (Exception ex)
+        {
+            CLog.Warning($"[{Code}] Fehler OnScaleCommand({ex.Message})");
+            await Close().ConfigureAwait(false);
+            result = new ScaleData(Code, timerCommand)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message,
+            };
+        }
+        ArgumentNullException.ThrowIfNull(onScaleStatus);
+        onScaleStatus(result);
     }
 }

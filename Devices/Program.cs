@@ -33,9 +33,10 @@ namespace Quva.Devices
 
             // Service aufrufen:
             var testsvc = new TestDeviceService(host.Services);
-            Task T = testsvc.Test1();
+            Task T = testsvc.Test5();
             T.Wait();  //warten bis Task beendet
             //testsvc.Test2();
+            Console.ReadKey();  //warten auf Taste
         }
 
 
@@ -52,6 +53,10 @@ namespace Quva.Devices
             svc = provider.GetRequiredService<DeviceService>();
         }
 
+        /// <summary>
+        /// klassischer async Befehl Waage
+        /// </summary>
+        /// <returns></returns>
         public async Task Test1()
         {
             Log.Information($"testsvc.Test1");
@@ -69,6 +74,9 @@ namespace Quva.Devices
             Log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
         }
 
+        /// <summary>
+        /// Dauerschleife: Status, wenn 10++t dann Register
+        /// </summary>
         public void Test2()
         {
             Log.Information($"testsvc.Test2");
@@ -90,6 +98,9 @@ namespace Quva.Devices
             } while (d1.Weight != 99);
         }
 
+        /// <summary>
+        /// mehrere async Tasks starten und später beenden
+        /// </summary>
         public async Task Test3()
         {
             Log.Information($"testsvc.Test3");
@@ -110,6 +121,46 @@ namespace Quva.Devices
             var data12 = await T12;
             Log.Information($"Register 1 Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
             await svc.DisposeAsync();
+        }
+
+        /// <summary>
+        /// Callback Card async Test
+        /// </summary>
+        public async Task Test4()
+        {
+            Log.Information($"testsvc.Test4");
+            var result = await svc.CardReadStart("HOH.TRANSP1", MyCardRead);
+            Log.Information($"testsvc.Test4 Started");
+        }
+
+        private void MyCardRead(CardData cardData)
+        {
+            Log.Information($"### CardRead {cardData.CardNumber} ###");
+            if (cardData.CardNumber == "q")
+            {
+                _ = svc.CloseDevice(cardData.DeviceCode);
+            }
+
+        }
+
+        /// <summary>
+        /// Callback Scale async Test
+        /// </summary>
+        public async Task Test5()
+        {
+            Log.Information($"testsvc.Test5");
+            var result = await svc.ScaleStatusStart("HOH.FW1", MyScaleStatus);
+            Log.Information($"testsvc.Test5 Started");
+        }
+
+        private void MyScaleStatus(ScaleData scaleData)
+        {
+            Log.Error($"### ScaleStatus {scaleData.Display} ###");
+            if (scaleData.Weight == 5)
+            {
+                _ = svc.CloseDevice(scaleData.DeviceCode);
+            }
+
         }
     }
 }

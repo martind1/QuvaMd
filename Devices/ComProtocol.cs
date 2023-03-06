@@ -289,7 +289,7 @@ public class ComProtocol : IAsyncDisposable
             tel.Status = ComProtStatus.Error;
             tel.Error = ComProtError.Reset;
             tel.ErrorText = $"Error ComPort not connected";
-            CLog.Warning($"{tel.ErrorText}");
+            CLog.Warning($"[{DeviceCode}] {tel.ErrorText}");
             return await Task.FromResult(tel);
         }
 
@@ -336,6 +336,7 @@ public class ComProtocol : IAsyncDisposable
     /* *** Description: *** keine Leerzeichen! ***
     L:              Host:Listen - warte bis (Client verbunden und) Empfangsdaten anliegen
     T:m             m = TimeOut in ms (0 = infinity)
+    T2:m            m = TimeOut between character
     C:              Block Check Character auf 0 zurücksetzen
     D:b             b: 1=DoubleDle, 0=no DoubleDle
     I:              Empfangspuffer löschen (ClearInput)
@@ -356,6 +357,10 @@ public class ComProtocol : IAsyncDisposable
         if (descCmd == "T")  //T:m
         {
             ComPort.ComParameter.TimeoutMs = int.Parse(descParam);
+        }
+        else if (descCmd == "T2")  //T2:m
+        {
+            ComPort.ComParameter.Timeout2Ms = int.Parse(descParam);
         }
         else if (descCmd == "L")  //L:
         {

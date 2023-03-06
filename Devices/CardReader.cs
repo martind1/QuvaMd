@@ -39,15 +39,14 @@ public class CardReader : ComProtocol, ICardApi
         }
     }
 
-    public event EventHandler<CardDataArgs>? OnCommandAnswer;
-    private void DoCommandAnswer(CardDataArgs e) => OnCommandAnswer?.Invoke(this, e);
     private CardData? cardData;
 
     public string[] ReaderDescription = new string[]
 {
           ";Automatische Erzeugung. Ändern nicht möglich.",
-          "T:0",     //ewig warten
-          "A:255:6"    //ohne Endezeichen
+          "T:0",     //infinity wait
+          "T2:200",  //between character
+          "A:255:6"  //without delimiter
 };
 
     #region Commands
