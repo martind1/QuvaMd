@@ -43,10 +43,6 @@ namespace Quva.Devices
             }
         }
 
-        public event EventHandler<JsonStringArgs>? OnCommandAnswer;
-        public event EventHandler<JsonStringArgs>? OnCommandError;
-        private void DoCommandAnswer(JsonStringArgs e) => OnCommandAnswer?.Invoke(this, e);
-        private void DoCommandError(JsonStringArgs e) => OnCommandError?.Invoke(this, e);
         private ScaleData? statusData;
         private ScaleData? registerData;
 

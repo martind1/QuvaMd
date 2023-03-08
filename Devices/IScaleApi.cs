@@ -14,16 +14,7 @@ public interface IScaleApi
 {
     public Task<ScaleData> ScaleCommand(string command);
 
-    public event EventHandler<JsonStringArgs>? OnCommandAnswer;
-    public event EventHandler<JsonStringArgs>? OnCommandError;
-
 }
-
-public class JsonStringArgs : EventArgs
-{
-    public string JsonString { get; set; } = string.Empty;
-}
-
 
 public class ScaleData : DeviceData
 {

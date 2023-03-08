@@ -1,0 +1,19 @@
+{
+  "Id": 4,
+  "Code": "HOH.DISP1",
+  "Name": "Test Display",
+  "Roles": 0,
+  "ParamString": "localhost:14080",
+  "DeviceType": "Display",
+  "ModulCode": "DEFAULT",
+  "Transport": "All",
+  "Packaging": "All",
+  "PortType": "Tcp",
+  "Options": {
+    "Height": "1",
+    "Width": "80",
+    "Line": "1",
+    "Font":  "1"
+  },
+  "Comment": "Listenport.exe 14080"
+}

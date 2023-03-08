@@ -20,6 +20,7 @@ public class ComDevice
     public IComPort? ComPort { get; set; }
     public IScaleApi? ScaleApi { get; set; }
     public ICardApi? CardApi { get; set; }
+    public IDisplayApi? DisplayApi { get; set; }
 
 
     public ComDevice()
@@ -131,6 +132,13 @@ public class ComDevice
     }
 
     private readonly SemaphoreSlim slim;
+    private TimerAsync? timerAsync;
+    private string timerCommand = string.Empty;
+
+    #region Scale Commands
+
+    public delegate void OnScaleStatus(ScaleData scaleData);
+    public OnScaleStatus? onScaleStatus { get; set; }
 
     public async Task<ScaleData> ScaleCommand(string command)
     {
@@ -151,6 +159,44 @@ public class ComDevice
         }
         return await Task.FromResult(result);
     }
+    public void ScaleCommandStart(string command, OnScaleStatus onScaleStatus)
+    {
+        CLog.Debug($"[{Code}] CALLBACK Device.ScaleCommandStart({command})");
+        ArgumentNullException.ThrowIfNull(ScaleApi);
+        this.onScaleStatus = onScaleStatus;
+        timerCommand = command;
+        timerAsync = new TimerAsync(OnScaleCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+    }
+
+    private async Task OnScaleCommand(CancellationToken arg)
+    {
+        ScaleData result;
+        CLog.Debug($"[{Code}] OnScaleCommand({timerCommand})");
+        try
+        {
+            await Open();
+            result = await ScaleCommand(timerCommand);
+        }
+        catch (Exception ex)
+        {
+            CLog.Warning($"[{Code}] Fehler OnScaleCommand({ex.Message})");
+            await Close().ConfigureAwait(false);
+            result = new ScaleData(Code, timerCommand)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message,
+            };
+        }
+        ArgumentNullException.ThrowIfNull(onScaleStatus);
+        onScaleStatus(result);
+    }
+
+    #endregion Scale Commands
+
+    #region Card Commands
+
+    public delegate void OnCardRead(CardData cardData);
+    public OnCardRead? onCardRead { get; set; }
 
     public async Task<CardData> CardCommand(string command)
     {
@@ -171,13 +217,6 @@ public class ComDevice
         }
         return await Task.FromResult(result);
     }
-
-
-    private TimerAsync? timerAsync;
-    private string timerCommand = string.Empty;
-
-    public delegate void OnCardRead(CardData cardData);
-    public OnCardRead? onCardRead { get; set; }
 
     public void CardCommandStart(string command, OnCardRead onCardRead)
     {
@@ -211,38 +250,64 @@ public class ComDevice
         onCardRead(result);
     }
 
-    public delegate void OnScaleStatus(ScaleData scaleData);
-    public OnScaleStatus? onScaleStatus { get; set; }
+    #endregion Card Commands
 
-    public void ScaleCommandStart(string command, OnScaleStatus onScaleStatus)
+    #region Display Commands
+
+    public delegate void OnDisplayShow(DisplayData displayData);
+    public OnDisplayShow? onDisplayShow { get; set; }  //timer function
+
+    public async Task<DisplayData> DisplayCommand(string command, string message)
     {
-        CLog.Debug($"[{Code}] CALLBACK Device.ScaleCommandStart({command})");
-        ArgumentNullException.ThrowIfNull(ScaleApi);
-        this.onScaleStatus = onScaleStatus;
-        timerCommand = command;
-        timerAsync = new TimerAsync(OnScaleCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+        DisplayData result;
+        CLog.Debug($"[{Code}] WAIT Device.DisplayCommand({command})");
+        // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
+        await slim.WaitAsync();
+        try
+        {
+            CLog.Information($"[{Code}] START Device.DisplayCommand({command})");
+            ArgumentNullException.ThrowIfNull(DisplayApi);
+            result = await DisplayApi.DisplayCommand(command, message);
+            CLog.Debug($"[{Code}] END Device.DisplayCommand({command})");
+        }
+        finally
+        {
+            slim.Release();
+        }
+        return await Task.FromResult(result);
     }
 
-    private async Task OnScaleCommand(CancellationToken arg)
+    public void DisplayCommandStart(string command, OnDisplayShow onDisplayShow)
     {
-        ScaleData result;
-        CLog.Debug($"[{Code}] OnScaleCommand({timerCommand})");
+        CLog.Debug($"[{Code}] CALLBACK Device.DisplayCommandStart({command})");
+        ArgumentNullException.ThrowIfNull(DisplayApi);
+        this.onDisplayShow = onDisplayShow;
+        timerCommand = command;
+        timerAsync = new TimerAsync(OnDisplayCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+    }
+
+    private async Task OnDisplayCommand(CancellationToken arg)
+    {
+        var displayData = new DisplayData(Code, command: DisplayCommands.Show.ToString());
+        CLog.Debug($"[{Code}] OnDisplayCommand({timerCommand})");
         try
         {
             await Open();
-            result = await ScaleCommand(timerCommand);
+            ArgumentNullException.ThrowIfNull(onDisplayShow);
+            onDisplayShow(displayData);  //fills .Message
+            _ = await DisplayCommand(timerCommand, displayData.Message);
         }
         catch (Exception ex)
         {
-            CLog.Warning($"[{Code}] Fehler OnScaleCommand({ex.Message})");
+            CLog.Warning($"[{Code}] Fehler OnDisplayCommand({ex.Message})");
             await Close().ConfigureAwait(false);
-            result = new ScaleData(Code, timerCommand)
+            _ = new DisplayData(Code, timerCommand)
             {
                 ErrorNr = 99,
                 ErrorText = ex.Message,
             };
         }
-        ArgumentNullException.ThrowIfNull(onScaleStatus);
-        onScaleStatus(result);
     }
+
+    #endregion Display Commands
 }

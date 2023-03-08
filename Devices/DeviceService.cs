@@ -102,9 +102,65 @@ namespace Quva.Devices
             return await Task.FromResult(result);
         }
 
-
-
         #endregion Card
+
+        #region Display
+
+        public async Task<DisplayData> DisplayShow(string devicecode, string message)
+        {
+            return await DisplayCommand(devicecode, DisplayCommands.Show.ToString(), message);
+        }
+
+        // bevorzugter Rückgabewert: struct ScaleData
+        public async Task<DisplayData> DisplayCommand(string devicecode, string command, string message)
+        {
+            DisplayData result;
+            ComDevice? device = null;
+            try
+            {
+                device = await OpenDevice(devicecode);
+                result = await device.DisplayCommand(command, message);
+            }
+            catch (Exception ex)
+            {
+                if (device != null)
+                    await device.Close().ConfigureAwait(false);
+                result = new DisplayData(devicecode, command)
+                {
+                    ErrorNr = 99,
+                    ErrorText = ex.Message,
+                };
+            }
+            return await Task.FromResult(result);
+        }
+
+        //with callback:
+
+        public async Task<IResult> DisplayShowStart(string devicecode, ComDevice.OnDisplayShow onDisplayShow)
+        {
+            return await DisplayCommandStart(devicecode, DisplayCommands.Show.ToString(), onDisplayShow);
+        }
+
+        public async Task<IResult> DisplayCommandStart(string devicecode, string command, ComDevice.OnDisplayShow onDisplayShow)
+        {
+            ComDevice? device = null;
+            IResult? result;
+            try
+            {
+                result = Results.Ok();
+                device = await OpenDevice(devicecode);
+                device.DisplayCommandStart(command, onDisplayShow);
+            }
+            catch (Exception ex)
+            {
+                result = Results.NotFound(ex.Message);
+                if (device != null)
+                    await device.Close().ConfigureAwait(false);
+            }
+            return await Task.FromResult(result);
+        }
+
+        #endregion display
 
         #region Scale
 
@@ -212,7 +268,7 @@ namespace Quva.Devices
             return await Task.FromResult(device);
         }
 
-        public async Task CloseDevice(ComDevice device)
+        private async Task CloseDevice(ComDevice device)
         {
             await CloseDevice(device.Code);
         }
