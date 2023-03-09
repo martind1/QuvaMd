@@ -354,15 +354,15 @@ public class ComProtocol : IAsyncDisposable
     {
         bool bResult = false;
         CLog.Debug($"[{DeviceCode}] {GetType().Name}.RunDescLine({descCmd}:{descParam})");
-        if (descCmd == "T")  //T:m
+        if (descCmd == "T")  //T:m - Timeout
         {
             ComPort.ComParameter.TimeoutMs = int.Parse(descParam);
         }
-        else if (descCmd == "T2")  //T2:m
+        else if (descCmd == "T2")  //T2:m - Timeout2 between Ch
         {
             ComPort.ComParameter.Timeout2Ms = int.Parse(descParam);
         }
-        else if (descCmd == "L")  //L:
+        else if (descCmd == "L")  //L: - Wait until available
         {
             await Task.Run(async () =>
             {
@@ -372,23 +372,27 @@ public class ComProtocol : IAsyncDisposable
                 }
             });
         }
-        else if (descCmd == "C")  //C:
+        else if (descCmd == "P")  //P:m - pause
+        {
+            await Task.Delay(int.Parse(descParam));
+        }
+        else if (descCmd == "C")  //C: - Clear BlockCheck
         {
             ComPort.Bcc = 0;
         }
-        else if (descCmd == "D")  //D:1 or 0
+        else if (descCmd == "D")  //D:1 or 0 - Set DoubleDLE
         {
             ComPort.ComParameter.DoubleDle = int.Parse(descParam) == 1;
         }
-        else if (descCmd == "E")  //E:1 or 0
+        else if (descCmd == "E")  //E:1 or 0 - Set Echo
         {
             ComPort.ComParameter.Echo = int.Parse(descParam) == 1;
         }
-        else if (descCmd == "I")  //I:
+        else if (descCmd == "I")  //I: - Clear Input Buffer
         {
             await ClearInputAsync(tel.DummyData);
         }
-        else if (descCmd == "S")  //S:^c|a|$xx
+        else if (descCmd == "S")  //S:^c|a|$xx - Send Characters
         {
             bResult = await SendAsync(tel, descParam);
             if (!bResult)
@@ -398,7 +402,7 @@ public class ComProtocol : IAsyncDisposable
                 tel.ErrorText = $"Error writing command.{descCmd}({descParam})";
             }
         }
-        else if (descCmd == "B")  //B:
+        else if (descCmd == "B")  //B: - Send Command
         {
             bResult = await ComPort.WriteAsync(tel.OutData);
             if (!bResult)
@@ -408,7 +412,7 @@ public class ComProtocol : IAsyncDisposable
                 tel.ErrorText = $"Error writing command.{descCmd}({descParam})";
             }
         }
-        else if (descCmd == "W")  //W:n[:m],d1,d2
+        else if (descCmd == "W")  //W:n[:m],d1,d2 - wait for cerain characters
         {
             bResult = await Receive(tel.DummyData, descParam);
             if (!bResult)
@@ -418,7 +422,7 @@ public class ComProtocol : IAsyncDisposable
                 tel.ErrorText = $"Error reading command.{descCmd}({descParam})";
             }
         }
-        else if (descCmd == "A")  //A:n[:m],d1,d2
+        else if (descCmd == "A")  //A:n[:m],d1,d2 - wait for answer
         {
             bResult = await Receive(tel.InData, descParam);
             if (!bResult)
@@ -427,10 +431,6 @@ public class ComProtocol : IAsyncDisposable
                 tel.Error = ComProtError.TimeOut;
                 tel.ErrorText = $"Error reading command.{descCmd}({descParam})";
             }
-        }
-        else if (descCmd == "P")  //P:m
-        {
-            await Task.Delay(int.Parse(descParam));
         }
         else
         {

@@ -17,6 +17,8 @@ namespace Quva.Devices
     public class ScaleFawaWs : ComProtocol, IScaleApi
     {
         private readonly ComDevice device;
+        public ScaleData statusData { get; set; }
+        public ScaleData registerData { get; set; }
 
         public ScaleFawaWs(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
         {
@@ -25,6 +27,9 @@ namespace Quva.Devices
             Description = FawaWsDescription;
 
             OnAnswer += FawaWsAnswer;
+
+            statusData = new ScaleData(deviceCode, ScaleCommands.Status.ToString());
+            registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
         }
 
         public async Task<ScaleData> ScaleCommand(string command)
@@ -45,10 +50,6 @@ namespace Quva.Devices
             }
         }
 
-        private ScaleData? statusData;
-        private ScaleData? registerData;
-
-
         public string[] FawaWsDescription = new string[]
         {
           ";Automatische Erzeugung. Ändern nicht möglich.",
@@ -64,7 +65,6 @@ namespace Quva.Devices
 
         public async Task<ScaleData> Status()
         {
-            statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
             var tel = await RunTelegram(statusData, "Holestatus=?");
             if (tel.Error != 0)
             {
@@ -78,7 +78,6 @@ namespace Quva.Devices
 
         public async Task<ScaleData> Register()
         {
-            registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
             var tel = await RunTelegram(registerData, "ProtGewicht=?");
             if (tel.Error != 0)
             {

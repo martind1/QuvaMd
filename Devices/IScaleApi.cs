@@ -14,6 +14,9 @@ public interface IScaleApi
 {
     public Task<ScaleData> ScaleCommand(string command);
 
+    public ScaleData statusData { get; set; }
+    public ScaleData registerData { get; set; }
+
 }
 
 public class ScaleData : DeviceData

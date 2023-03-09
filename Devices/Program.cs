@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace Quva.Devices
@@ -33,10 +34,15 @@ namespace Quva.Devices
 
             // Service aufrufen:
             var testsvc = new TestDeviceService(host.Services);
-            Task T = testsvc.Test5();
+
+            //Task T = testsvc.Test1();
+            Task T1 = testsvc.Test5();
+            Task T = testsvc.Test6();
             T.Wait();  //warten bis Task beendet
-            //testsvc.Test2();
             Console.ReadKey();  //warten auf Taste
+
+            //testsvc.Test2();
+
         }
 
 
@@ -54,7 +60,7 @@ namespace Quva.Devices
         }
 
         /// <summary>
-        /// klassischer async Befehl Waage
+        /// klassische async Befehle
         /// </summary>
         /// <returns></returns>
         public async Task Test1()
@@ -70,8 +76,12 @@ namespace Quva.Devices
             //var data12 = await svc.ScaleRegister("HOH.FW1");
             //Log.Information($"Register Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
 
-            var data3 = await svc.CardRead("HOH.TRANSP1");
-            Log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
+            //var data3 = await svc.CardRead("HOH.TRANSP1");
+            //Log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
+
+            var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
+            var data4 = await svc.DisplayShow("HOH.DISP1", message);
+            Log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
         }
 
         /// <summary>
@@ -149,7 +159,7 @@ namespace Quva.Devices
         public async Task Test5()
         {
             Log.Information($"testsvc.Test5");
-            var result = await svc.ScaleStatusStart("HOH.FW1", MyScaleStatus);
+            var result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
             Log.Information($"testsvc.Test5 Started");
         }
 
@@ -158,9 +168,33 @@ namespace Quva.Devices
             Log.Error($"### ScaleStatus {scaleData.Display} ###");
             if (scaleData.Weight == 5)
             {
+                Log.Error($"### ScaleStatus 5 close {scaleData.DeviceCode} ###");
                 _ = svc.CloseDevice(scaleData.DeviceCode);
+
+                Log.Error($"### ScaleStatus 5 close HOH.DISP1 ###");
+                _ = svc.CloseDevice("HOH.DISP1");
             }
 
         }
+
+        /// <summary>
+        /// Callback Display Test
+        /// </summary>
+        public async Task Test6()
+        {
+            Log.Information($"testsvc.Test6");
+            //MyShow: var result = await svc.DisplayShowStart("HOH.DISP1", MyShow);
+            //ScaleDisplay:
+            _ = await svc.DisplayShowScale("HOH.DISP1", "HOH.FW2");
+            Log.Information($"testsvc.Test6 Started");
+        }
+
+        private static void MyShow(DisplayData displayData)
+        {
+            //Log.Error($"### DisplayShow {displayData.Message} ###");
+            //aktuelle Uhrzeit
+            displayData.Message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
+        }
+
     }
 }

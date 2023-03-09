@@ -19,7 +19,7 @@ public class DisplayDefault : ComProtocol, IDisplayApi
 
         Description = DefaultDescription;
 
-        OnAnswer += ShowerAnswer;
+        OnAnswer += ShowAnswer;
     }
 
     public async Task<DisplayData> DisplayCommand(string command, string message)
@@ -28,7 +28,7 @@ public class DisplayDefault : ComProtocol, IDisplayApi
         {
             DisplayData data = cmd switch
             {
-                DisplayCommands.Show => await Show(),
+                DisplayCommands.Show => await Show(message),
                 _ => throw new NotImplementedException($"DisplayCommand.{command} not implemented")
             };
             return await Task.FromResult(data);
@@ -44,17 +44,28 @@ public class DisplayDefault : ComProtocol, IDisplayApi
     public string[] DefaultDescription = new string[]
 {
           ";Automatische Erzeugung. Ändern nicht möglich.",
-          "T:0",     //infinity wait
-          "T2:200",  //between character
-          "A:255:6"  //without delimiter
+          "T:3000",  //timeout
+          "B:",      //command = message
 };
 
     #region Commands
 
-    public async Task<DisplayData> Show()
+    public async Task<DisplayData> Show(string message)
     {
-        displayData = new DisplayData(device.Code, DisplayCommands.Show.ToString());
-        var tel = await RunTelegram(displayData, "read");
+        displayData ??= new DisplayData(device.Code, DisplayCommands.Show.ToString());
+        displayData.Message = message;
+
+        // Template + message -> command
+        string Line = device.Option("Line", "1");
+        string Font = device.Option("Font", "1");
+        string Template = device.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
+        string command = Template.Replace("#L", Line)
+            .Replace("#F", Font)
+            .Replace("^M", ((Char)13).ToString())
+            .Replace("^J", ((Char)10).ToString())
+            .Replace("#T", message);
+
+        var tel = await RunTelegram(displayData, command);
         if (tel.Error != 0)
         {
             displayData.ErrorNr = 99;
@@ -67,10 +78,10 @@ public class DisplayDefault : ComProtocol, IDisplayApi
 
     #region Callbacks
 
-    private void ShowerAnswer(object? sender, TelEventArgs telEventArgs)
+    private void ShowAnswer(object? sender, TelEventArgs telEventArgs)
     {
         var tel = telEventArgs.Tel;
-        ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ShowerAnswer));
+        ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ShowAnswer));
         DisplayData data = (DisplayData)tel.AppData;
         var inBuff = tel.InData;
         string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);

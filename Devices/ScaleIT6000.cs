@@ -15,6 +15,9 @@ namespace Quva.Devices
     public class ScaleIT6000 : ComProtocol, IScaleApi
     {
         private readonly ComDevice device;
+        public ScaleData statusData { get; set; }
+        public ScaleData registerData { get; set; }
+
 
         public ScaleIT6000(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
         {
@@ -23,6 +26,9 @@ namespace Quva.Devices
             Description = IT60Description;
 
             OnAnswer += IT60Answer;
+
+            statusData  = new ScaleData(deviceCode, ScaleCommands.Status.ToString());
+            registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
         }
 
         public async Task<ScaleData> ScaleCommand(string command)
@@ -43,10 +49,6 @@ namespace Quva.Devices
             }
         }
 
-        private ScaleData? statusData;
-        private ScaleData? registerData;
-
-
         public string[] IT60Description = new string[]
         {
           ";Automatische Erzeugung. Ändern nicht möglich.",
@@ -60,7 +62,6 @@ namespace Quva.Devices
 
         public async Task<ScaleData> Status()
         {
-            statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
             _ = await RunTelegram(statusData, "<RM>");
             return await Task.FromResult(statusData);
 
@@ -68,7 +69,6 @@ namespace Quva.Devices
 
         public async Task<ScaleData> Register()
         {
-            registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
             _ = await RunTelegram(registerData, "<RN>");
             return await Task.FromResult(registerData);
         }

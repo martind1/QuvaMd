@@ -13,7 +13,8 @@
     "Height": "1",
     "Width": "80",
     "Line": "1",
-    "Font":  "1"
+    "Font": "1",
+    "Template": "01$L#L$W#F#T^M^J"
   },
-  "Comment": "Listenport.exe 14080"
+  "Comment": "von HOH ShTcpSvr"
 }

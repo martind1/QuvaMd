@@ -26,6 +26,14 @@ public class DisplayData : DeviceData
     }
 }
 
+public enum DisplayOptions
+{
+    Template,  //Platzhalter: #L=Zeile #F=Font #T=Text  ^M^J=Endekennung
+    Width,     // (character count)
+    Height,    // (line count)
+    Font       // (1,2,3,) bisher immer 1
+}
+
 // Commands for Display:
 public enum DisplayCommands
 {

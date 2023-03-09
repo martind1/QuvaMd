@@ -82,7 +82,7 @@ public class ComDevice
             {
                 "IT6000" => new ScaleIT6000(Code, this),
                 "FAWAWS" => new ScaleFawaWs(Code, this),
-                _ => throw new NotImplementedException($"Modulcode {Device.ModulCode}")
+                _ => throw new NotImplementedException($"Modulcode.Scale {Device.ModulCode}")
             };
         }
         if (device.DeviceType == DeviceType.Card)
@@ -90,7 +90,15 @@ public class ComDevice
             CardApi = Device.ModulCode switch
             {
                 "READER" => new CardReader(Code, this),
-                _ => throw new NotImplementedException($"Modulcode {Device.ModulCode}")
+                _ => throw new NotImplementedException($"Modulcode.Card {Device.ModulCode}")
+            };
+        }
+        if (device.DeviceType == DeviceType.Display)
+        {
+            DisplayApi = Device.ModulCode switch
+            {
+                "DEFAULT" => new DisplayDefault(Code, this),
+                _ => throw new NotImplementedException($"Modulcode.Display {Device.ModulCode}")
             };
         }
     }
@@ -256,6 +264,8 @@ public class ComDevice
 
     public delegate void OnDisplayShow(DisplayData displayData);
     public OnDisplayShow? onDisplayShow { get; set; }  //timer function
+    public string? ScaleCode;  //show scale display
+    private string? OldMessage;
 
     public async Task<DisplayData> DisplayCommand(string command, string message)
     {
@@ -295,7 +305,11 @@ public class ComDevice
             await Open();
             ArgumentNullException.ThrowIfNull(onDisplayShow);
             onDisplayShow(displayData);  //fills .Message
-            _ = await DisplayCommand(timerCommand, displayData.Message);
+            if (OldMessage != displayData.Message)
+            {
+                OldMessage = displayData.Message;
+                _ = await DisplayCommand(timerCommand, displayData.Message);
+            }
         }
         catch (Exception ex)
         {
