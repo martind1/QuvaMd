@@ -1,2 +1,2 @@
 # Quva2
-Quarzwerke Quva 2.0 Beiträge
+Quarzwerke Quva 2.0 Contributions
