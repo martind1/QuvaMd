@@ -11,15 +11,16 @@ namespace Quva.Devices;
 /// </summary>
 public class CardReader : ComProtocol, ICardApi
 {
-    private readonly ComDevice device;
 
-    public CardReader(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
+    private CardData cardData { get; set; }
+
+    public CardReader(ComDevice device) : base(device.Code, device.ComPort)
     {
-        this.device = device;
-
         Description = ReaderDescription;
 
         OnAnswer += ReaderAnswer;
+
+        cardData = new CardData(device.Code, CardCommands.Read.ToString());
     }
 
     public async Task<CardData> CardCommand(string command)
@@ -39,7 +40,7 @@ public class CardReader : ComProtocol, ICardApi
         }
     }
 
-    private CardData? cardData;
+    
 
     public string[] ReaderDescription = new string[]
 {
@@ -53,8 +54,7 @@ public class CardReader : ComProtocol, ICardApi
 
     public async Task<CardData> Read()
     {
-        cardData = new CardData(device.Code, CardCommands.Read.ToString());
-        var tel = await RunTelegram(cardData, "read");
+        var tel = await RunTelegram(cardData, "read");  //command text egal
         if (tel.Error != 0)
         {
             cardData.ErrorNr = 99;

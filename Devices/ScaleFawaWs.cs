@@ -16,19 +16,16 @@ namespace Quva.Devices
     /// </summary>
     public class ScaleFawaWs : ComProtocol, IScaleApi
     {
-        private readonly ComDevice device;
         public ScaleData statusData { get; set; }
         public ScaleData registerData { get; set; }
 
-        public ScaleFawaWs(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
+        public ScaleFawaWs(ComDevice device) : base(device.Code, device.ComPort)
         {
-            this.device = device;
-
             Description = FawaWsDescription;
 
             OnAnswer += FawaWsAnswer;
 
-            statusData = new ScaleData(deviceCode, ScaleCommands.Status.ToString());
+            statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
             registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
         }
 

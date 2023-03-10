@@ -14,20 +14,17 @@ namespace Quva.Devices
     /// </summary>
     public class ScaleIT6000 : ComProtocol, IScaleApi
     {
-        private readonly ComDevice device;
         public ScaleData statusData { get; set; }
         public ScaleData registerData { get; set; }
 
 
-        public ScaleIT6000(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
+        public ScaleIT6000(ComDevice device) : base(device.Code, device.ComPort)
         {
-            this.device = device;
-
             Description = IT60Description;
 
             OnAnswer += IT60Answer;
 
-            statusData  = new ScaleData(deviceCode, ScaleCommands.Status.ToString());
+            statusData  = new ScaleData(device.Code, ScaleCommands.Status.ToString());
             registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeviceSimulator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,14 @@ namespace Quva.DeviceSimulator
 
         private void BtnIT9000_Click(object sender, RoutedEventArgs e)
         {
-            var win = new Window1();
+            var win = new ScaleIT9000Window();
+            win.Show();
+            this.Hide();
+        }
+
+        private void BtnDeviceTests_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new DeviceTestWindow();
             win.Show();
             this.Hide();
         }

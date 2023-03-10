@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Devices.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,15 +12,18 @@ namespace Quva.Devices;
 /// </summary>
 public class DisplayDefault : ComProtocol, IDisplayApi
 {
-    private readonly ComDevice device;
+    public DisplayData displayData { get; set; }
+    private DeviceOptions deviceOptions { get; set; }
 
-    public DisplayDefault(string deviceCode, ComDevice device) : base(deviceCode, device.ComPort)
+    public DisplayDefault(ComDevice device) : base(device.Code, device.ComPort)
     {
-        this.device = device;
-
         Description = DefaultDescription;
 
         OnAnswer += ShowAnswer;
+
+        displayData = new DisplayData(device.Code, DisplayCommands.Show.ToString());
+        ArgumentNullException.ThrowIfNull(device.Options);
+        deviceOptions = device.Options;
     }
 
     public async Task<DisplayData> DisplayCommand(string command, string message)
@@ -39,8 +43,6 @@ public class DisplayDefault : ComProtocol, IDisplayApi
         }
     }
 
-    private DisplayData? displayData;
-
     public string[] DefaultDescription = new string[]
 {
           ";Automatische Erzeugung. Ändern nicht möglich.",
@@ -52,13 +54,12 @@ public class DisplayDefault : ComProtocol, IDisplayApi
 
     public async Task<DisplayData> Show(string message)
     {
-        displayData ??= new DisplayData(device.Code, DisplayCommands.Show.ToString());
         displayData.Message = message;
 
         // Template + message -> command
-        string Line = device.Option("Line", "1");
-        string Font = device.Option("Font", "1");
-        string Template = device.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
+        string Line = deviceOptions.Option("Line", "1");
+        string Font = deviceOptions.Option("Font", "1");
+        string Template = deviceOptions.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
         string command = Template.Replace("#L", Line)
             .Replace("#F", Font)
             .Replace("^M", ((Char)13).ToString())

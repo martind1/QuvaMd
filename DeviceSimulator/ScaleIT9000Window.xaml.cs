@@ -6,11 +6,11 @@ using System.Windows;
 namespace Quva.DeviceSimulator
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for ScaleIT9000Window.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class ScaleIT9000Window : Window
     {
-        public Window1()
+        public ScaleIT9000Window()
         {
             InitializeComponent();
         }

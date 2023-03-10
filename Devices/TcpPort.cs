@@ -23,13 +23,17 @@ namespace Quva.Devices
         public uint Bcc { get; set; }
         public bool IsConnected() => tcpClient != null;
 
-        public TcpPort(string deviceCode, string paramstring)
+        public TcpPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
+        {
+        }
+
+        public TcpPort(string deviceCode, string paramString)
         {
             CLog = Log.ForContext<DeviceService>();
             DeviceCode = deviceCode;  //for Debug Output
             ComParameter = new();
             TcpParameter = new();
-            SetParamString(paramstring);
+            SetParamString(paramString);
             inBuff = new(4096);
             outBuff = new(4096);
         }

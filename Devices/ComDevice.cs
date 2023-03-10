@@ -1,4 +1,5 @@
 ﻿using Devices.Data;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ public class ComDevice
     private readonly ILogger CLog;
     private Device? device;    // from database table 
     public Device Device { get => device ?? throw new ArgumentNullException(); set => device = value; }
+    public DeviceOptions? Options;
     public string Code { get; set; }
     // work items:
     public IComPort? ComPort { get; set; }
@@ -65,77 +67,29 @@ public class ComDevice
     public async Task Load()
     {
         CLog.Information($"[{Code}] ComDevice.Load");
+
         // [Code] von DB laden - erstmal von Test Service laden:
         var dataService = new DataService();
         device = await dataService.GetDevice(Code);
 
-        ArgumentNullException.ThrowIfNull(Device.ParamString);
-        ComPort = device.PortType switch
-        {
-            PortType.Tcp => new TcpPort(Code, Device.ParamString),
-            PortType.None => null,
-            _ => throw new NotImplementedException("only TCP implemented")
-        };
+        Options = new DeviceOptions(Code, device.Options);
+
+        ComPort = DeviceFactory.GetComPort(this);
         if (device.DeviceType == DeviceType.Scale)
         {
-            ScaleApi = Device.ModulCode switch
-            {
-                "IT6000" => new ScaleIT6000(Code, this),
-                "FAWAWS" => new ScaleFawaWs(Code, this),
-                _ => throw new NotImplementedException($"Modulcode.Scale {Device.ModulCode}")
-            };
+            ScaleApi = DeviceFactory.GetScaleApi(this);
         }
-        if (device.DeviceType == DeviceType.Card)
+        else if (device.DeviceType == DeviceType.Card)
         {
-            CardApi = Device.ModulCode switch
-            {
-                "READER" => new CardReader(Code, this),
-                _ => throw new NotImplementedException($"Modulcode.Card {Device.ModulCode}")
-            };
+            CardApi = DeviceFactory.GetCardApi(this);
         }
-        if (device.DeviceType == DeviceType.Display)
+        else if (device.DeviceType == DeviceType.Display)
         {
-            DisplayApi = Device.ModulCode switch
-            {
-                "DEFAULT" => new DisplayDefault(Code, this),
-                _ => throw new NotImplementedException($"Modulcode.Display {Device.ModulCode}")
-            };
+            DisplayApi = DeviceFactory.GetDisplayApi(this);
         }
-    }
-
-    public string Option(string key, string dflt)
-    {
-        ArgumentNullException.ThrowIfNull(Device.Options);
-        if (!Device.Options.TryGetValue(key, out var result))
+        else
         {
-            result = dflt;
-        }
-        return result;
-    }
-
-    public int Option(string key, int dflt)
-    {
-        try
-        {
-            return int.Parse(Option(key, dflt.ToString()));
-        }
-        catch (Exception ex)
-        {
-            CLog.Warning($"[{Code}] Fehler bei int Device.Option({key})", ex);
-            return dflt;
-        }
-    }
-
-    public float Option(string key, float dflt)
-    {
-        try
-        {
-            return int.Parse(Option(key, dflt.ToString()));
-        }
-        catch (Exception ex)
-        {
-            CLog.Warning($"[{Code}] Fehler bei float Device.Option({key})", ex);
-            return dflt;
+            throw new NotImplementedException($"DeviceType {device.DeviceType}");
         }
     }
 
