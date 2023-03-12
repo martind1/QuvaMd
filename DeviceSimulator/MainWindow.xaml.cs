@@ -1,4 +1,5 @@
-﻿using DeviceSimulator;
+﻿using Quva.DeviceSimulator;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,11 @@ namespace Quva.DeviceSimulator
 
         private void BtnDeviceTests_Click(object sender, RoutedEventArgs e)
         {
-            var win = new DeviceTestWindow();
+            //var win = new DeviceTestWindow();
+            var app = (App)Application.Current;
+            var sprovider = app.host.Services;
+            ArgumentNullException.ThrowIfNull(sprovider);
+            var win = sprovider.GetRequiredService<DeviceTestWindow>();
             win.Show();
             this.Hide();
         }

@@ -14,6 +14,7 @@ public interface IDisplayApi
 {
     public Task<DisplayData> DisplayCommand(string command, string message);
 
+    public DisplayData displayData { get; set; }
 }
 
 public class DisplayData : DeviceData

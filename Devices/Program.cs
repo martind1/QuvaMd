@@ -21,13 +21,13 @@ namespace Quva.Devices
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configSerilog)
                 .CreateLogger();
-            Log.Information("Initializing Serilog....");
+            Log.Information("\r\nInitializing Serilog....");
 
             //Service dependency injection:
             using IHost host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                     {
-                        services.AddSingleton<DeviceService>();
+                        services.AddSingleton<IDeviceService, DeviceService>();
                     })
                 .Build();
             Log.Information("added Service");
@@ -39,6 +39,7 @@ namespace Quva.Devices
             Task T1 = testsvc.Test5();
             Task T = testsvc.Test6();
             T.Wait();  //warten bis Task beendet
+            Console.WriteLine("waiting for key press");
             Console.ReadKey();  //warten auf Taste
 
             //testsvc.Test2();
@@ -50,13 +51,13 @@ namespace Quva.Devices
 
     internal class TestDeviceService
     {
-        public DeviceService svc { get; set; }
+        public IDeviceService svc { get; set; }
 
         public TestDeviceService(IServiceProvider hostProvider)
         {
             using IServiceScope serviceScope = hostProvider.CreateScope();
             IServiceProvider provider = serviceScope.ServiceProvider;
-            svc = provider.GetRequiredService<DeviceService>();
+            svc = provider.GetRequiredService<IDeviceService>();
         }
 
         /// <summary>
@@ -163,13 +164,14 @@ namespace Quva.Devices
             Log.Information($"testsvc.Test5 Started");
         }
 
-        private void MyScaleStatus(ScaleData scaleData)
+        private async void MyScaleStatus(ScaleData scaleData)
         {
             Log.Error($"### ScaleStatus {scaleData.Display} ###");
             if (scaleData.Weight == 5)
             {
                 Log.Error($"### ScaleStatus 5 close {scaleData.DeviceCode} ###");
                 _ = svc.CloseDevice(scaleData.DeviceCode);
+                await Task.Delay(100);
 
                 Log.Error($"### ScaleStatus 5 close HOH.DISP1 ###");
                 _ = svc.CloseDevice("HOH.DISP1");

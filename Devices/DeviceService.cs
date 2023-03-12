@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Quva.Devices
 {
-    public class DeviceService : IAsyncDisposable
+    public class DeviceService : IAsyncDisposable, IDeviceService
     {
         private readonly ILogger CLog;
         private bool disposeFlag = true;
@@ -194,7 +194,7 @@ namespace Quva.Devices
             catch (Exception ex)
             {
                 if (device != null)
-                    await device.Close().ConfigureAwait(false); 
+                    await device.Close().ConfigureAwait(false);
                 result = new ScaleData(devicecode, command)
                 {
                     ErrorNr = 99,
@@ -308,7 +308,7 @@ namespace Quva.Devices
             await CloseDevice(device.Code);
         }
 
-        internal async Task CloseDevice(string devicecode)
+        public async Task CloseDevice(string devicecode)
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {

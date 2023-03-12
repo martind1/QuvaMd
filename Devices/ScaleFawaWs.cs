@@ -52,7 +52,7 @@ namespace Quva.Devices
           ";Automatische Erzeugung. Ändern nicht möglich.",
           "P:50",
           "I:",          //Clearinput
-          "T:11000",     //Stillstand
+          "T:2000",     //Stillstand
           "T2:0",        //between character
           "B:",          //HoleStatus=?
           "A:255:1"      //HoleStatus=<Status>;<Gewicht>;<Meldung>

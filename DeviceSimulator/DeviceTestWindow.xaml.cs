@@ -1,5 +1,4 @@
-﻿using DeviceWpf;
-using Quva.Devices;
+﻿using Quva.Devices;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -17,21 +16,25 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static Quva.Devices.ComDevice;
 
-namespace DeviceSimulator
+namespace Quva.DeviceSimulator
 {
     /// <summary>
     /// Interaction logic for DeviceTestWindow.xaml
     /// </summary>
     public partial class DeviceTestWindow : Window
     {
-        public DeviceTestWindow()
+        private IDeviceService svc;
+
+        public DeviceTestWindow(IDeviceService svc)
         {
             InitializeComponent();
+            this.svc = svc;
         }
 
         private void DeviceTestWindow_Closed(object sender, EventArgs e)
         {
-            svc?.DisposeAsync();
+            svc.CloseDevice("HOH.FW2");
+            svc.CloseDevice("HOH.DISP1");
             App.Current.MainWindow.Show();
             this.Close();
         }
@@ -53,12 +56,10 @@ namespace DeviceSimulator
             }
         }
 
-        private DeviceService? svc;
-
         private void DeviceTestWindow_Initialized(object sender, EventArgs e)
         {
             //Service anlegen
-            svc = new DeviceService();
+            //svc = new DeviceService();
             protLb("DeviceService created");
         }
 
@@ -66,7 +67,6 @@ namespace DeviceSimulator
         {
             //C:\Portlistener\listener.exe 14080
             var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
-            ArgumentNullException.ThrowIfNull(svc);
             var data = await svc.DisplayShow("HOH.DISP1", message);
             protLb($"DisplayShow Err:{data.ErrorNr} {data.ErrorText} Msg:{data.Message}");
         }
@@ -74,7 +74,6 @@ namespace DeviceSimulator
         private async void BtnCardRead_Click(object sender, RoutedEventArgs e)
         {
             //telnet localhost 14070
-            ArgumentNullException.ThrowIfNull(svc);
             var data = await svc.CardRead("HOH.TRANSP1");
             protLb($"CardRead Err:{data.ErrorNr} {data.ErrorText} Card:{data.CardNumber}");
         }
@@ -82,14 +81,12 @@ namespace DeviceSimulator
         private async void BtnScaleRegister_Click(object sender, RoutedEventArgs e)
         {
             //ShTcpSvr
-            ArgumentNullException.ThrowIfNull(svc);
             var data = await svc.ScaleRegister("HOH.FW2");
             protLb($"ScaleRegister Err:{data.ErrorNr} Display:{data.Display} Eichnr:{data.CalibrationNumber} Weight:{data.Weight} Unit:{data.Unit}");
         }
 
         private async void BtnScaleStatusStart_Click(object sender, RoutedEventArgs e)
         {
-            ArgumentNullException.ThrowIfNull(svc);
             var result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
             protLb($"ScaleStatusStart Started");
 
@@ -108,7 +105,6 @@ namespace DeviceSimulator
 
         private async void BtnDisplayScale_Click(object sender, RoutedEventArgs e)
         {
-            ArgumentNullException.ThrowIfNull(svc);
             var result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
             protLb($"ScaleStatus Started");
 

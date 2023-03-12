@@ -52,15 +52,16 @@ public class ComDevice
     {
         // Dispose ComPort 
         CLog.Information($"[{Code}] ComDevice.Close({ComPort != null},{ComPort?.IsConnected()}):");
+        if (timerAsync != null)
+        {
+            await timerAsync.StopAsync();
+            timerAsync.Dispose();
+            timerAsync = null;
+        }
         if (ComPort != null && ComPort.IsConnected())
         {
             await ComPort.CloseAsync();
             CLog.Information($"[{Code}] ComDevice.Close OK");
-        }
-        if (timerAsync != null)
-        {
-            timerAsync.Dispose();
-            timerAsync = null;
         }
     }
 
@@ -132,6 +133,10 @@ public class ComDevice
 
     private async Task OnScaleCommand(CancellationToken arg)
     {
+        if (arg.IsCancellationRequested)
+        {
+            return;
+        }
         ScaleData result;
         CLog.Debug($"[{Code}] OnScaleCommand({timerCommand})");
         try
@@ -191,6 +196,10 @@ public class ComDevice
 
     private async Task OnCardCommand(CancellationToken arg)
     {
+        if (arg.IsCancellationRequested)
+        {
+            return;
+        }
         CardData result;
         CLog.Debug($"[{Code}] OnCardCommand({timerCommand})");
         try
@@ -247,12 +256,17 @@ public class ComDevice
         ArgumentNullException.ThrowIfNull(DisplayApi);
         this.onDisplayShow = onDisplayShow;
         timerCommand = command;
-        timerAsync = new TimerAsync(OnDisplayCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+        timerAsync = new TimerAsync(OnDisplayCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(500));
     }
 
     private async Task OnDisplayCommand(CancellationToken arg)
     {
-        var displayData = new DisplayData(Code, command: DisplayCommands.Show.ToString());
+        if (arg.IsCancellationRequested) 
+        {
+            return;
+        }
+        ArgumentNullException.ThrowIfNull(DisplayApi);
+        var displayData = DisplayApi.displayData; // new DisplayData(Code, command: DisplayCommands.Show.ToString());
         CLog.Debug($"[{Code}] OnDisplayCommand({timerCommand})");
         try
         {
