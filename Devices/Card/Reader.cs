@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Quva.Devices;
+using Quva.Devices.Data;
 
-namespace Quva.Devices;
+namespace Quva.Devices.Card;
 
 /// <summary>
 /// Simple Card Reader only waits for Number
 /// </summary>
-public class CardReader : ComProtocol, ICardApi
+public class Reader : ComProtocol, ICardApi
 {
 
     private CardData cardData { get; set; }
 
-    public CardReader(ComDevice device) : base(device.Code, device.ComPort)
+    public Reader(ComDevice device) : base(device.Code, device.ComPort)
     {
         Description = ReaderDescription;
 
@@ -40,7 +42,7 @@ public class CardReader : ComProtocol, ICardApi
         }
     }
 
-    
+
 
     public string[] ReaderDescription = new string[]
 {
@@ -54,6 +56,7 @@ public class CardReader : ComProtocol, ICardApi
 
     public async Task<CardData> Read()
     {
+        //cardData = new CardData(DeviceCode, CardCommands.Read.ToString());
         var tel = await RunTelegram(cardData, "read");  //command text egal
         if (tel.Error != 0)
         {
@@ -73,7 +76,7 @@ public class CardReader : ComProtocol, ICardApi
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ReaderAnswer));
         CardData data = (CardData)tel.AppData;
         var inBuff = tel.InData;
-        string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+        string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
         if (data.Command == CardCommands.Read.ToString())
         {
             data.CardNumber = inStr;

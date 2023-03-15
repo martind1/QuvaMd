@@ -1,0 +1,17 @@
+{
+  "Id": 13,
+  "Code": "HOH.CAMS",
+  "Name": "Cameras",
+  "Roles": 0,
+  "ParamString": "https://img.etimg.com/thumb/width-1200,height-900,imgsize-51826,resizemode-1,msid-86304369/industry/auto/lcv-hcv/daimler-india-ready-for-prolonged-truck-upcycle-says-md.jpg",
+  "DeviceType": "Cam",
+  "ModulCode": "HTTPCAM",
+  "Transport": "All",
+  "Packaging": "All",
+  "PortType": "Http",
+  "Options": {
+    "URL1": "https://www.peterbilt.com/sites/default/files/2022-05/homepage_ev.jpg",
+    "URL2": "https://cdn.prod.www.manager-magazin.de/images/29d286b8-07c3-439a-8069-c1ed4a0ff034_w1280_r1.77_fpx59.21_fpy44.99.jpg"
+  },
+  "Comment": "more cameras in Options.URLx, x=1,2,.."
+}

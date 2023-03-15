@@ -1,4 +1,5 @@
-﻿using Quva.Devices;
+﻿using Devices.Scale;
+using Quva.Devices;
 using Serilog;
 using System;
 using System.Collections.Generic;

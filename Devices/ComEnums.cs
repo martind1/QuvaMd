@@ -147,8 +147,8 @@ public enum ComProtError
 {
     OK,      // ok
     TimeOut, // device timeout
-    Length,  // length or description error
-    Reset    // device will reset
+    LengthError,  // length or description error
+    InternalError    // device will reset
 }
 
 [Flags]

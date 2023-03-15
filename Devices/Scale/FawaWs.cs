@@ -1,4 +1,5 @@
 ﻿using Quva.Devices;
+using Quva.Devices.Data;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -9,17 +10,17 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Quva.Devices
+namespace Quva.Devices.Scale
 {
     /// <summary>
     /// Api for Winsocket ComSvr general truck scale
     /// </summary>
-    public class ScaleFawaWs : ComProtocol, IScaleApi
+    public class FawaWs : ComProtocol, IScaleApi
     {
         public ScaleData statusData { get; set; }
         public ScaleData registerData { get; set; }
 
-        public ScaleFawaWs(ComDevice device) : base(device.Code, device.ComPort)
+        public FawaWs(ComDevice device) : base(device.Code, device.ComPort)
         {
             Description = FawaWsDescription;
 
@@ -31,7 +32,7 @@ namespace Quva.Devices
 
         public async Task<ScaleData> ScaleCommand(string command)
         {
-            if (Enum.TryParse<ScaleCommands>(command, out ScaleCommands cmd))
+            if (Enum.TryParse(command, out ScaleCommands cmd))
             {
                 ScaleData data = cmd switch
                 {
@@ -62,6 +63,7 @@ namespace Quva.Devices
 
         public async Task<ScaleData> Status()
         {
+            //statusData = new ScaleData(DeviceCode, ScaleCommands.Status.ToString());
             var tel = await RunTelegram(statusData, "Holestatus=?");
             if (tel.Error != 0)
             {
@@ -75,6 +77,7 @@ namespace Quva.Devices
 
         public async Task<ScaleData> Register()
         {
+            //registerData = new ScaleData(DeviceCode, ScaleCommands.Register.ToString());
             var tel = await RunTelegram(registerData, "ProtGewicht=?");
             if (tel.Error != 0)
             {
@@ -96,7 +99,7 @@ namespace Quva.Devices
             ScaleData data = (ScaleData)tel.AppData;
             var rnd = new Random();
             var inBuff = tel.InData;
-            string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+            string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
             if (data.Command == ScaleCommands.Status.ToString())
             {
                 CLog.Debug($"[{DeviceCode}] FawaWsAnswer.Status:{inStr}");

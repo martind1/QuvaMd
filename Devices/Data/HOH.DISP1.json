@@ -5,7 +5,7 @@
   "Roles": 0,
   "ParamString": "localhost:14080",
   "DeviceType": "Display",
-  "ModulCode": "DEFAULT",
+  "ModulCode": "REMOTEDISPLAY",
   "Transport": "All",
   "Packaging": "All",
   "PortType": "Tcp",

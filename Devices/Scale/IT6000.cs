@@ -7,30 +7,30 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Quva.Devices
+namespace Quva.Devices.Scale
 {
     /// <summary>
     /// IT6000, IT9000 scale device api
     /// </summary>
-    public class ScaleIT6000 : ComProtocol, IScaleApi
+    public class IT6000 : ComProtocol, IScaleApi
     {
         public ScaleData statusData { get; set; }
         public ScaleData registerData { get; set; }
 
 
-        public ScaleIT6000(ComDevice device) : base(device.Code, device.ComPort)
+        public IT6000(ComDevice device) : base(device.Code, device.ComPort)
         {
             Description = IT60Description;
 
             OnAnswer += IT60Answer;
 
-            statusData  = new ScaleData(device.Code, ScaleCommands.Status.ToString());
+            statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
             registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
         }
 
         public async Task<ScaleData> ScaleCommand(string command)
         {
-            if (Enum.TryParse<ScaleCommands>(command, out ScaleCommands cmd))
+            if (Enum.TryParse(command, out ScaleCommands cmd))
             {
                 ScaleData data = cmd switch
                 {
@@ -59,14 +59,26 @@ namespace Quva.Devices
 
         public async Task<ScaleData> Status()
         {
-            _ = await RunTelegram(statusData, "<RM>");
+            var tel = await RunTelegram(statusData, "<RM>");
+            if (tel.Error != 0)
+            {
+                statusData.ErrorNr = 99;
+                statusData.ErrorText = tel.ErrorText;
+                statusData.Display = tel.ErrorText; 
+            }
             return await Task.FromResult(statusData);
 
         }
 
         public async Task<ScaleData> Register()
         {
-            _ = await RunTelegram(registerData, "<RN>");
+            var tel = await RunTelegram(registerData, "<RN>");
+            if (tel.Error != 0)
+            {
+                statusData.ErrorNr = 99;
+                statusData.ErrorText = tel.ErrorText;
+                statusData.Display = tel.ErrorText; 
+            }
             return await Task.FromResult(registerData);
         }
 

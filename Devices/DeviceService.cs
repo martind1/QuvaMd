@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
+using Quva.Devices.Cam;
+using Quva.Devices.Card;
+using Quva.Devices.Display;
+using Quva.Devices.Scale;
 using Serilog;
-using Microsoft.AspNetCore.Http;
 using static Quva.Devices.ComDevice;
-using System.Globalization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Quva.Devices
 {
@@ -105,6 +100,38 @@ namespace Quva.Devices
         }
 
         #endregion Card
+
+        #region Camera
+
+        public async Task<CamData> CamLoad(string devicecode, int camNumber)
+        {
+            return await CamCommand(devicecode, CamCommands.Load.ToString(), camNumber);
+        }
+
+        // bevorzugter Rückgabewert: struct ScaleData
+        public async Task<CamData> CamCommand(string devicecode, string command, int camNumber)
+        {
+            CamData result;
+            ComDevice? device = null;
+            try
+            {
+                device = await OpenDevice(devicecode);
+                result = await device.CamCommand(command, camNumber);
+            }
+            catch (Exception ex)
+            {
+                if (device != null)
+                    await device.Close().ConfigureAwait(false);
+                result = new CamData(devicecode, command)
+                {
+                    ErrorNr = 99,
+                    ErrorText = ex.Message,
+                };
+            }
+            return await Task.FromResult(result);
+        }
+
+        #endregion Camera
 
         #region Display
 

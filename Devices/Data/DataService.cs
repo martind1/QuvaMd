@@ -1,19 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Options;
-using Quva.Devices;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Security.Cryptography.Xml;
-using System.Text;
+﻿using Quva.Devices.ComPort;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
-namespace Devices.Data
+namespace Quva.Devices.Data
 {
-    public class DataService
+    public class DataService : IDataService
     {
         //private readonly MapperConfiguration mapperConfiguration;
 

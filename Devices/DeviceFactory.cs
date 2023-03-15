@@ -1,9 +1,8 @@
-﻿using Devices.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Quva.Devices.Cam;
+using Quva.Devices.Card;
+using Quva.Devices.ComPort;
+using Quva.Devices.Display;
+using Quva.Devices.Scale;
 
 namespace Quva.Devices;
 
@@ -16,6 +15,7 @@ public class DeviceFactory
         IComPort? comPort = portType switch
         {
             PortType.Tcp => new TcpPort(device),
+            PortType.Http => new HttpPort(device),
             PortType.Serial => throw new NotImplementedException("Serial not implemented"),
             PortType.Udp => throw new NotImplementedException("UDP not implemented"),
             PortType.None => null,
@@ -28,10 +28,10 @@ public class DeviceFactory
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         string modulCode = device.Device.ModulCode;
-        IScaleApi? scaleApi = modulCode switch
+        IScaleApi? scaleApi = modulCode.ToUpper() switch
         {
-            "IT6000" => new ScaleIT6000(device),
-            "FAWAWS" => new ScaleFawaWs(device),
+            "IT6000" => new IT6000(device),
+            "FAWAWS" => new FawaWs(device),
             _ => throw new NotImplementedException($"Modulcode.Scale {modulCode}")
         };
         return scaleApi;
@@ -41,9 +41,9 @@ public class DeviceFactory
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         string modulCode = device.Device.ModulCode;
-        ICardApi? cardApi = modulCode switch
+        ICardApi? cardApi = modulCode.ToUpper() switch
         {
-            "READER" => new CardReader(device),
+            "READER" => new Reader(device),
             _ => throw new NotImplementedException($"Modulcode.Card {modulCode}")
         };
         return cardApi;
@@ -53,10 +53,22 @@ public class DeviceFactory
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         string modulCode = device.Device.ModulCode;
-        IDisplayApi? displayApi = modulCode switch
+        IDisplayApi? displayApi = modulCode.ToUpper() switch
         {
-            "DEFAULT" => new DisplayDefault(device),
+            "REMOTEDISPLAY" => new RemoteDisplay(device),
             _ => throw new NotImplementedException($"Modulcode.Display {modulCode}")
+        };
+        return displayApi;
+    }
+
+    public static ICamApi? GetCamApi(ComDevice device)
+    {
+        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
+        string modulCode = device.Device.ModulCode;
+        ICamApi? displayApi = modulCode.ToUpper() switch
+        {
+            "HTTPCAM" => new HttpCam(device),
+            _ => throw new NotImplementedException($"Modulcode.Cam {modulCode}")
         };
         return displayApi;
     }

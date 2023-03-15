@@ -1,21 +1,16 @@
-﻿using Devices.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace Quva.Devices;
+namespace Quva.Devices.Display;
 
 /// <summary>
 /// Simple Display Shower only waits for Number
 /// </summary>
-public class DisplayDefault : ComProtocol, IDisplayApi
+public class RemoteDisplay : ComProtocol, IDisplayApi
 {
     public DisplayData displayData { get; set; }
     private DeviceOptions deviceOptions { get; set; }
 
-    public DisplayDefault(ComDevice device) : base(device.Code, device.ComPort)
+    public RemoteDisplay(ComDevice device) : base(device.Code, device.ComPort)
     {
         Description = DefaultDescription;
 
@@ -28,7 +23,7 @@ public class DisplayDefault : ComProtocol, IDisplayApi
 
     public async Task<DisplayData> DisplayCommand(string command, string message)
     {
-        if (Enum.TryParse<DisplayCommands>(command, out DisplayCommands cmd))
+        if (Enum.TryParse(command, out DisplayCommands cmd))
         {
             DisplayData data = cmd switch
             {
@@ -57,15 +52,15 @@ public class DisplayDefault : ComProtocol, IDisplayApi
         displayData.Message = message;
 
         // Template + message -> command
-        string Line = deviceOptions.Option("Line", "1");
-        string Font = deviceOptions.Option("Font", "1");
-        string Template = deviceOptions.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
-        string command = Template.Replace("#L", Line)
+        string? Line = deviceOptions.Option("Line", "1");
+        string? Font = deviceOptions.Option("Font", "1");
+        string? Template = deviceOptions.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
+        string? command = Template?.Replace("#L", Line)
             .Replace("#F", Font)
-            .Replace("^M", ((Char)13).ToString())
-            .Replace("^J", ((Char)10).ToString())
+            .Replace("^M", ((char)13).ToString())
+            .Replace("^J", ((char)10).ToString())
             .Replace("#T", message);
-
+        ArgumentNullException.ThrowIfNull(command, "Template");
         var tel = await RunTelegram(displayData, command);
         if (tel.Error != 0)
         {
@@ -85,7 +80,7 @@ public class DisplayDefault : ComProtocol, IDisplayApi
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ShowAnswer));
         DisplayData data = (DisplayData)tel.AppData;
         var inBuff = tel.InData;
-        string inStr = System.Text.Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+        string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
         if (data.Command == DisplayCommands.Show.ToString())
         {
             //no answer here

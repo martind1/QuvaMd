@@ -1,16 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Serilog;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Quva.Devices
+namespace Quva.Devices.ComPort
 {
     public class TcpPort : IComPort, IAsyncDisposable
     {
@@ -19,6 +11,7 @@ namespace Quva.Devices
         public PortType PortType { get; } = PortType.Tcp;
         public ComParameter ComParameter { get; set; }
         public TcpParameter TcpParameter { get; set; }
+        public bool DirectMode { get; } = false;
         //Runtime:
         public uint Bcc { get; set; }
         public bool IsConnected() => tcpClient != null;
@@ -65,7 +58,7 @@ namespace Quva.Devices
 
         // Setzt Parameter
         // zB "COM1:9600:8:1:N" oder "localhost:1234" oder "listen:1234"
-        private void SetParamString(string paramstring)
+        public void SetParamString(string paramstring)
         {
             var SL = paramstring.Split(":");
             if (SL.Length != 2)

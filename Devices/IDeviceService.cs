@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Quva.Devices.Card;
+using Microsoft.AspNetCore.Http;
+using Quva.Devices.Display;
+using Quva.Devices.Scale;
+using Quva.Devices.Cam;
 
 namespace Quva.Devices
 {
@@ -15,6 +19,8 @@ namespace Quva.Devices
         Task<ScaleData> ScaleRegister(string devicecode);
         Task<ScaleData> ScaleStatus(string devicecode);
         Task<IResult> ScaleStatusStart(string devicecode, ComDevice.OnScaleStatus onScaleStatus);
+
+        Task<CamData> CamLoad(string devicecode, int camNumber);
 
         Task CloseDevice(string devicecode);
         ValueTask DisposeAsync();

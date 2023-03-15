@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Quva.Devices;
+namespace Quva.Devices.Card;
 
 public interface ICardApi
 {

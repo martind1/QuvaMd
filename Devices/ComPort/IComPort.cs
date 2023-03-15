@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Quva.Devices;
 
-namespace Quva.Devices;
+namespace Quva.Devices.ComPort;
 
 public interface IComPort : IAsyncDisposable
 {
     // Set Parameter
     // like "COM1:9600:8:1:N" or "localhost:1234" or "listen:1234"
-    // void SetParamString(string paramstring);
-    // now see constructor 
-
+    // see constructor 
+    void SetParamString(string paramstring);
     Task OpenAsync();
     Task CloseAsync();
     Task ResetAsync();
@@ -27,6 +27,7 @@ public interface IComPort : IAsyncDisposable
     string DeviceCode { get; }
     PortType PortType { get; }
     ComParameter ComParameter { get; set; }
+    bool DirectMode { get; }
     //Runtime:
     uint Bcc { get; set; }
     public bool IsConnected();
@@ -50,6 +51,7 @@ public enum PortType
 {
     None,
     Tcp,
+    Http,
     Udp,
     Serial
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Quva.Devices.Card;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -6,13 +7,20 @@ using Serilog.Events;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using Quva.Devices.Display;
+using Quva.Devices.Scale;
+using Quva.Devices.Data;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Quva.Devices
 {
     internal class Program
     {
+        public static IHost? host;
+
         static void Main(string[] args)
         {
+
             Serilog.Debugging.SelfLog.Enable(
                 msg => Console.WriteLine("Error from Serilog: {0}", msg));
             IConfiguration configSerilog = new ConfigurationBuilder()
@@ -21,13 +29,16 @@ namespace Quva.Devices
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configSerilog)
                 .CreateLogger();
-            Log.Information("\r\nInitializing Serilog....");
+            Log.Error("\r\n");
+            Log.Error("Initializing Serilog....");
 
             //Service dependency injection:
-            using IHost host = Host.CreateDefaultBuilder(args)
+            //using 
+                host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                     {
                         services.AddSingleton<IDeviceService, DeviceService>();
+                        services.AddSingleton<IDataService, DataService>();
                     })
                 .Build();
             Log.Information("added Service");
@@ -35,9 +46,9 @@ namespace Quva.Devices
             // Service aufrufen:
             var testsvc = new TestDeviceService(host.Services);
 
-            //Task T = testsvc.Test1();
-            Task T1 = testsvc.Test5();
-            Task T = testsvc.Test6();
+            Task T = testsvc.Test1();
+            //Task T1 = testsvc.Test5();
+            //Task T = testsvc.Test6();
             T.Wait();  //warten bis Task beendet
             Console.WriteLine("waiting for key press");
             Console.ReadKey();  //warten auf Taste
@@ -45,8 +56,6 @@ namespace Quva.Devices
             //testsvc.Test2();
 
         }
-
-
     }
 
     internal class TestDeviceService
@@ -80,9 +89,35 @@ namespace Quva.Devices
             //var data3 = await svc.CardRead("HOH.TRANSP1");
             //Log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
 
-            var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
-            var data4 = await svc.DisplayShow("HOH.DISP1", message);
-            Log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
+            //var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
+            //var data4 = await svc.DisplayShow("HOH.DISP1", message);
+            //Log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
+
+            //var data5 = await svc.CamLoad("HOH.CAMS", 0);
+            var T1 = svc.CamLoad("HOH.CAMS", 0);
+            var T2 = svc.CamLoad("HOH.CAMS", 1);
+            var T3 = svc.CamLoad("HOH.CAMS", 2);
+            //var T4 = svc.CamLoad("HOH.CAMS", 3);
+            await Task.WhenAll(T1, T2, T3);
+            var data1 = await T1;
+            var data2 = await T2;
+            var data3 = await T3;
+            //var data4 = await T4;
+            Log.Information($"CamLoad0 Err:{data1.ErrorNr} {data1.ErrorText} Size:{data1.ImageSize}");
+            ArgumentNullException.ThrowIfNull(data1.ImageBytes);
+            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM0.{data1.ImageFormat}", data1.ImageBytes); 
+
+            Log.Information($"CamLoad1 Err:{data2.ErrorNr} {data2.ErrorText} Size:{data2.ImageSize}");
+            ArgumentNullException.ThrowIfNull(data2.ImageBytes);
+            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM1.{data2.ImageFormat}", data2.ImageBytes); 
+
+            Log.Information($"CamLoad2 Err:{data3.ErrorNr} {data3.ErrorText} Size:{data3.ImageSize}");
+            ArgumentNullException.ThrowIfNull(data3.ImageBytes);
+            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM2.{data3.ImageFormat}", data3.ImageBytes); 
+
+            //Log.Information($"CamLoad3 Err:{data4.ErrorNr} {data4.ErrorText} Size:{data4.ImageSize}");
+            //ArgumentNullException.ThrowIfNull(data4.ImageBytes);
+            //File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM3.{data4.ImageFormat}", data4.ImageBytes); 
         }
 
         /// <summary>
@@ -191,6 +226,7 @@ namespace Quva.Devices
             Log.Information($"testsvc.Test6 Started");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
         private static void MyShow(DisplayData displayData)
         {
             //Log.Error($"### DisplayShow {displayData.Message} ###");

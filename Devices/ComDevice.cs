@@ -1,13 +1,12 @@
-﻿using Devices.Data;
-using Microsoft.Extensions.Options;
+﻿using Quva.Devices.ComPort;
+using Quva.Devices.Card;
+using Quva.Devices.Data;
+using Quva.Devices.Display;
+using Quva.Devices.Scale;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using Quva.Devices.Cam;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Quva.Devices;
 
@@ -23,6 +22,9 @@ public class ComDevice
     public IScaleApi? ScaleApi { get; set; }
     public ICardApi? CardApi { get; set; }
     public IDisplayApi? DisplayApi { get; set; }
+    public ICamApi? CamApi { get; set; }
+
+    private IDataService dataService { get; set; }
 
 
     public ComDevice()
@@ -31,6 +33,11 @@ public class ComDevice
         CLog = Log.ForContext<DeviceService>();
         Code = string.Empty;
         slim = new SemaphoreSlim(1);
+
+        ArgumentNullException.ThrowIfNull(Program.host, nameof(Program.host));
+        using IServiceScope serviceScope = Program.host.Services.CreateScope();
+        IServiceProvider provider = serviceScope.ServiceProvider;
+        dataService = provider.GetRequiredService<IDataService>();
     }
 
     public virtual async Task Open()
@@ -70,7 +77,7 @@ public class ComDevice
         CLog.Information($"[{Code}] ComDevice.Load");
 
         // [Code] von DB laden - erstmal von Test Service laden:
-        var dataService = new DataService();
+        //var dataService = new DataService();
         device = await dataService.GetDevice(Code);
 
         Options = new DeviceOptions(Code, device.Options);
@@ -87,6 +94,10 @@ public class ComDevice
         else if (device.DeviceType == DeviceType.Display)
         {
             DisplayApi = DeviceFactory.GetDisplayApi(this);
+        }
+        else if (device.DeviceType == DeviceType.Cam)
+        {
+            CamApi = DeviceFactory.GetCamApi(this);
         }
         else
         {
@@ -233,15 +244,16 @@ public class ComDevice
     public async Task<DisplayData> DisplayCommand(string command, string message)
     {
         DisplayData result;
-        CLog.Debug($"[{Code}] WAIT Device.DisplayCommand({command})");
+        string messageDebug = message.Trim().Length > 8 ? message.Trim()[..8] + ".." : message.Trim();
+        CLog.Debug($"[{Code}] WAIT Device.DisplayCommand({command}, {messageDebug})");
         // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
         await slim.WaitAsync();
         try
         {
-            CLog.Information($"[{Code}] START Device.DisplayCommand({command})");
+            CLog.Information($"[{Code}] START Device.DisplayCommand({command}, {messageDebug})");
             ArgumentNullException.ThrowIfNull(DisplayApi);
             result = await DisplayApi.DisplayCommand(command, message);
-            CLog.Debug($"[{Code}] END Device.DisplayCommand({command})");
+            CLog.Debug($"[{Code}] END Device.DisplayCommand({command}, {messageDebug})");
         }
         finally
         {
@@ -261,7 +273,7 @@ public class ComDevice
 
     private async Task OnDisplayCommand(CancellationToken arg)
     {
-        if (arg.IsCancellationRequested) 
+        if (arg.IsCancellationRequested)
         {
             return;
         }
@@ -292,4 +304,40 @@ public class ComDevice
     }
 
     #endregion Display Commands
+
+    #region Camera Commands
+
+    public delegate void OnCamShow(CamData displayData);
+
+    public async Task<CamData> CamCommand(string command, int camNumber)
+    {
+        CamData result;
+        CLog.Debug($"[{Code}] WAIT Device.CamCommand({command},{camNumber})");
+        // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
+        await slim.WaitAsync();
+        try
+        {
+            try
+            {
+                CLog.Information($"[{Code}] START Device.CamCommand({command},{camNumber})");
+                ArgumentNullException.ThrowIfNull(CamApi);
+                result = await CamApi.CamCommand(command, camNumber);
+                CLog.Debug($"[{Code}] END Device.CamCommand({command},{camNumber})");
+            }
+            catch
+            {
+                CLog.Debug($"[{Code}] EXCEPTION Device.CamCommand({command},{camNumber})");
+                throw;
+            }
+        }
+        finally
+        {
+            slim.Release();
+        }
+        return await Task.FromResult(result);
+    }
+
+
+
+    #endregion Camera Commands
 }

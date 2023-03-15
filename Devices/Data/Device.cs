@@ -1,12 +1,7 @@
-﻿using Quva.Devices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Quva.Devices.ComPort;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace Devices.Data;
+namespace Quva.Devices.Data;
 
 public class Device
 {

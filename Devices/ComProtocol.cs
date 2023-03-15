@@ -1,14 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using Quva.Devices.ComPort;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Quva.Devices;
 
@@ -130,6 +122,13 @@ public class ComProtocol : IAsyncDisposable
     private async Task<ReadDataResult> ReadDataAsync(ByteBuff data, int minLen, int maxLen, byte delim1, byte delim2)
     {
         ReadDataResult result = ReadDataResult.OK;
+
+        // for HttpClient: performs complete reading
+        if (ComPort.DirectMode)
+        {
+            await ComPort.ReadAsync(data);
+            return await Task.FromResult(result);
+        }
         var tmpBuff = new ByteBuff(MaxDataLen)
         {
             Cnt = Math.Max(1, minLen)
@@ -145,7 +144,7 @@ public class ComProtocol : IAsyncDisposable
         }
         if (delim1 != 0)
             result = ReadDataResult.DelimiterMissing;
-        while (await ComPort.InCountAsync((result == ReadDataResult.DelimiterMissing || delim1 == 0) 
+        while (await ComPort.InCountAsync((result == ReadDataResult.DelimiterMissing || delim1 == 0)
             ? ComPort.ComParameter.Timeout2Ms : 0) > 0)
         {
             tmpBuff.Cnt = 1;
@@ -192,7 +191,6 @@ public class ComProtocol : IAsyncDisposable
         int MaxLen = MaxDataLen;
         int MinLen = 0;
         int RemainingMinLen;
-        //int OldTimeout;
         var slTok = descParam.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         try
         {
@@ -227,37 +225,6 @@ public class ComProtocol : IAsyncDisposable
         ReadDataResult rdResult;
         RemainingMinLen = MinLen;
         rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
-        /*
-        OldTimeout = ComPort.ComParameter.TimeoutMs;
-        ComPort.ComParameter.TimeoutMs = ComPort.ComParameter.Timeout2Ms;
-        try
-        {
-            //nochmal timeout2 lesen wenn mindestens 1 Zeichen gelesen und Len<minLen oder delimiter nicht erreicht
-            while (rdResult != ReadDataResult.OK && data.Cnt > 0 && (data.Cnt < MinLen || rdResult == ReadDataResult.DelimiterMissing))
-            {
-                RemainingMinLen = Math.Max(0, MinLen - data.Cnt);
-                CLog.Warning($"[{DeviceCode}] Receive 2nd ReadData {data.Cnt}\\{RemainingMinLen}:");
-                rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
-            }
-            while (data.Cnt > 0 && data.Cnt < MaxLen && (delimiter[0] == 0 || rdResult == ReadDataResult.DelimiterMissing))
-            {
-                RemainingMinLen = 0;
-                //wait 500ms, then try receive next bunches of data when available
-                await Task.Delay(ComPort.ComParameter.Timeout2Ms);
-                if (await ComPort.InCountAsync() > 0)
-                {
-                    CLog.Warning($"[{DeviceCode}] Receive bunch ReadData {data.Cnt}:");
-                    rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
-                }
-                else
-                    break;
-            }
-        }
-        finally
-        {
-            ComPort.ComParameter.TimeoutMs = OldTimeout;
-        }
-        */
         return await Task.FromResult(rdResult == ReadDataResult.OK);
     }
 
@@ -287,12 +254,11 @@ public class ComProtocol : IAsyncDisposable
         if (!ComPort.IsConnected())
         {
             tel.Status = ComProtStatus.Error;
-            tel.Error = ComProtError.Reset;
+            tel.Error = ComProtError.InternalError;
             tel.ErrorText = $"Error ComPort not connected";
             CLog.Warning($"[{DeviceCode}] {tel.ErrorText}");
             return await Task.FromResult(tel);
         }
-
         // perform dialog from description
         for (int descIdx = 0; descIdx < tel.Description.Length; descIdx++)
         {
@@ -310,11 +276,21 @@ public class ComProtocol : IAsyncDisposable
             catch (Exception ex)
             {
                 tel.Status = ComProtStatus.Error;
-                tel.Error = ComProtError.Length;
+                tel.Error = ComProtError.LengthError;
                 tel.ErrorText = $"Error at Description.{descIdx}({descLine}): {ex.Message}";
                 break;  // escape for loop
             }
-            await RunDescLine(tel, descCmd, descParam);
+            try
+            {
+                await RunDescLine(tel, descCmd, descParam);
+            }
+            catch (Exception ex)
+            {
+                CLog.Information(ex, $"[{DeviceCode}] Error at {descIdx}({descLine})");
+                tel.Status = ComProtStatus.Error;
+                tel.Error = ComProtError.InternalError;
+                tel.ErrorText = $"{ex.Message} Error at {descIdx}({descLine})";
+            }
             if (tel.Status != ComProtStatus.OK)
                 break;
         }
@@ -435,13 +411,13 @@ public class ComProtocol : IAsyncDisposable
         else
         {
             tel.Status = ComProtStatus.Error;
-            tel.Error = ComProtError.Length;
+            tel.Error = ComProtError.LengthError;
             tel.ErrorText = $"syntax error in description({descCmd}:{descParam})";
         }
         /* if ATel.Reseting then
             begin
               if ComPort <> nil then
-                ComPort.Reset;
+                ComPort.InternalError;
               ATel.Status := cpsError;
               ATel.Error := cpeReset;
             end;
