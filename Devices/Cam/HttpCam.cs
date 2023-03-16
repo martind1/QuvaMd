@@ -23,7 +23,7 @@ public class HttpCam : ComProtocol, ICamApi
 
     public async Task<CamData> CamCommand(string command, int camNumber)
     {
-        if (Enum.TryParse<CamCommands>(command, out CamCommands cmd))
+        if (Enum.TryParse(command, out CamCommands cmd))
         {
             CamData data = cmd switch
             {

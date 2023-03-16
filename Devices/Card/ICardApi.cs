@@ -6,17 +6,6 @@ public interface ICardApi
 
 }
 
-public class CardDataArgs : EventArgs
-{
-    public CardData Data { get; set; }
-
-    public CardDataArgs(CardData cardData)
-    {
-        Data = cardData;
-    }
-}
-
-
 public class CardData : DeviceData
 {
     public string? CardNumber { get; set; }

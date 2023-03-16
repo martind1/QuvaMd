@@ -97,29 +97,28 @@ namespace Quva.Devices.Scale
                 string GewichtStr = sl[1];
                 string Meldung = sl[2];
                 int StatusNr = int.Parse(StatusStr);
-                ScaleStatus Status = 0;
 
                 data.Weight = float.Parse(GewichtStr, new CultureInfo("de-DE"));  //Dezimalkomma!
                 data.Unit = ScaleUnit.Ton;
                 data.CalibrationNumber = 0;
                 if (StatusNr == 0 || StatusNr == 1 || StatusNr == 2 || StatusNr == 5)
                 {
-                    Status |= ScaleStatus.WeightOK;
+                    data.Status |= ScaleStatus.WeightOK;
                     if (StatusNr == 1 || StatusNr == 5)
                     {
-                        Status |= ScaleStatus.Underload;
+                        data.Status |= ScaleStatus.Underload;
                     }
                     if (StatusNr == 2)
                     {
-                        Status |= ScaleStatus.NoStandstill;
+                        data.Status |= ScaleStatus.NoStandstill;
                     }
                     data.Display = $"{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}";
                     data.ErrorNr = 0;
                 }
                 else
                 {
-                    Status |= ScaleStatus.NoWeight;
-                    data.Display = Meldung ?? "Error";
+                    data.Status |= ScaleStatus.NoWeight;
+                    data.Display = Meldung;
                     data.ErrorNr = 1;
                 }
             }
@@ -135,31 +134,30 @@ namespace Quva.Devices.Scale
                 string EichNrStr = sl[2];
                 string Meldung = sl[3];
                 int StatusNr = int.Parse(StatusStr);
-                ScaleStatus Status = 0;
 
                 data.Weight = float.Parse(GewichtStr, new CultureInfo("de-DE"));  //Dezimalkomma!
                 data.Unit = ScaleUnit.Ton;
                 data.CalibrationNumber = int.Parse(EichNrStr);
                 if (StatusNr == 0)
                 {
-                    Status |= ScaleStatus.WeightOK;
+                    data.Status |= ScaleStatus.WeightOK;
                     data.Display = $"<{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}>";
                 }
                 else
                 {
-                    data.Display = Meldung ?? $"Error {StatusNr}";
-                    Status |= ScaleStatus.WeightOK;
+                    data.Display = Meldung;
+                    data.Status |= ScaleStatus.WeightOK;
                     if (StatusNr == 1 || StatusNr == 5)
                     {
-                        Status |= ScaleStatus.Underload;
+                        data.Status |= ScaleStatus.Underload;
                     }
                     if (StatusNr == 2)
                     {
-                        Status |= ScaleStatus.PositionError;
+                        data.Status |= ScaleStatus.PositionError;
                     }
                     else
                     {
-                        Status |= ScaleStatus.NoWeight;
+                        data.Status |= ScaleStatus.NoWeight;
                     }
                     data.ErrorNr = 1;
                 }

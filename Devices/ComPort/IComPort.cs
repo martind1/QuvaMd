@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Quva.Devices;
-
-namespace Quva.Devices.ComPort;
+﻿namespace Quva.Devices.ComPort;
 
 public interface IComPort : IAsyncDisposable
 {

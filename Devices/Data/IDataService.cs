@@ -3,6 +3,5 @@
     public interface IDataService
     {
         Task<Device> GetDevice(string code);
-        void TestDevice();
     }
 }

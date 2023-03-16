@@ -236,7 +236,7 @@ public class ComDevice
     #region Display Commands
 
     public delegate void OnDisplayShow(DisplayData displayData);
-    public OnDisplayShow? onDisplayShow { get; set; }  //timer function
+    private OnDisplayShow? _onDisplayShow;  //timer function
     public string? ScaleCode;  //show scale display
     private string? _oldMessage;
 
@@ -265,7 +265,7 @@ public class ComDevice
     {
         _log.Debug($"[{Code}] CALLBACK Device.DisplayCommandStart({command})");
         ArgumentNullException.ThrowIfNull(DisplayApi);
-        this.onDisplayShow = onDisplayShow;
+        _onDisplayShow = onDisplayShow;
         _timerCommand = command;
         _timerAsync = new TimerAsync(OnDisplayCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(500));
     }
@@ -282,8 +282,8 @@ public class ComDevice
         try
         {
             await Open();
-            ArgumentNullException.ThrowIfNull(onDisplayShow);
-            onDisplayShow(displayData);  //fills .Message
+            ArgumentNullException.ThrowIfNull(_onDisplayShow);
+            _onDisplayShow(displayData);  //fills .Message
             if (_oldMessage != displayData.Message)
             {
                 _oldMessage = displayData.Message;
@@ -305,8 +305,6 @@ public class ComDevice
     #endregion Display Commands
 
     #region Camera Commands
-
-    public delegate void OnCamShow(CamData displayData);
 
     public async Task<CamData> CamCommand(string command, int camNumber)
     {

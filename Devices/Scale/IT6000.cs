@@ -81,7 +81,7 @@
         {
             var tel = telEventArgs.Tel;
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(IT60Answer));
-            ScaleData data = (ScaleData)tel.AppData;
+            //ScaleData data = (ScaleData)tel.AppData;
         }
 
         #endregion

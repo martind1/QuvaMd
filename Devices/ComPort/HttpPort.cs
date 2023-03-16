@@ -1,10 +1,8 @@
 ﻿using Serilog;
-using System.Net;
-using System.Net.Sockets;
 
 namespace Quva.Devices.ComPort
 {
-    public class HttpPort : IComPort, IAsyncDisposable
+    public class HttpPort : IComPort
     {
         private readonly ILogger _log;
         public string DeviceCode { get; }
@@ -87,7 +85,7 @@ namespace Quva.Devices.ComPort
         public async Task<int> ReadAsync(ByteBuff buffer)
         {
             //load image
-            ArgumentNullException.ThrowIfNull(_httpParameter.URL, "_httpParameter.URL");
+            ArgumentNullException.ThrowIfNull(_httpParameter.URL);
             Uri uri = new(_httpParameter.URL);
             ArgumentNullException.ThrowIfNull(_httpClient, nameof(_httpClient));
             buffer.Buff = await _httpClient.GetByteArrayAsync(uri);

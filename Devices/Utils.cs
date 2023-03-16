@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace Quva.Devices
 {
@@ -105,7 +99,7 @@ namespace Quva.Devices
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.ToString());
+                Trace.TraceError(e.ToString());
             }
         }
 
@@ -167,7 +161,7 @@ namespace Quva.Devices
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.ToString());
+                Trace.TraceError(e.ToString());
             }
         }
 

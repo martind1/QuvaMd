@@ -75,12 +75,12 @@ namespace Quva.Devices
 
         //with callback:
 
-        public async Task<IResult> CardReadStart(string devicecode, ComDevice.OnCardRead onCardRead)
+        public async Task<IResult> CardReadStart(string devicecode, OnCardRead onCardRead)
         {
             return await CardCommandStart(devicecode, CardCommands.Read.ToString(), onCardRead);
         }
 
-        public async Task<IResult> CardCommandStart(string devicecode, string command, ComDevice.OnCardRead onCardRead)
+        public async Task<IResult> CardCommandStart(string devicecode, string command, OnCardRead onCardRead)
         {
             ComDevice? device = null;
             IResult? result;
@@ -234,7 +234,7 @@ namespace Quva.Devices
 
         // with callback:
 
-        public async Task<IResult> ScaleStatusStart(string devicecode, ComDevice.OnScaleStatus onScaleStatus)
+        public async Task<IResult> ScaleStatusStart(string devicecode, OnScaleStatus onScaleStatus)
         {
             ComDevice? device = null;
             IResult? result;
@@ -284,7 +284,7 @@ namespace Quva.Devices
         /// <summary>
         /// Gets the actual Display of a named scale
         /// </summary>
-        /// <param name="devicecode"></param>
+        /// <param name="scaleCode"></param>
         public string GetScaleDisplay(string scaleCode)
         {
             string? result = null;

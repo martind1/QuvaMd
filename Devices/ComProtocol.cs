@@ -8,10 +8,9 @@ public class ComProtocol : IAsyncDisposable
 {
     protected ILogger _log;
     public string DeviceCode { get; }
-    private IComPort? _comPort = null;
+    private IComPort? _comPort;
     public IComPort ComPort { get => _comPort ?? throw new ArgumentNullException(nameof(_comPort)); set => _comPort = value; }
     public string[] Description { get; set; }
-    public ComProtErrorActions ErrorActions { get; set; }
     public event EventHandler<TelEventArgs>? OnAnswer;
     public event EventHandler<UserFnEventArgs>? OnUserFn;
     private void DoAnswer(TelEventArgs e) => OnAnswer?.Invoke(this, e);
@@ -27,7 +26,7 @@ public class ComProtocol : IAsyncDisposable
         _log = Log.ForContext<DeviceService>();
         DeviceCode = deviceCode;
         this._comPort = comPort;
-        Description = new string[] { "B:", "S:^M", "A:128,^M" }; //nur Demo
+        Description = new[] { "B:", "S:^M", "A:128,^M" }; //nur Demo
     }
 
     protected virtual async ValueTask DisposeAsyncCore()
@@ -182,7 +181,6 @@ public class ComProtocol : IAsyncDisposable
     /// maxcount, mincount, delimiter1, delimiter2
     /// n[:m],d1,d2
     /// </summary>
-    /// <param name="answer">true = get answer data, false = only wait for tokens</param>
     /// <returns>true = ok, false = timeout error</returns>
     private async Task<bool> Receive(ByteBuff data, string descParam)
     {
@@ -243,10 +241,16 @@ public class ComProtocol : IAsyncDisposable
         var tel = new ComTelegram(this)
         {
             Status = ComProtStatus.OK,
-            AppData = appData
+            AppData = appData,
+            InData =
+            {
+                Cnt = 0
+            },
+            DummyData =
+            {
+                Cnt = 0
+            }
         };
-        tel.InData.Cnt = 0;
-        tel.DummyData.Cnt = 0;
         tel.OutData.CopyFrom(byteCmd);
 
 
@@ -254,7 +258,7 @@ public class ComProtocol : IAsyncDisposable
         {
             tel.Status = ComProtStatus.Error;
             tel.Error = ComProtError.InternalError;
-            tel.ErrorText = $"Error ComPort not connected";
+            tel.ErrorText = "Error ComPort not connected";
             _log.Warning($"[{DeviceCode}] {tel.ErrorText}");
             return await Task.FromResult(tel);
         }
@@ -269,7 +273,7 @@ public class ComProtocol : IAsyncDisposable
             int splitPos = descLine.IndexOf(':');  //first occurance
             try
             {
-                descCmd = descLine[0..splitPos];
+                descCmd = descLine[..splitPos];
                 descParam = descLine[(splitPos + 1)..];
             }
             catch (Exception ex)

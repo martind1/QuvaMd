@@ -21,7 +21,7 @@ public class Reader : ComProtocol, ICardApi
 
     public async Task<CardData> CardCommand(string command)
     {
-        if (Enum.TryParse<CardCommands>(command, out CardCommands cmd))
+        if (Enum.TryParse(command, out CardCommands cmd))
         {
             CardData data = cmd switch
             {

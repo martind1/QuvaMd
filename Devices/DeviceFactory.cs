@@ -24,11 +24,11 @@ public class DeviceFactory
         return comPort;
     }
 
-    public static IScaleApi? GetScaleApi(ComDevice device)
+    public static IScaleApi GetScaleApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         string modulCode = device.Device.ModulCode;
-        IScaleApi? scaleApi = modulCode.ToUpper() switch
+        IScaleApi scaleApi = modulCode.ToUpper() switch
         {
             "IT6000" => new IT6000(device),
             "FAWAWS" => new FawaWs(device),
@@ -37,11 +37,11 @@ public class DeviceFactory
         return scaleApi;
     }
 
-    public static ICardApi? GetCardApi(ComDevice device)
+    public static ICardApi GetCardApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         string modulCode = device.Device.ModulCode;
-        ICardApi? cardApi = modulCode.ToUpper() switch
+        ICardApi cardApi = modulCode.ToUpper() switch
         {
             "READER" => new Reader(device),
             _ => throw new NotImplementedException($"Modulcode.Card {modulCode}")
@@ -49,11 +49,11 @@ public class DeviceFactory
         return cardApi;
     }
 
-    public static IDisplayApi? GetDisplayApi(ComDevice device)
+    public static IDisplayApi GetDisplayApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         string modulCode = device.Device.ModulCode;
-        IDisplayApi? displayApi = modulCode.ToUpper() switch
+        IDisplayApi displayApi = modulCode.ToUpper() switch
         {
             "REMOTEDISPLAY" => new RemoteDisplay(device),
             _ => throw new NotImplementedException($"Modulcode.Display {modulCode}")
@@ -61,11 +61,11 @@ public class DeviceFactory
         return displayApi;
     }
 
-    public static ICamApi? GetCamApi(ComDevice device)
+    public static ICamApi GetCamApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         string modulCode = device.Device.ModulCode;
-        ICamApi? displayApi = modulCode.ToUpper() switch
+        ICamApi displayApi = modulCode.ToUpper() switch
         {
             "HTTPCAM" => new HttpCam(device),
             _ => throw new NotImplementedException($"Modulcode.Cam {modulCode}")

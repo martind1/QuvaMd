@@ -1,10 +1,4 @@
-﻿using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Quva.Devices;
 
@@ -29,20 +23,6 @@ public class UserFnEventArgs : EventArgs
         Tel = tel;
         UserFn = userFn;
     }
-}
-
-public class ComSimulEventArgs : EventArgs
-{
-    public byte[]? OutData { get; set; }
-    public int OutDataLen { get; set; }
-    public byte[]? InData { get; set; }
-    public int InDataLen { get; set; }
-}
-
-public class UserFnkEventArgs : EventArgs
-{
-    public ComTelegram? tel { get; set; }
-    public string? FnkName { get; set; }
 }
 
 public class ByteBuff

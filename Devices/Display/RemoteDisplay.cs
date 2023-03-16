@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Quva.Devices.Display;
+﻿namespace Quva.Devices.Display;
 
 /// <summary>
 /// Simple Display Shower only waits for Number
@@ -79,7 +77,7 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
         var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ShowAnswer));
         var inBuff = tel.InData;
-        string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
+        //string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
         if (ShowData.Command == DisplayCommands.Show.ToString())
         {
             //no answer here

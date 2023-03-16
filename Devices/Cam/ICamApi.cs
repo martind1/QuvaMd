@@ -6,17 +6,6 @@ public interface ICamApi
 
 }
 
-public class CamDataArgs : EventArgs
-{
-    public CamData Data { get; set; }
-
-    public CamDataArgs(CamData camData)
-    {
-        Data = camData;
-    }
-}
-
-
 public class CamData : DeviceData
 {
 

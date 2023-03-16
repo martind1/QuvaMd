@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Quva.Devices.ComPort
 {
-    public class TcpPort : IComPort, IAsyncDisposable
+    public class TcpPort : IComPort
     {
         private readonly ILogger _log;
         public string DeviceCode { get; }
