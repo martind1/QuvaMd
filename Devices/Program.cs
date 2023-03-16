@@ -1,19 +1,13 @@
-﻿using Quva.Devices.Card;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
-using Serilog.Events;
-using System;
-using System.Globalization;
-using System.Threading.Tasks;
+using Quva.Devices.Card;
+using Quva.Devices.Data;
 using Quva.Devices.Display;
 using Quva.Devices.Scale;
-using Quva.Devices.Data;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Http;
-using Quva.Devices.Cam;
-using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using System.Globalization;
 
 namespace Quva.Devices
 {
