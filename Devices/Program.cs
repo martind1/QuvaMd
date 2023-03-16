@@ -11,6 +11,9 @@ using Quva.Devices.Display;
 using Quva.Devices.Scale;
 using Quva.Devices.Data;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Http;
+using Quva.Devices.Cam;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Quva.Devices
 {
@@ -105,7 +108,7 @@ namespace Quva.Devices
             //var data4 = await T4;
             Log.Information($"CamLoad0 Err:{data1.ErrorNr} {data1.ErrorText} Size:{data1.ImageSize}");
             ArgumentNullException.ThrowIfNull(data1.ImageBytes);
-            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM0.{data1.ImageFormat}", data1.ImageBytes); 
+            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM0.{data1.ImageFormat}", data1.ImageBytes);
 
             Log.Information($"CamLoad1 Err:{data2.ErrorNr} {data2.ErrorText} Size:{data2.ImageSize}");
             ArgumentNullException.ThrowIfNull(data2.ImageBytes);
@@ -175,7 +178,7 @@ namespace Quva.Devices
         public async Task Test4()
         {
             Log.Information($"testsvc.Test4");
-            var result = await svc.CardReadStart("HOH.TRANSP1", MyCardRead);
+            IResult result = await svc.CardReadStart("HOH.TRANSP1", MyCardRead);
             Log.Information($"testsvc.Test4 Started");
         }
 
@@ -195,7 +198,7 @@ namespace Quva.Devices
         public async Task Test5()
         {
             Log.Information($"testsvc.Test5");
-            var result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
+            IResult result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
             Log.Information($"testsvc.Test5 Started");
         }
 
@@ -220,19 +223,21 @@ namespace Quva.Devices
         public async Task Test6()
         {
             Log.Information($"testsvc.Test6");
-            //MyShow: var result = await svc.DisplayShowStart("HOH.DISP1", MyShow);
+            //IResult result = await svc.DisplayShowStart("HOH.DISP1", MyShow);
             //ScaleDisplay:
-            _ = await svc.DisplayShowScale("HOH.DISP1", "HOH.FW2");
+            IResult result = await svc.DisplayShowScale("HOH.DISP1", "HOH.FW2");
+            if (result == null) { }
+
             Log.Information($"testsvc.Test6 Started");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
         private static void MyShow(DisplayData displayData)
         {
-            //Log.Error($"### DisplayShow {displayData.Message} ###");
-            //aktuelle Uhrzeit
             displayData.Message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
         }
+        //Log.Error($"### DisplayShow {ShowData.Message} ###");
+        //aktuelle Uhrzeit
 
     }
 }

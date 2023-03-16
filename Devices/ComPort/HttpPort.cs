@@ -6,16 +6,17 @@ namespace Quva.Devices.ComPort
 {
     public class HttpPort : IComPort, IAsyncDisposable
     {
-        private readonly ILogger CLog;
+        private readonly ILogger _log;
         public string DeviceCode { get; }
         public PortType PortType { get; } = PortType.Http;
         public ComParameter ComParameter { get; set; }
-        public HttpParameter HttpParameter { get; set; }
-        public HttpClient? httpClient { get; set; }
         public bool DirectMode { get; } = true;
-        //Runtime:
         public uint Bcc { get; set; }
-        public bool IsConnected() => httpClient != null;
+        public bool IsConnected() => _httpClient != null;
+
+        private HttpParameter _httpParameter { get; set; }
+        private HttpClient? _httpClient { get; set; }
+        //Runtime:
 
         public HttpPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
         {
@@ -23,28 +24,28 @@ namespace Quva.Devices.ComPort
 
         public HttpPort(string deviceCode, string paramString)
         {
-            CLog = Log.ForContext<DeviceService>();
+            _log = Log.ForContext<DeviceService>();
             DeviceCode = deviceCode;  //for Debug Output
             ComParameter = new();
-            HttpParameter = new();
+            _httpParameter = new();
             SetParamString(paramString);
-            httpClient = new HttpClient();  //remains until dispose
+            _httpClient = new HttpClient();  //remains until dispose
         }
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            CLog.Warning($"[{DeviceCode}] {nameof(HttpPort)}.DisposeAsyncCore({httpClient != null})");
-            if (httpClient != null)
+            _log.Warning($"[{DeviceCode}] {nameof(HttpPort)}.DisposeAsyncCore({_httpClient != null})");
+            if (_httpClient != null)
             {
-                await Task.Run(() => { httpClient.Dispose(); });
+                await Task.Run(() => { _httpClient.Dispose(); });
             }
-            httpClient = null;
+            _httpClient = null;
             //await CloseAsync();
         }
 
         public async ValueTask DisposeAsync()
         {
-            CLog.Warning($"[{DeviceCode}] {nameof(HttpPort)}.DisposeAsync()");
+            _log.Warning($"[{DeviceCode}] {nameof(HttpPort)}.DisposeAsync()");
             await DisposeAsyncCore().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
@@ -54,7 +55,7 @@ namespace Quva.Devices.ComPort
         // Setzt Parameter
         public void SetParamString(string paramstring)
         {
-            HttpParameter.URL = paramstring;
+            _httpParameter.URL = paramstring;
         }
 
 
@@ -87,12 +88,12 @@ namespace Quva.Devices.ComPort
         public async Task<int> ReadAsync(ByteBuff buffer)
         {
             //load image
-            ArgumentNullException.ThrowIfNull(HttpParameter.URL, "HttpParameter.URL");
-            Uri uri = new(HttpParameter.URL);
-            ArgumentNullException.ThrowIfNull(httpClient, nameof(httpClient));
-            buffer.Buff = await httpClient.GetByteArrayAsync(uri);
+            ArgumentNullException.ThrowIfNull(_httpParameter.URL, "_httpParameter.URL");
+            Uri uri = new(_httpParameter.URL);
+            ArgumentNullException.ThrowIfNull(_httpClient, nameof(_httpClient));
+            buffer.Buff = await _httpClient.GetByteArrayAsync(uri);
             buffer.Cnt = buffer.Buff.Length;
-            CLog.Debug($"HttpPort.ReadAsync {buffer.Cnt} {uri.Host}");
+            _log.Debug($"[{DeviceCode}] HttpPort.ReadAsync {buffer.Cnt} {uri.Host}");
             return await Task.FromResult(buffer.Cnt);
         }
 

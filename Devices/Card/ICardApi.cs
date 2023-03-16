@@ -1,15 +1,8 @@
-﻿using Quva.Devices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quva.Devices.Card;
+﻿namespace Quva.Devices.Card;
 
 public interface ICardApi
 {
-    public Task<CardData> CardCommand(string command);
+    Task<CardData> CardCommand(string command);
 
 }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Quva.Devices;
-using Quva.Devices.Data;
+﻿using System.Text;
 
 namespace Quva.Devices.Card;
 
@@ -14,7 +8,7 @@ namespace Quva.Devices.Card;
 public class Reader : ComProtocol, ICardApi
 {
 
-    private CardData cardData { get; set; }
+    private readonly CardData _readData;
 
     public Reader(ComDevice device) : base(device.Code, device.ComPort)
     {
@@ -22,7 +16,7 @@ public class Reader : ComProtocol, ICardApi
 
         OnAnswer += ReaderAnswer;
 
-        cardData = new CardData(device.Code, CardCommands.Read.ToString());
+        _readData = new CardData(device.Code, CardCommands.Read.ToString());
     }
 
     public async Task<CardData> CardCommand(string command)
@@ -56,14 +50,14 @@ public class Reader : ComProtocol, ICardApi
 
     public async Task<CardData> Read()
     {
-        //cardData = new CardData(DeviceCode, CardCommands.Read.ToString());
-        var tel = await RunTelegram(cardData, "read");  //command text egal
+        //_readData = new CardData(DeviceCode, CardCommands.Read.ToString());
+        var tel = await RunTelegram(_readData, "read");  //command text egal
         if (tel.Error != 0)
         {
-            cardData.ErrorNr = 99;
-            cardData.ErrorText = tel.ErrorText;
+            _readData.ErrorNr = 99;
+            _readData.ErrorText = tel.ErrorText;
         }
-        return await Task.FromResult(cardData);
+        return await Task.FromResult(_readData);
     }
 
     #endregion
@@ -74,12 +68,11 @@ public class Reader : ComProtocol, ICardApi
     {
         var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ReaderAnswer));
-        CardData data = (CardData)tel.AppData;
         var inBuff = tel.InData;
         string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
-        if (data.Command == CardCommands.Read.ToString())
+        if (_readData.Command == CardCommands.Read.ToString())
         {
-            data.CardNumber = inStr;
+            _readData.CardNumber = inStr;
         }
     }
 

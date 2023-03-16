@@ -6,10 +6,10 @@ namespace Quva.Devices;
 
 public class ComProtocol : IAsyncDisposable
 {
-    protected ILogger CLog;
+    protected ILogger _log;
     public string DeviceCode { get; }
-    private IComPort? comPort = null;
-    public IComPort ComPort { get => comPort ?? throw new ArgumentNullException(nameof(comPort)); set => comPort = value; }
+    private IComPort? _comPort = null;
+    public IComPort ComPort { get => _comPort ?? throw new ArgumentNullException(nameof(_comPort)); set => _comPort = value; }
     public string[] Description { get; set; }
     public ComProtErrorActions ErrorActions { get; set; }
     public event EventHandler<TelEventArgs>? OnAnswer;
@@ -24,25 +24,25 @@ public class ComProtocol : IAsyncDisposable
 
     public ComProtocol(string deviceCode, IComPort? comPort)
     {
-        CLog = Log.ForContext<DeviceService>();
+        _log = Log.ForContext<DeviceService>();
         DeviceCode = deviceCode;
-        this.comPort = comPort;
+        this._comPort = comPort;
         Description = new string[] { "B:", "S:^M", "A:128,^M" }; //nur Demo
     }
 
     protected virtual async ValueTask DisposeAsyncCore()
     {
-        CLog.Warning($"[{DeviceCode}] {GetType().Name}.DisposeAsyncCore({comPort != null})");
-        if (comPort != null)
+        _log.Warning($"[{DeviceCode}] {GetType().Name}.DisposeAsyncCore({_comPort != null})");
+        if (_comPort != null)
         {
-            await comPort.CloseAsync();
+            await _comPort.CloseAsync();
         }
-        comPort = null;
+        _comPort = null;
     }
 
     public async ValueTask DisposeAsync()
     {
-        CLog.Warning($"[{DeviceCode}] {GetType().Name}.DisposeAsync()");
+        _log.Warning($"[{DeviceCode}] {GetType().Name}.DisposeAsync()");
         await DisposeAsyncCore().ConfigureAwait(false);
 
         GC.SuppressFinalize(this);
@@ -104,7 +104,7 @@ public class ComProtocol : IAsyncDisposable
     private async Task<int> ClearInputAsync(ByteBuff dummydata)
     {
         dummydata.Cnt = 0;
-        if (comPort != null)
+        if (_comPort != null)
         {
             dummydata.Cnt = await ComPort.InCountAsync(0);
             if (dummydata.Cnt > 0)
@@ -256,7 +256,7 @@ public class ComProtocol : IAsyncDisposable
             tel.Status = ComProtStatus.Error;
             tel.Error = ComProtError.InternalError;
             tel.ErrorText = $"Error ComPort not connected";
-            CLog.Warning($"[{DeviceCode}] {tel.ErrorText}");
+            _log.Warning($"[{DeviceCode}] {tel.ErrorText}");
             return await Task.FromResult(tel);
         }
         // perform dialog from description
@@ -286,7 +286,7 @@ public class ComProtocol : IAsyncDisposable
             }
             catch (Exception ex)
             {
-                CLog.Information(ex, $"[{DeviceCode}] Error at {descIdx}({descLine})");
+                _log.Information(ex, $"[{DeviceCode}] Error at {descIdx}({descLine})");
                 tel.Status = ComProtStatus.Error;
                 tel.Error = ComProtError.InternalError;
                 tel.ErrorText = $"{ex.Message} Error at {descIdx}({descLine})";
@@ -304,7 +304,7 @@ public class ComProtocol : IAsyncDisposable
         }
         else
         {
-            CLog.Warning($"RunTelegram [{tel.Error}] {tel.ErrorText}");
+            _log.Warning($"RunTelegram [{tel.Error}] {tel.ErrorText}");
         }
         return await Task.FromResult(tel);
     }
@@ -329,7 +329,7 @@ public class ComProtocol : IAsyncDisposable
     private async Task<bool> RunDescLine(ComTelegram tel, string descCmd, string descParam)
     {
         bool bResult = false;
-        CLog.Debug($"[{DeviceCode}] {GetType().Name}.RunDescLine({descCmd}:{descParam})");
+        _log.Debug($"[{DeviceCode}] {GetType().Name}.RunDescLine({descCmd}:{descParam})");
         if (descCmd == "T")  //T:m - Timeout
         {
             ComPort.ComParameter.TimeoutMs = int.Parse(descParam);

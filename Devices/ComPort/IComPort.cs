@@ -30,13 +30,13 @@ public interface IComPort : IAsyncDisposable
     bool DirectMode { get; }
     //Runtime:
     uint Bcc { get; set; }
-    public bool IsConnected();
+    bool IsConnected();
 }
 
 public class ComParameter
 {
     public int TimeoutMs { get; set; }
-    public int Timeout2Ms { get; set; }  //between characters in input stream
+    public int Timeout2Ms { get; set; }  //between characters in input _stream
     public bool DoubleDle { get; set; }
     public bool Echo { get; set; }
 }

@@ -7,8 +7,8 @@ namespace Quva.Devices.Display;
 /// </summary>
 public class RemoteDisplay : ComProtocol, IDisplayApi
 {
-    public DisplayData displayData { get; set; }
-    private DeviceOptions deviceOptions { get; set; }
+    public DisplayData ShowData { get; set; }
+    private readonly DeviceOptions _deviceOptions;
 
     public RemoteDisplay(ComDevice device) : base(device.Code, device.ComPort)
     {
@@ -16,9 +16,9 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
 
         OnAnswer += ShowAnswer;
 
-        displayData = new DisplayData(device.Code, DisplayCommands.Show.ToString());
+        ShowData = new DisplayData(device.Code, DisplayCommands.Show.ToString());
         ArgumentNullException.ThrowIfNull(device.Options);
-        deviceOptions = device.Options;
+        _deviceOptions = device.Options;
     }
 
     public async Task<DisplayData> DisplayCommand(string command, string message)
@@ -49,25 +49,25 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
 
     public async Task<DisplayData> Show(string message)
     {
-        displayData.Message = message;
+        ShowData.Message = message;
 
         // Template + message -> command
-        string? Line = deviceOptions.Option("Line", "1");
-        string? Font = deviceOptions.Option("Font", "1");
-        string? Template = deviceOptions.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
+        string? Line = _deviceOptions.Option("Line", "1");
+        string? Font = _deviceOptions.Option("Font", "1");
+        string? Template = _deviceOptions.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
         string? command = Template?.Replace("#L", Line)
             .Replace("#F", Font)
             .Replace("^M", ((char)13).ToString())
             .Replace("^J", ((char)10).ToString())
             .Replace("#T", message);
         ArgumentNullException.ThrowIfNull(command, "Template");
-        var tel = await RunTelegram(displayData, command);
+        var tel = await RunTelegram(ShowData, command);
         if (tel.Error != 0)
         {
-            displayData.ErrorNr = 99;
-            displayData.ErrorText = tel.ErrorText;
+            ShowData.ErrorNr = 99;
+            ShowData.ErrorText = tel.ErrorText;
         }
-        return await Task.FromResult(displayData);
+        return await Task.FromResult(ShowData);
     }
 
     #endregion
@@ -78,10 +78,9 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
     {
         var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ShowAnswer));
-        DisplayData data = (DisplayData)tel.AppData;
         var inBuff = tel.InData;
         string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
-        if (data.Command == DisplayCommands.Show.ToString())
+        if (ShowData.Command == DisplayCommands.Show.ToString())
         {
             //no answer here
         }

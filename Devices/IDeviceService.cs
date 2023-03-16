@@ -1,8 +1,8 @@
-﻿using Quva.Devices.Card;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Quva.Devices.Cam;
+using Quva.Devices.Card;
 using Quva.Devices.Display;
 using Quva.Devices.Scale;
-using Quva.Devices.Cam;
 
 namespace Quva.Devices
 {

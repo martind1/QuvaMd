@@ -1,21 +1,12 @@
-﻿using Quva.Devices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace Quva.Devices.Scale
+﻿namespace Quva.Devices.Scale
 {
     /// <summary>
-    /// IT6000, IT9000 scale device api
+    /// IT6000, IT9000 scale _device api
     /// </summary>
     public class IT6000 : ComProtocol, IScaleApi
     {
-        public ScaleData statusData { get; set; }
-        public ScaleData registerData { get; set; }
+        public ScaleData StatusData { get; set; }
+        private readonly ScaleData _registerData;
 
 
         public IT6000(ComDevice device) : base(device.Code, device.ComPort)
@@ -24,8 +15,8 @@ namespace Quva.Devices.Scale
 
             OnAnswer += IT60Answer;
 
-            statusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
-            registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
+            StatusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
+            _registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
         }
 
         public async Task<ScaleData> ScaleCommand(string command)
@@ -59,27 +50,27 @@ namespace Quva.Devices.Scale
 
         public async Task<ScaleData> Status()
         {
-            var tel = await RunTelegram(statusData, "<RM>");
+            var tel = await RunTelegram(StatusData, "<RM>");
             if (tel.Error != 0)
             {
-                statusData.ErrorNr = 99;
-                statusData.ErrorText = tel.ErrorText;
-                statusData.Display = tel.ErrorText; 
+                StatusData.ErrorNr = 99;
+                StatusData.ErrorText = tel.ErrorText;
+                StatusData.Display = tel.ErrorText; 
             }
-            return await Task.FromResult(statusData);
+            return await Task.FromResult(StatusData);
 
         }
 
         public async Task<ScaleData> Register()
         {
-            var tel = await RunTelegram(registerData, "<RN>");
+            var tel = await RunTelegram(_registerData, "<RN>");
             if (tel.Error != 0)
             {
-                statusData.ErrorNr = 99;
-                statusData.ErrorText = tel.ErrorText;
-                statusData.Display = tel.ErrorText; 
+                StatusData.ErrorNr = 99;
+                StatusData.ErrorText = tel.ErrorText;
+                StatusData.Display = tel.ErrorText; 
             }
-            return await Task.FromResult(registerData);
+            return await Task.FromResult(_registerData);
         }
 
         #endregion
@@ -92,7 +83,6 @@ namespace Quva.Devices.Scale
             ArgumentNullException.ThrowIfNull(tel.AppData, nameof(IT60Answer));
             ScaleData data = (ScaleData)tel.AppData;
         }
-
 
         #endregion
     }

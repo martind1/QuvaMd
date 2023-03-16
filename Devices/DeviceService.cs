@@ -10,34 +10,34 @@ namespace Quva.Devices
 {
     public class DeviceService : IAsyncDisposable, IDeviceService
     {
-        private readonly ILogger CLog;
-        private bool disposeFlag = true;
+        private readonly ILogger _log;
+        private bool _disposeFlag = true;
         public IDictionary<string, ComDevice> DeviceList { get; set; }
 
 
         public DeviceService()
         {
             DeviceList = new Dictionary<string, ComDevice>();
-            CLog = Log.ForContext<DeviceService>();
-            CLog.Information("creating DeviceService");
+            _log = Log.ForContext<DeviceService>();
+            _log.Information("creating DeviceService");
         }
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            CLog.Information($"{nameof(DeviceService)}.DisposeAsyncCore({disposeFlag})");
-            if (disposeFlag)
+            _log.Information($"{nameof(DeviceService)}.DisposeAsyncCore({_disposeFlag})");
+            if (_disposeFlag)
             {
                 foreach (ComDevice d in DeviceList.Values)
                 {
                     await CloseDevice(d);
                 }
             }
-            disposeFlag = false;
+            _disposeFlag = false;
         }
 
         public async ValueTask DisposeAsync()
         {
-            CLog.Information($"{nameof(DeviceService)}.DisposeAsync()");
+            _log.Information($"{nameof(DeviceService)}.DisposeAsync()");
             await DisposeAsyncCore().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
@@ -259,8 +259,8 @@ namespace Quva.Devices
         //{
         //    try
         //    {
-        //        var device = await OpenDevice<ComDevice>(devicecode);
-        //        var result = await device.Command(command);
+        //        var _device = await OpenDevice<ComDevice>(devicecode);
+        //        var result = await _device.Command(command);
         //        return await Task.FromResult(result);
         //    }
         //    catch (Exception ex)
@@ -290,7 +290,7 @@ namespace Quva.Devices
             string? result = null;
             if (DeviceList.TryGetValue(scaleCode, out ComDevice? device))
             {
-                result = device.ScaleApi?.statusData.Display;
+                result = device.ScaleApi?.StatusData.Display;
             }
             return result ?? string.Empty;
         }
@@ -314,11 +314,11 @@ namespace Quva.Devices
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
-                CLog.Information($"[{devicecode}] OpenDevice: bereits vorhanden");
+                _log.Information($"[{devicecode}] OpenDevice: bereits vorhanden");
             }
             else
             {
-                CLog.Information($"[{devicecode}] OpenDevice: add");
+                _log.Information($"[{devicecode}] OpenDevice: add");
                 device = new ComDevice
                 {
                     Code = devicecode   //wichtig weil nicht in Constructor
@@ -339,13 +339,13 @@ namespace Quva.Devices
         {
             if (DeviceList.TryGetValue(devicecode, out ComDevice? device))
             {
-                CLog.Information($"CloseDevice({devicecode}): close");
+                _log.Information($"CloseDevice({devicecode}): close");
                 DeviceList.Remove(devicecode);
                 await device.Close();
             }
             else
             {
-                CLog.Warning($"CloseDevice({devicecode}): not found");
+                _log.Warning($"CloseDevice({devicecode}): not found");
             }
         }
 

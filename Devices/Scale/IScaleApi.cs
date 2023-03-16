@@ -1,22 +1,13 @@
-﻿using Quva.Devices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quva.Devices.Scale;
+﻿namespace Quva.Devices.Scale;
 
 /// <summary>
 /// Interface for concrete Device Dialog Api
 /// </summary>
 public interface IScaleApi
 {
-    public Task<ScaleData> ScaleCommand(string command);
+    Task<ScaleData> ScaleCommand(string command);
 
-    public ScaleData statusData { get; set; }
-    public ScaleData registerData { get; set; }
-
+    ScaleData StatusData { get; set; }
 }
 
 public class ScaleData : DeviceData

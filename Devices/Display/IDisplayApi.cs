@@ -1,20 +1,13 @@
-﻿using Quva.Devices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quva.Devices.Display;
+﻿namespace Quva.Devices.Display;
 
 /// <summary>
 /// Interface for concrete Device Dialog Api
 /// </summary>
 public interface IDisplayApi
 {
-    public Task<DisplayData> DisplayCommand(string command, string message);
+    Task<DisplayData> DisplayCommand(string command, string message);
 
-    public DisplayData displayData { get; set; }
+    DisplayData ShowData { get; set; }
 }
 
 public class DisplayData : DeviceData

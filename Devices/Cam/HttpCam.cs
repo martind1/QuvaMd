@@ -1,14 +1,4 @@
-﻿using Quva.Devices.Cam;
-using Quva.Devices.Card;
-using Quva.Devices.Data;
-using Quva.Devices.Display;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quva.Devices.Cam;
+﻿namespace Quva.Devices.Cam;
 
 /// <summary>
 /// Simple Http HttpCam only waits for Number
@@ -16,19 +6,19 @@ namespace Quva.Devices.Cam;
 public class HttpCam : ComProtocol, ICamApi
 {
 
-    private CamData camData { get; set; }
-    private DeviceOptions deviceOptions { get; set; }
-    private string? Url0 { get; set; }
+    private CamData _loadData;
+    private readonly DeviceOptions _deviceOptions;
+    private readonly string? _url0;
 
     public HttpCam(ComDevice device) : base(device.Code, device.ComPort)
     {
         Description = HttpCamDescription;
         OnAnswer += HttpCamAnswer;
-        camData = new CamData(device.Code, CamCommands.Load.ToString());
+        _loadData = new CamData(device.Code, CamCommands.Load.ToString());
 
         ArgumentNullException.ThrowIfNull(device.Options);
-        deviceOptions = device.Options;
-        Url0 = device.Device.ParamString;
+        _deviceOptions = device.Options;
+        _url0 = device.Device.ParamString;
     }
 
     public async Task<CamData> CamCommand(string command, int camNumber)
@@ -61,30 +51,32 @@ public class HttpCam : ComProtocol, ICamApi
 
     public async Task<CamData> Load(int camNumber)
     {
-        camData = new CamData(DeviceCode, CamCommands.Load.ToString());  //important
-        camData.Status = CamStatus.Timeout;
-        camData.CamNumber = camNumber;
+        _loadData = new CamData(DeviceCode, CamCommands.Load.ToString())  //important
+        {
+            Status = CamStatus.Timeout,
+            CamNumber = camNumber
+        };
         if (camNumber == 0)
         {
-            ArgumentNullException.ThrowIfNull(Url0, "ParamString");
-            camData.Url = Url0;
+            ArgumentNullException.ThrowIfNull(_url0, "ParamString");
+            _loadData.Url = _url0;
         }
         else
         {
             string? dfltString = null;  //avoiding CS0121 The call is ambiguous between the methods 'Option'
-            string? s = deviceOptions.Option($"Url{camNumber}", dfltString);
+            string? s = _deviceOptions.Option($"Url{camNumber}", dfltString);
             ArgumentNullException.ThrowIfNull(s, $"Url{camNumber}");
-            camData.Url = s;
+            _loadData.Url = s;
         }
-        ComPort.SetParamString(camData.Url);  //set HttpParameter.URL
-        CLog.Debug($"HttpCam.Load({camNumber}) Host:{new Uri(camData.Url).Host}");
-        var tel = await RunTelegram(camData, "Load");  //no command to send
+        ComPort.SetParamString(_loadData.Url);  //set _httpParameter.URL
+        _log.Debug($"[{DeviceCode}] HttpCam.Load({camNumber}) Host:{new Uri(_loadData.Url).Host}");
+        var tel = await RunTelegram(_loadData, "Load");  //no command to send
         if (tel.Error != 0)
         {
-            camData.ErrorNr = 99;
-            camData.ErrorText = tel.ErrorText;
+            _loadData.ErrorNr = 99;
+            _loadData.ErrorText = tel.ErrorText;
         }
-        return await Task.FromResult(camData);
+        return await Task.FromResult(_loadData);
     }
 
     #endregion
@@ -95,17 +87,15 @@ public class HttpCam : ComProtocol, ICamApi
     {
         var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(HttpCamAnswer));
-        CamData data = (CamData)tel.AppData;
         var inBuff = tel.InData;
-        //string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);
-        if (data.Command == CamCommands.Load.ToString())
+        //string inStr = Encoding.ASCII.GetString(_inBuff.Buff, 0, _inBuff.Cnt);
+        if (_loadData.Command == CamCommands.Load.ToString())
         {
-            data.Status = CamStatus.Ok;
-            //data.ImageBytes = (byte[]?)inBuff.Buff.Clone();
-            data.ImageBytes = inBuff.Buff;
-            data.ImageSize = inBuff.Cnt;
-            data.ImageFormat = data.Url?.Split('.').Last();  // E.g. png or jpg
-            CLog.Debug($"HttpCam.Answer({data.CamNumber}) Url:{data.Url}");
+            _loadData.Status = CamStatus.Ok;
+            _loadData.ImageBytes = inBuff.Buff;
+            _loadData.ImageSize = inBuff.Cnt;
+            _loadData.ImageFormat = _loadData.Url?.Split('.').Last();  // E.g. png or jpg
+            _log.Debug($"[{DeviceCode}] HttpCam.Answer({_loadData.CamNumber}) Size:{_loadData.ImageSize} Host:{new Uri(_loadData.Url ?? "").Host}");
         }
     }
 
