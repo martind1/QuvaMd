@@ -9,7 +9,7 @@ namespace Quva.Devices.Scale
     public class FawaWs : ComProtocol, IScaleApi
     {
         public ScaleData StatusData { get; set; }
-        private ScaleData _registerData { get; set; }
+        private readonly ScaleData _registerData;
 
         public FawaWs(ComDevice device) : base(device.Code, device.ComPort)
         {

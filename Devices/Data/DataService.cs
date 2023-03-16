@@ -15,7 +15,7 @@ namespace Quva.Devices.Data
         public async Task<Device> GetDevice(string code)
         {
             string fileName = @$"Data\{code}.json";
-            string jsonString = File.ReadAllText(fileName);
+            string jsonString = await File.ReadAllTextAsync(fileName);
             Device device = JsonSerializer.Deserialize<Device>(jsonString)!;
 
             return await Task.FromResult(device);

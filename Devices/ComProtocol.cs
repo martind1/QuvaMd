@@ -222,9 +222,8 @@ public class ComProtocol : IAsyncDisposable
         }
 
         data.Cnt = 0;  //read from 0. Moves Cnt.
-        ReadDataResult rdResult;
         RemainingMinLen = MinLen;
-        rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
+        var rdResult = await ReadDataAsync(data, RemainingMinLen, MaxLen, delimiter[0], delimiter[1]);
         return await Task.FromResult(rdResult == ReadDataResult.OK);
     }
 

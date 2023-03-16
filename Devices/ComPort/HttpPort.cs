@@ -14,9 +14,8 @@ namespace Quva.Devices.ComPort
         public uint Bcc { get; set; }
         public bool IsConnected() => _httpClient != null;
 
-        private HttpParameter _httpParameter { get; set; }
-        private HttpClient? _httpClient { get; set; }
-        //Runtime:
+        private readonly HttpParameter _httpParameter;
+        private HttpClient? _httpClient;
 
         public HttpPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
         {

@@ -23,7 +23,7 @@ public class ComDevice
     public IDisplayApi? DisplayApi { get; set; }
     public ICamApi? CamApi { get; set; }
 
-    private IDataService _dataService { get; set; }
+    private readonly IDataService _dataService;
 
 
     public ComDevice()

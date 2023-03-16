@@ -108,15 +108,15 @@ namespace Quva.Devices
             //var data4 = await T4;
             Log.Information($"CamLoad0 Err:{data1.ErrorNr} {data1.ErrorText} Size:{data1.ImageSize}");
             ArgumentNullException.ThrowIfNull(data1.ImageBytes);
-            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM0.{data1.ImageFormat}", data1.ImageBytes);
+            await File.WriteAllBytesAsync(@$"C:\Temp\angular\logs\CAM0.{data1.ImageFormat}", data1.ImageBytes);
 
             Log.Information($"CamLoad1 Err:{data2.ErrorNr} {data2.ErrorText} Size:{data2.ImageSize}");
             ArgumentNullException.ThrowIfNull(data2.ImageBytes);
-            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM1.{data2.ImageFormat}", data2.ImageBytes); 
+            await File.WriteAllBytesAsync(@$"C:\Temp\angular\logs\CAM1.{data2.ImageFormat}", data2.ImageBytes); 
 
             Log.Information($"CamLoad2 Err:{data3.ErrorNr} {data3.ErrorText} Size:{data3.ImageSize}");
             ArgumentNullException.ThrowIfNull(data3.ImageBytes);
-            File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM2.{data3.ImageFormat}", data3.ImageBytes); 
+            await File.WriteAllBytesAsync($@"C:\Temp\angular\logs\CAM2.{data3.ImageFormat}", data3.ImageBytes); 
 
             //Log.Information($"CamLoad3 Err:{data4.ErrorNr} {data4.ErrorText} Size:{data4.ImageSize}");
             //ArgumentNullException.ThrowIfNull(data4.ImageBytes);
@@ -130,7 +130,6 @@ namespace Quva.Devices
         {
             Log.Information($"testsvc.Test2");
             ScaleData d1;
-            ScaleData d2;
             int registerTrigger = 10;
             do
             {
@@ -141,7 +140,7 @@ namespace Quva.Devices
                 {
                     registerTrigger++;
                     var T2 = svc.ScaleRegister("HOH.FW1");
-                    d2 = T2.Result;
+                    var d2 = T2.Result;
                     Console.Write($"\r\n{d2.Display}\r\n");
                 }
             } while (d1.Weight != 99);
