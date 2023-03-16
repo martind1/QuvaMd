@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Quva.DeviceSimulator"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Icon="/favicon.ico">
     <Grid>
-        <Button x:Name="BtnIT9000" Content="Scale IT9000" HorizontalAlignment="Left" Margin="49,43,0,0" VerticalAlignment="Top" Width="92" Click="BtnIT9000_Click"/>
-        <Button x:Name="BtnDeviceTests" Content="Device Tests" HorizontalAlignment="Left" Margin="49,87,0,0" VerticalAlignment="Top" Width="NaN" Height="NaN" Click="BtnDeviceTests_Click"/>
+        <Button x:Name="BtnIT9000" Content="Scale IT9000" HorizontalAlignment="Left" Margin="49,43,0,0"
+                VerticalAlignment="Top" Width="92" Click="BtnIT9000_Click" />
+        <Button x:Name="BtnDeviceTests" Content="Device Tests" HorizontalAlignment="Left" Margin="49,87,0,0"
+                VerticalAlignment="Top" Width="NaN" Height="NaN" Click="BtnDeviceTests_Click" />
 
     </Grid>
 </Window>

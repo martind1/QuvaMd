@@ -1,7 +1,6 @@
-﻿namespace Quva.Devices.Data
+﻿namespace Quva.Devices.Data;
+
+public interface IDataService
 {
-    public interface IDataService
-    {
-        Task<Device> GetDevice(string code);
-    }
+    Task<Device> GetDevice(string code);
 }

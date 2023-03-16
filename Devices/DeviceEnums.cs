@@ -14,8 +14,8 @@ public enum DeviceType
 public enum DeviceRoles
 {
     None = 0,
-    Entry = 1,  //'E'
-    Exit = 2,   //'A'
+    Entry = 1, //'E'
+    Exit = 2 //'A'
 }
 
 public enum TransportType
@@ -43,7 +43,7 @@ public static class DeviceUtils
 {
     public static string UnitShort(ScaleUnit scaleUnit)
     {
-        string result = scaleUnit switch
+        var result = scaleUnit switch
         {
             ScaleUnit.Ton => "t",
             ScaleUnit.Kilogram => "kg",
@@ -52,21 +52,19 @@ public static class DeviceUtils
         };
         return result;
     }
-
 }
 
 public class DeviceData
 {
-    //für alle Geräte:
-    public string DeviceCode { get; set; }
-    public string Command { get; set; }
-    public int ErrorNr { get; set; }
-    public string ErrorText { get; set; } = string.Empty;
-
     public DeviceData(string deviceCode, string command)
     {
         DeviceCode = deviceCode;
         Command = command;
     }
-}
 
+    //für alle Geräte:
+    public string DeviceCode { get; set; }
+    public string Command { get; set; }
+    public int ErrorNr { get; set; }
+    public string ErrorText { get; set; } = string.Empty;
+}

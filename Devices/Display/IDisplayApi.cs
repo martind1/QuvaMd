@@ -1,13 +1,12 @@
 ﻿namespace Quva.Devices.Display;
 
 /// <summary>
-/// Interface for concrete Device Dialog Api
+///     Interface for concrete Device Dialog Api
 /// </summary>
 public interface IDisplayApi
 {
-    Task<DisplayData> DisplayCommand(string command, string message);
-
     DisplayData ShowData { get; set; }
+    Task<DisplayData> DisplayCommand(string command, string message);
 }
 
 public class DisplayData : DeviceData
@@ -25,4 +24,3 @@ public enum DisplayCommands
 {
     Show
 }
-

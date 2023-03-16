@@ -5,8 +5,6 @@ namespace Quva.Devices;
 public class DeviceOptions
 {
     private readonly ILogger CLog;
-    public string DeviceCode { get; set; }
-    public Dictionary<string, string>? Options { get; set; }
 
     public DeviceOptions(string deviceCode, Dictionary<string, string>? options)
     {
@@ -19,9 +17,12 @@ public class DeviceOptions
         Options = new Dictionary<string, string>(options, comparer);
     }
 
+    public string DeviceCode { get; set; }
+    public Dictionary<string, string>? Options { get; set; }
+
     /// <summary>
-    /// 14.03.23 dflt can be null
-    /// 15.03.23 ignore case in key
+    ///     14.03.23 dflt can be null
+    ///     15.03.23 ignore case in key
     /// </summary>
     /// <param name="key"></param>
     /// <param name="dflt"></param>
@@ -29,10 +30,7 @@ public class DeviceOptions
     public string? Option(string key, string? dflt)
     {
         ArgumentNullException.ThrowIfNull(Options);
-        if (!Options.TryGetValue(key, out var result))
-        {
-            result = dflt;
-        }
+        if (!Options.TryGetValue(key, out var result)) result = dflt;
         return result;
     }
 
@@ -40,7 +38,7 @@ public class DeviceOptions
     {
         try
         {
-            string? s = Option(key, dflt?.ToString());
+            var s = Option(key, dflt?.ToString());
             return s != null ? int.Parse(s) : null;
         }
         catch (Exception ex)
@@ -54,9 +52,8 @@ public class DeviceOptions
     {
         try
         {
-            string? s = Option(key, dflt?.ToString());
+            var s = Option(key, dflt?.ToString());
             return s != null ? float.Parse(s) : null;
-
         }
         catch (Exception ex)
         {
@@ -64,6 +61,4 @@ public class DeviceOptions
             return dflt;
         }
     }
-
-
 }

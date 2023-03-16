@@ -2,6 +2,15 @@
 
 public interface IComPort : IAsyncDisposable
 {
+    string DeviceCode { get; }
+    PortType PortType { get; }
+    ComParameter ComParameter { get; set; }
+
+    bool DirectMode { get; }
+
+    //Runtime:
+    uint Bcc { get; set; }
+
     // Set Parameter
     // like "COM1:9600:8:1:N" or "localhost:1234" or "listen:1234"
     // see constructor 
@@ -11,25 +20,18 @@ public interface IComPort : IAsyncDisposable
     Task ResetAsync();
 
     Task<int> InCountAsync(int WaitMs);
-    Task<int> ReadAsync(ByteBuff buffer);  //Buff+Len
+    Task<int> ReadAsync(ByteBuff buffer); //Buff+Len
 
     Task<bool> WriteAsync(ByteBuff buffer);
     bool Write(ByteBuff buffer);
     Task FlushAsync();
-
-    string DeviceCode { get; }
-    PortType PortType { get; }
-    ComParameter ComParameter { get; set; }
-    bool DirectMode { get; }
-    //Runtime:
-    uint Bcc { get; set; }
     bool IsConnected();
 }
 
 public class ComParameter
 {
     public int TimeoutMs { get; set; }
-    public int Timeout2Ms { get; set; }  //between characters in input _stream
+    public int Timeout2Ms { get; set; } //between characters in input _stream
     public bool DoubleDle { get; set; }
     public bool Echo { get; set; }
 }

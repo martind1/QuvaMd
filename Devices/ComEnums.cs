@@ -4,32 +4,28 @@ namespace Quva.Devices;
 
 public class TelEventArgs : EventArgs
 {
-    public ComTelegram Tel { get; set; }
-
     public TelEventArgs(ComTelegram tel)
     {
         Tel = tel;
     }
-}
 
+    public ComTelegram Tel { get; set; }
+}
 
 public class UserFnEventArgs : EventArgs
 {
-    public ComTelegram Tel { get; set; }
-    public string UserFn { get; set; }
-
     public UserFnEventArgs(ComTelegram tel, string userFn)
     {
         Tel = tel;
         UserFn = userFn;
     }
+
+    public ComTelegram Tel { get; set; }
+    public string UserFn { get; set; }
 }
 
 public class ByteBuff
 {
-    public byte[] Buff { get; set; }
-    public int Cnt { get; set; } = 0;
-
     public ByteBuff(int buffSize)
     {
         Buff = new byte[buffSize];
@@ -42,6 +38,9 @@ public class ByteBuff
         Cnt = len;
     }
 
+    public byte[] Buff { get; set; }
+    public int Cnt { get; set; }
+
     public string DebugString()
     {
         return DebugString(0);
@@ -51,20 +50,22 @@ public class ByteBuff
     public string DebugString(int offset)
     {
         var sb = new StringBuilder(256);
-        for (int i = offset; i < Cnt; i++)
+        for (var i = offset; i < Cnt; i++)
         {
-            byte b = Buff[i];
+            var b = Buff[i];
             if (b < 32)
             {
-                sb.Append('^');  //01 -> ^A
+                sb.Append('^'); //01 -> ^A
                 b += 64;
             }
             else if (b == 94)
             {
                 sb.Append('\\'); //^ -> \^
             }
+
             sb.Append((char)b);
         }
+
         return sb.ToString();
     }
 
@@ -77,38 +78,33 @@ public class ByteBuff
     }
 
     /// <summary>
-    /// appends dst offset dst.Cnt with this.Buff offset 0 len Cnt
+    ///     appends dst offset dst.Cnt with this.Buff offset 0 len Cnt
     /// </summary>
     /// <returns>Count of copied bytes</returns>
     public int AppendTo(ByteBuff dst)
     {
-        for (int i = 0; i < Cnt; i++)
-        {
-            dst.Buff[dst.Cnt++] = Buff[i];
-        }
+        for (var i = 0; i < Cnt; i++) dst.Buff[dst.Cnt++] = Buff[i];
         return Cnt;
     }
 
     /// <summary>
-    /// moves max [dst.Cnt] Bytes to empty [dst]. Deletes moved bytes in [src], set [Cnt] on bothe sides.
+    ///     moves max [dst.Cnt] Bytes to empty [dst]. Deletes moved bytes in [src], set [Cnt] on bothe sides.
     /// </summary>
     /// <returns>Count of moved bytes</returns>
     public int MoveTo(ByteBuff dst)
     {
-        int maxCnt = dst.Cnt;
-        int movedCnt = 0;
+        var maxCnt = dst.Cnt;
+        var movedCnt = 0;
         while (Cnt > 0 && movedCnt < maxCnt)
         {
             dst.Buff[movedCnt] = Buff[movedCnt];
             movedCnt++;
             Cnt--;
         }
+
         dst.Cnt = movedCnt;
         // 123, m:1 c:2 -> 0<-1, 1<-2
-        for (int i = 0; i < Cnt; i++)
-        {
-            Buff[i] = Buff[i + movedCnt];
-        }
+        for (var i = 0; i < Cnt; i++) Buff[i] = Buff[i + movedCnt];
 
 
         return movedCnt;
@@ -117,46 +113,46 @@ public class ByteBuff
 
 public enum ComProtStatus
 {
-    OK,      // successfully completed
+    Ok, // successfully completed
     Waiting, // waiting for start
     Hanging, // waiting for finish
-    Error    // terminated with error
+    Error // terminated with error
 }
 
 public enum ComProtError
 {
-    OK,      // ok
+    Ok, // ok
     TimeOut, // _device timeout
-    LengthError,  // length or description error
-    InternalError    // _device will reset
+    LengthError, // length or description error
+    InternalError // _device will reset
 }
 
 [Flags]
 public enum ComProtErrorActions
 {
-    None = 0,   // no error logging
+    None = 0, // no error logging
     Ignore = 1, // ignore logging
-    Show = 2,   // show error in UI
-    Prot = 4    // output error in logfile
+    Show = 2, // show error in UI
+    Prot = 4 // output error in logfile
 }
 
 [Flags]
 public enum ComProtFlags
 {
     None = 0,
-    Wait = 1,       // Warten auf Antwort
-    Poll = 2,       // Antwort als Ereignis(Standard)}
-    OnTop = 4,      // vor anderen wartenden ComTelegram.ausführen
-    Cache = 8,      // Ergebnis für Remotezugriff cachen
-    Wdhlg = 16,     // Wiederholung bei Fehler(nur SpsProt)
-    UseId = 32,     // Bestehende ID nochmal verwenden
-    Dummy = 64,     // ohne Kommunikation gleich onAntwort
-    Start = 128     // Sofortstart
+    Wait = 1, // Warten auf Antwort
+    Poll = 2, // Antwort als Ereignis(Standard)}
+    OnTop = 4, // vor anderen wartenden ComTelegram.ausführen
+    Cache = 8, // Ergebnis für Remotezugriff cachen
+    Wdhlg = 16, // Wiederholung bei Fehler(nur SpsProt)
+    UseId = 32, // Bestehende ID nochmal verwenden
+    Dummy = 64, // ohne Kommunikation gleich onAntwort
+    Start = 128 // Sofortstart
 }
 
 public enum ReadDataResult
 {
-    OK,
+    Ok,
     NoMinLen,
     DelimiterMissing
 }

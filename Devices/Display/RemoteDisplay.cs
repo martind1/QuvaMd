@@ -1,12 +1,18 @@
 ﻿namespace Quva.Devices.Display;
 
 /// <summary>
-/// Simple Display Shower only waits for Number
+///     Simple Display Shower only waits for Number
 /// </summary>
 public class RemoteDisplay : ComProtocol, IDisplayApi
 {
-    public DisplayData ShowData { get; set; }
     private readonly DeviceOptions _deviceOptions;
+
+    public string[] DefaultDescription =
+    {
+        ";Automatische Erzeugung. Ändern nicht möglich.",
+        "T:3000", //timeout
+        "B:" //command = message
+    };
 
     public RemoteDisplay(ComDevice device) : base(device.Code, device.ComPort)
     {
@@ -19,29 +25,22 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
         _deviceOptions = device.Options;
     }
 
+    public DisplayData ShowData { get; set; }
+
     public async Task<DisplayData> DisplayCommand(string command, string message)
     {
         if (Enum.TryParse(command, out DisplayCommands cmd))
         {
-            DisplayData data = cmd switch
+            var data = cmd switch
             {
                 DisplayCommands.Show => await Show(message),
                 _ => throw new NotImplementedException($"DisplayCommand.{command} not implemented")
             };
             return await Task.FromResult(data);
         }
-        else
-        {
-            throw new NotImplementedException($"DisplayCommand({command}) not implemented");
-        }
-    }
 
-    public string[] DefaultDescription = new string[]
-{
-          ";Automatische Erzeugung. Ändern nicht möglich.",
-          "T:3000",  //timeout
-          "B:",      //command = message
-};
+        throw new NotImplementedException($"DisplayCommand({command}) not implemented");
+    }
 
     #region Commands
 
@@ -50,10 +49,10 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
         ShowData.Message = message;
 
         // Template + message -> command
-        string? Line = _deviceOptions.Option("Line", "1");
-        string? Font = _deviceOptions.Option("Font", "1");
-        string? Template = _deviceOptions.Option("Template", "#T");  //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
-        string? command = Template?.Replace("#L", Line)
+        var Line = _deviceOptions.Option("Line", "1");
+        var Font = _deviceOptions.Option("Font", "1");
+        var Template = _deviceOptions.Option("Template", "#T"); //#L=Zeile #F=Font #T=Text  ^M^J=Endekennung
+        var command = Template?.Replace("#L", Line)
             .Replace("#F", Font)
             .Replace("^M", ((char)13).ToString())
             .Replace("^J", ((char)10).ToString())
@@ -65,6 +64,7 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
             ShowData.ErrorNr = 99;
             ShowData.ErrorText = tel.ErrorText;
         }
+
         return await Task.FromResult(ShowData);
     }
 
@@ -84,7 +84,5 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
         }
     }
 
-
     #endregion
-
 }

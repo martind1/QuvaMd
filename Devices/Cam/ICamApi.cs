@@ -3,11 +3,13 @@
 public interface ICamApi
 {
     Task<CamData> CamCommand(string command, int camNumber);
-
 }
 
 public class CamData : DeviceData
 {
+    public CamData(string deviceCode, string command) : base(deviceCode, command)
+    {
+    }
 
     public string? Url { get; set; }
     public int CamNumber { get; set; }
@@ -15,10 +17,6 @@ public class CamData : DeviceData
     public int ImageSize { get; set; }
     public string? ImageFormat { get; set; }
     public CamStatus Status { get; set; }
-
-    public CamData(string deviceCode, string command) : base(deviceCode, command)
-    {
-    }
 }
 
 // Commands for Cam Device:
@@ -33,6 +31,6 @@ public enum CamCommands
 public enum CamStatus
 {
     Ok,
-    FormatError,   //no picture format
-    Timeout        //no connection
+    FormatError, //no picture format
+    Timeout //no connection
 }

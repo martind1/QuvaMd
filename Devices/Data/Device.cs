@@ -1,5 +1,5 @@
-﻿using Quva.Devices.ComPort;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using Quva.Devices.ComPort;
 
 namespace Quva.Devices.Data;
 
@@ -8,7 +8,7 @@ public class Device
     public int Id { get; set; }
     public string? Code { get; set; }
     public string? Name { get; set; }
-    public int Roles { get; set; }  //DeviceRoles  - must be int because Flags
+    public int Roles { get; set; } //DeviceRoles  - must be int because Flags
     public string? ParamString { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -28,5 +28,4 @@ public class Device
     public Dictionary<string, string>? Options { get; set; }
 
     public string? Comment { get; set; }
-
 }
