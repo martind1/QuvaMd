@@ -63,6 +63,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         }
         catch (Exception ex)
         {
+            _log.Error(ex, $"CardCommand({devicecode}, {command})");
             if (device != null)
                 await device.Close().ConfigureAwait(false);
             result = new CardData(devicecode, command)
@@ -94,6 +95,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         }
         catch (Exception ex)
         {
+            _log.Error(ex, $"CardCommandStart({devicecode}, {command})");
             result = Results.NotFound(ex.Message);
             if (device != null)
                 await device.Close().ConfigureAwait(false);
@@ -123,6 +125,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         }
         catch (Exception ex)
         {
+            _log.Error(ex, $"CamCommand({devicecode}, {camNumber})");
             if (device != null)
                 await device.Close().ConfigureAwait(false);
             result = new CamData(devicecode, command)
@@ -155,6 +158,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         }
         catch (Exception ex)
         {
+            _log.Error(ex, $"DisplayCommand({devicecode}, {command}, {message})");
             if (device != null)
                 await device.Close().ConfigureAwait(false);
             result = new DisplayData(devicecode, command)
@@ -193,6 +197,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         }
         catch (Exception ex)
         {
+            _log.Error(ex, $"DisplayCommandStart({devicecode}, {command})");
             result = Results.NotFound(ex.Message);
             if (device != null)
                 await device.Close();
@@ -227,6 +232,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         }
         catch (Exception ex)
         {
+            _log.Error(ex, $"ScaleCommand({devicecode}, {command})");
             if (device != null)
                 await device.Close().ConfigureAwait(false);
             result = new ScaleData(devicecode, command)
@@ -254,6 +260,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         }
         catch (Exception ex)
         {
+            _log.Error(ex, $"ScaleStatusStart({devicecode})");
             result = Results.NotFound(ex.Message);
             if (device != null)
                 await device.Close().ConfigureAwait(false);
