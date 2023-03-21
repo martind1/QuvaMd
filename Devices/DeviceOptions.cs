@@ -23,41 +23,48 @@ public class DeviceOptions
     /// <summary>
     ///     14.03.23 dflt can be null
     ///     15.03.23 ignore case in key
+    ///     21.03.23 dflt can not be null
     /// </summary>
     /// <param name="key"></param>
     /// <param name="dflt"></param>
     /// <returns></returns>
-    public string? Option(string key, string? dflt)
+    public string Option(string key, string dflt)
     {
         ArgumentNullException.ThrowIfNull(Options);
-        if (!Options.TryGetValue(key, out var result)) result = dflt;
+        if (!Options.TryGetValue(key, out var result)) 
+            result = dflt;
         return result;
     }
 
-    public int? Option(string key, int? dflt)
+    public int Option(string key, int dflt)
     {
         try
         {
-            var s = Option(key, dflt?.ToString());
-            return s != null ? int.Parse(s) : null;
+            var s = Option(key, dflt.ToString());
+            return int.Parse(s);
         }
         catch (Exception ex)
         {
-            CLog.Warning($"[{DeviceCode}] Fehler bei int Device.Option({key})", ex);
+            CLog.Warning(ex, $"[{DeviceCode}] Fehler bei int Device.Option({key})");
             return dflt;
         }
     }
 
-    public float? Option(string key, float? dflt)
+    public bool Option(string key, bool dflt)
+    {
+        return Option(key, dflt ? 1 : 0) != 0;
+    }
+
+    public double Option(string key, double dflt)
     {
         try
         {
-            var s = Option(key, dflt?.ToString());
-            return s != null ? float.Parse(s) : null;
+            var s = Option(key, dflt.ToString());
+            return double.Parse(s);
         }
         catch (Exception ex)
         {
-            CLog.Warning($"[{DeviceCode}] Fehler bei float Device.Option({key})", ex);
+            CLog.Warning(ex, $"[{DeviceCode}] Fehler bei double Device.Option({key})");
             return dflt;
         }
     }

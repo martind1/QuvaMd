@@ -11,7 +11,7 @@ namespace Quva.DeviceSimulator;
 /// </summary>
 public partial class DeviceTestWindow : Window
 {
-    private string? oldScaleStatus;
+    private string? _scaleStatus;
     private readonly IDeviceService svc;
 
     public DeviceTestWindow(IDeviceService svc)
@@ -79,9 +79,9 @@ public partial class DeviceTestWindow : Window
 
     private void MyScaleStatus(ScaleData scaleData)
     {
-        if (oldScaleStatus != scaleData.Display)
+        if (_scaleStatus != scaleData.Display)
         {
-            oldScaleStatus = scaleData.Display;
+            _scaleStatus = scaleData.Display;
             protLb($"### ScaleStatus {scaleData.Display} ###");
         }
     }

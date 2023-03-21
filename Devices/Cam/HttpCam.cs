@@ -60,10 +60,11 @@ public class HttpCam : ComProtocol, ICamApi
         }
         else
         {
-            string? dfltString = null; //avoiding CS0121 The call is ambiguous between the methods 'Option'
-            var s = _deviceOptions.Option($"Url{camNumber}", dfltString);
-            ArgumentNullException.ThrowIfNull(s, $"Url{camNumber}");
-            _loadData.Url = s;
+            _loadData.Url = _deviceOptions.Option($"Url{camNumber}", string.Empty); 
+            if (_loadData.Url == string.Empty)
+            {
+                throw new ArgumentNullException($"Option.Url{camNumber}");
+            }
         }
 
         ComPort.SetParamString(_loadData.Url); //set _httpParameter.URL

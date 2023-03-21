@@ -93,11 +93,12 @@ internal class TestDeviceService
         var T1 = svc.CamLoad("HOH.CAMS", 0);
         var T2 = svc.CamLoad("HOH.CAMS", 1);
         var T3 = svc.CamLoad("HOH.CAMS", 2);
-        //var T4 = svc.CamLoad("HOH.CAMS", 3);
-        await Task.WhenAll(T1, T2, T3);
+        var T4 = svc.CamLoad("HOH.CAMS", 3);  //nicht vorhanden
+        await Task.WhenAll(T1, T2, T3, T4);
         var data1 = await T1;
         var data2 = await T2;
         var data3 = await T3;
+        var data4 = await T4;
         //var data4 = await T4;
         Log.Information($"CamLoad0 Err:{data1.ErrorNr} {data1.ErrorText} Size:{data1.ImageSize}");
         ArgumentNullException.ThrowIfNull(data1.ImageBytes);

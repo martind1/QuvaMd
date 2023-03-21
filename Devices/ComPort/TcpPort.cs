@@ -185,7 +185,7 @@ public class TcpPort : IComPort
     //muss vor Read aufgerufen werden. Ruft Flush auf.
     public async Task<int> InCountAsync(int WaitMs)
     {
-        if (_inBuff.Cnt > 0) return _inBuff.Cnt;
+        //beware wg clearinput if (_inBuff.Cnt > 0) return _inBuff.Cnt;
         var waitedMs = 0;
         await FlushAsync();
         ArgumentNullException.ThrowIfNull(_tcpClient);
