@@ -34,8 +34,8 @@ internal class Program
         host = Host.CreateDefaultBuilder(args)
             .ConfigureServices(services =>
             {
+                services.AddSingleton<IDataService, DataService>(); 
                 services.AddSingleton<IDeviceService, DeviceService>();
-                services.AddSingleton<IDataService, DataService>();
             })
             .Build();
         Log.Information("added Service");

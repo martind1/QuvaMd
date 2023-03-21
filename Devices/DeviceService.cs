@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Quva.Devices.Cam;
 using Quva.Devices.Card;
+using Quva.Devices.Data;
 using Quva.Devices.Display;
 using Quva.Devices.Scale;
 using Serilog;
@@ -12,13 +13,16 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 {
     private readonly ILogger _log;
     private bool _disposeFlag = true;
+    private readonly IDataService _dataService;
+    private readonly SemaphoreSlim _slim;
 
-
-    public DeviceService()
+    public DeviceService(IDataService dataService)
     {
         DeviceList = new Dictionary<string, ComDevice>();
         _log = Log.ForContext<DeviceService>();
         _log.Information("creating DeviceService");
+        _dataService = dataService;
+        _slim = new SemaphoreSlim(1);
     }
 
     public IDictionary<string, ComDevice> DeviceList { get; set; }
@@ -313,22 +317,30 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 
     private async Task<ComDevice> OpenDevice(string devicecode)
     {
-        if (DeviceList.TryGetValue(devicecode, out var device))
+        ComDevice? device;
+        await _slim.WaitAsync();
+        try
         {
-            _log.Information($"[{devicecode}] OpenDevice: bereits vorhanden");
-        }
-        else
-        {
-            _log.Information($"[{devicecode}] OpenDevice: add");
-            device = new ComDevice
+            if (DeviceList.TryGetValue(devicecode, out device))
             {
-                Code = devicecode //wichtig weil nicht in Constructor
-            };
-            await device.Load();
-            DeviceList.Add(devicecode, device);
+                _log.Information($"[{devicecode}] OpenDevice: bereits vorhanden");
+            }
+            else
+            {
+                _log.Information($"[{devicecode}] OpenDevice: add");
+                device = new ComDevice(_dataService)
+                {
+                    Code = devicecode //wichtig weil nicht in Constructor
+                };
+                DeviceList.Add(devicecode, device);
+                await device.Load();
+            }
+            await device.Open();
         }
-
-        await device.Open();
+        finally
+        {
+            _slim.Release();
+        }
         return await Task.FromResult(device);
     }
 

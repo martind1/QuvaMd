@@ -21,17 +21,14 @@ public class ComDevice
     public DeviceOptions? Options;
 
 
-    public ComDevice()
+    public ComDevice(IDataService dataService)
     {
         //Code = devicecode; * kein Parameter wg CS0304
         _log = Log.ForContext<DeviceService>();
         Code = string.Empty;
         _slim = new SemaphoreSlim(1);
 
-        ArgumentNullException.ThrowIfNull(Program.host, nameof(Program.host));
-        using var serviceScope = Program.host.Services.CreateScope();
-        var provider = serviceScope.ServiceProvider;
-        _dataService = provider.GetRequiredService<IDataService>();
+        _dataService = dataService;
     }
 
     public Device Device

@@ -9,7 +9,7 @@ public class DataService : IDataService
 
     public async Task<Device> GetDevice(string code)
     {
-        var fileName = @$"Data\{code}.json";
+        var fileName = @$"c:\Temp\ScaleData\{code}.json";
         var jsonString = await File.ReadAllTextAsync(fileName);
         var device = JsonSerializer.Deserialize<Device>(jsonString)!;
 

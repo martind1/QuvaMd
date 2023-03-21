@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quva.Devices;
+using Quva.Devices.Data;
 using Serilog;
 using Serilog.Debugging;
 
@@ -37,6 +38,7 @@ public partial class App : Application
     private void ConfigureServices(IConfiguration configuration,
         IServiceCollection services)
     {
+        services.AddSingleton<IDataService, DataService>();
         services.AddSingleton<IDeviceService, DeviceService>();
 
         services.AddSingleton<MainWindow>();

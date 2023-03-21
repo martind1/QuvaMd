@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using Quva.Devices;
+using Quva.Devices.Scale;
 
 namespace Quva.DeviceSimulator;
 
