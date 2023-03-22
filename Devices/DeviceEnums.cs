@@ -62,6 +62,12 @@ public class DeviceData
         Command = command;
     }
 
+    public virtual void Reset()
+    {
+        ErrorNr = 0;
+        ErrorText = string.Empty;
+    }
+
     //für alle Geräte:
     public string DeviceCode { get; set; }
     public string Command { get; set; }

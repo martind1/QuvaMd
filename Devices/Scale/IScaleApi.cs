@@ -15,6 +15,16 @@ public class ScaleData : DeviceData
     {
     }
 
+    public override void Reset()
+    {
+        base.Reset();
+        Display = string.Empty;
+        Weight = 0;
+        CalibrationNumber = 0;
+        Unit = ScaleUnit.Ton;
+        Status = ScaleStatus.None;
+    }
+
     //für Waagen:
     public string Display { get; set; } = string.Empty; //<Wert Einheit>, Wert+Einh, Fehlertext
     public double Weight { get; set; }
@@ -35,6 +45,7 @@ public enum ScaleCommands
 [Flags]
 public enum ScaleStatus
 {
+    None = 0,
     WeightOK = 1,
     Underload = 2, //Unterlast
     Overload = 4, //Überlast

@@ -30,7 +30,7 @@ public class DeviceFactory
         var modulCode = device.Device.ModulCode;
         IScaleApi scaleApi = modulCode.ToUpper() switch
         {
-            "IT6000" => new IT6000(device),
+            "IT9000" => new IT9000(device),
             "FAWAWS" => new FawaWs(device),
             _ => throw new NotImplementedException($"Modulcode.Scale {modulCode}")
         };
