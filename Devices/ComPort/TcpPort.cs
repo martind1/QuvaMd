@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using Serilog;
 
-namespace Quva.Devices.ComPort;
+namespace Devices.ComPort;
 
 public class TcpPort : IComPort
 {
@@ -79,32 +79,32 @@ public class TcpPort : IComPort
             return;
         }
 
-        _log.Information($"[{DeviceCode}] TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
-        _ipHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
-        // only IPV4:
-        _ipAddress = _ipHostEntry.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
-                     ?? _ipHostEntry.AddressList[0];
-        _ipEndPoint = new IPEndPoint(_ipAddress, TcpParameter.Port);
-
-        if (TcpParameter.Remote == Remote.Host)
-        {
-            _log.Debug($"[{DeviceCode}] Listen {TcpParameter.Port}");
-            _tcpServer ??= new TcpListener(IPAddress.Any, TcpParameter.Port); //on all local IPV4 addresses
-            _tcpServer.Start(1); //only 1 connection. No problem when already active
-            _tcpClient = await _tcpServer.AcceptTcpClientAsync(); //waiting until connected
-            _log.Debug($"[{DeviceCode}] AcceptAsync EndPoint:{_tcpClient.Client.RemoteEndPoint}");
-            _tcpServer.Stop(); //no more listen
-        }
-        else
-        {
-            _tcpClient = new TcpClient();
-            _log.Debug($"[{DeviceCode}] ConnectAsync EndPoint:{_ipEndPoint} - {_ipAddress.AddressFamily}");
-            await _tcpClient.ConnectAsync(_ipEndPoint);
-        }
-
-
         try
         {
+            _log.Information($"[{DeviceCode}] TcpPort.OpenAsync Host:{TcpParameter.Host} Port:{TcpParameter.Port}");
+            _ipHostEntry = await Dns.GetHostEntryAsync(TcpParameter.Host ?? "localhost");
+            // only IPV4:
+            _ipAddress = _ipHostEntry.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
+                         ?? _ipHostEntry.AddressList[0];
+            _ipEndPoint = new IPEndPoint(_ipAddress, TcpParameter.Port);
+
+            if (TcpParameter.Remote == Remote.Host)
+            {
+                _log.Debug($"[{DeviceCode}] Listen {TcpParameter.Port}");
+                _tcpServer ??= new TcpListener(IPAddress.Any, TcpParameter.Port); //on all local IPV4 addresses
+                _tcpServer.Start(1); //only 1 connection. No problem when already active
+                _tcpClient = await _tcpServer.AcceptTcpClientAsync(); //waiting until connected
+                _log.Debug($"[{DeviceCode}] AcceptAsync EndPoint:{_tcpClient.Client.RemoteEndPoint}");
+                _tcpServer.Stop(); //no more listen
+            }
+            else
+            {
+                _tcpClient = new TcpClient();
+                _log.Debug($"[{DeviceCode}] ConnectAsync EndPoint:{_ipEndPoint} - {_ipAddress.AddressFamily}");
+                await _tcpClient.ConnectAsync(_ipEndPoint);
+            }
+
+
             _stream = _tcpClient.GetStream();
             if (ComParameter.TimeoutMs == 0)
                 ComParameter.TimeoutMs = 10000; //overwritable in Desc. Bevore: Timeout.Infinite;
@@ -185,7 +185,11 @@ public class TcpPort : IComPort
     //muss vor Read aufgerufen werden. Ruft Flush auf.
     public async Task<int> InCountAsync(int WaitMs)
     {
-        //beware wg clearinput if (_inBuff.Cnt > 0) return _inBuff.Cnt;
+        //clearinput: WaitMs=-1: always check tcp
+        if (_inBuff.Cnt > 0 && WaitMs >= 0)
+        {
+            return await Task.FromResult(_inBuff.Cnt);
+        }
         var waitedMs = 0;
         await FlushAsync();
         ArgumentNullException.ThrowIfNull(_tcpClient);
@@ -215,7 +219,6 @@ public class TcpPort : IComPort
             _log.Debug($"[{DeviceCode}] [{_ipEndPoint}] AVAIL delay(100/{waitedMs})");
             await Task.Delay(100);
         }
-
         return await Task.FromResult(_inBuff.Cnt);
     }
 
@@ -223,6 +226,7 @@ public class TcpPort : IComPort
     public async Task<int> ReadAsync(ByteBuff buffer)
     {
         var result = 0;
+        int readCount = 0;
         // read from network into internal buffer, with timeout, only if internal buffer not long enough:
         if (_inBuff.Cnt < buffer.Cnt)
         {
@@ -231,41 +235,52 @@ public class TcpPort : IComPort
             ArgumentNullException.ThrowIfNull(_tcpClient, nameof(_tcpClient));
             _log.Debug(
                 $"[{DeviceCode}] [{_ipEndPoint}] READ offs:{offset} len:{_inBuff.Buff.Length - _inBuff.Cnt} timeout:{ComParameter.TimeoutMs}");
-            var readTask = _tcpClient.GetStream().ReadAsync(_inBuff.Buff, offset, _inBuff.Buff.Length - _inBuff.Cnt);
-            if (ComParameter.TimeoutMs > 0)
-                await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs)); //<-- timeout
-            else
-                await readTask; //ohne timeout
-            if (!readTask.IsCompleted)
+            try
             {
-                try
+                var readTask = _tcpClient.GetStream().ReadAsync(_inBuff.Buff, offset, _inBuff.Buff.Length - _inBuff.Cnt);
+                if (ComParameter.TimeoutMs > 0)
+                    await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs)); //<-- timeout
+                else
+                    await readTask; //ohne timeout
+                if (!readTask.IsCompleted)
                 {
-                    //beware! int n = await readTask;
-                    _log.Warning($"[{DeviceCode}] [{_ipEndPoint}] Read Timeout. Close _tcpClient:");
-                    await CloseAsync();
+                    try
+                    {
+                        //beware! int n = await readTask;
+                        _log.Warning($"[{DeviceCode}] [{_ipEndPoint}] Read Timeout. Close _tcpClient:");
+                        await CloseAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
+                        _log.Warning($"[{DeviceCode}] error closing TcpPort at ReadAsync {TcpParameter.ParamString}", ex);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
-                    _log.Warning($"[{DeviceCode}] error closing TcpPort at ReadAsync {TcpParameter.ParamString}", ex);
+                    readCount = await readTask;
+                    _inBuff.Cnt += readCount;
+                    _log.Debug($"[{DeviceCode}] [{_ipEndPoint}] READ \'{_inBuff.DebugString(offset)}\'");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                var n = await readTask;
-                _inBuff.Cnt += n;
-                _log.Debug($"[{DeviceCode}] [{_ipEndPoint}] READ \'{_inBuff.DebugString(offset)}\'");
-                if (n == 0)
-                {
-                    //reading zero bytes - blog.stephencleary.com/2009/06/using-socket-as-connected-socket.html
-                    _log.Warning($"[{DeviceCode}] [{_ipEndPoint}] Read 0bytes. Close _tcpClient:");
-                    await CloseAsync();
-                }
+                _log.Warning($"[{DeviceCode}] [{_ipEndPoint}] Read error {ex.Message}");
+                readCount = 0;
+            }
+            if (readCount == 0)
+            {
+                //reading zero bytes - blog.stephencleary.com/2009/06/using-socket-as-connected-socket.html
+                _log.Warning($"[{DeviceCode}] [{_ipEndPoint}] Read 0bytes. Close _tcpClient:");
+                await CloseAsync();
             }
         }
 
-        // move from internal buffer[0..] to buffer[0..]; shift internal buffer
-        if (_inBuff.Cnt > 0) result = _inBuff.MoveTo(buffer); //max buffer.Cnt
+        // move from internal buffer[0..] to buffer[0..]; shift internal buffer; max buffer.Cnt
+        if (_inBuff.Cnt > 0)
+        {
+            result = _inBuff.MoveTo(buffer);
+        }
         return await Task.FromResult(result);
     }
 

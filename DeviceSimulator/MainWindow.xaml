@@ -10,6 +10,22 @@
                 VerticalAlignment="Top" Width="92" Click="BtnIT9000_Click" />
         <Button x:Name="BtnDeviceTests" Content="Device Tests" HorizontalAlignment="Left" Margin="49,87,0,0"
                 VerticalAlignment="Top" Width="NaN" Height="NaN" Click="BtnDeviceTests_Click" />
+        <RichTextBox 
+            x:Name="LogRichTextBox" 
+            HorizontalAlignment="Stretch"
+            Margin="10,126,0,0" 
+            VerticalAlignment="Stretch"
+            Background="Black"
+            Foreground="LightGray"
+            FontFamily="Cascadia Mono, Consolas, Courier New, monospace"
+            VerticalScrollBarVisibility="Auto"
+        >
+        <FlowDocument>
+            <Paragraph>
+                <Run Text="RichTextBox"/>
+            </Paragraph>
+        </FlowDocument>
+        </RichTextBox>
 
     </Grid>
 </Window>

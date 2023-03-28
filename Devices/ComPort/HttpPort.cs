@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace Quva.Devices.ComPort;
+namespace Devices.ComPort;
 
 public class HttpPort : IComPort
 {

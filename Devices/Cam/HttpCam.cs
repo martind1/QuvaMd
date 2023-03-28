@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.Cam;
+﻿namespace Devices.Cam;
 
 /// <summary>
 ///     Simple Http HttpCam only waits for Number
@@ -21,7 +21,7 @@ public class HttpCam : ComProtocol, ICamApi
     public HttpCam(ComDevice device) : base(device.Code, device.ComPort)
     {
         Description = HttpCamDescription;
-        OnAnswer += HttpCamAnswer;
+        OnAnswer = HttpCamAnswer;
         _loadData = new CamData(device.Code, CamCommands.Load.ToString());
 
         ArgumentNullException.ThrowIfNull(device.Options);
@@ -60,8 +60,8 @@ public class HttpCam : ComProtocol, ICamApi
         }
         else
         {
-            _loadData.Url = _deviceOptions.Option($"Url{camNumber}", string.Empty); 
-            if (_loadData.Url == string.Empty)
+            _loadData.Url = _deviceOptions.Option($"Url{camNumber}", string.Empty);
+            if (string.IsNullOrEmpty(_loadData.Url))
             {
                 throw new ArgumentNullException($"Option.Url{camNumber}");
             }
@@ -83,9 +83,8 @@ public class HttpCam : ComProtocol, ICamApi
 
     #region Callbacks
 
-    private void HttpCamAnswer(object? sender, TelEventArgs telEventArgs)
+    private void HttpCamAnswer(ComTelegram tel)
     {
-        var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(HttpCamAnswer));
         var inBuff = tel.InData;
         //string inStr = Encoding.ASCII.GetString(_inBuff.Buff, 0, _inBuff.Cnt);

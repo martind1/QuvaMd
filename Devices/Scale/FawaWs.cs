@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 
-namespace Quva.Devices.Scale;
+namespace Devices.Scale;
 
 /// <summary>
 ///     Api for Winsocket ComSvr general truck scale
@@ -13,7 +13,7 @@ public class FawaWs : ComProtocol, IScaleApi
     public string[] FawaWsDescription =
     {
         ";Automatische Erzeugung. Ändern nicht möglich.",
-        "P:50",
+        "P:100",
         "I:", //Clearinput
         "T:2000", //Stillstand
         "T2:0", //between character
@@ -25,7 +25,7 @@ public class FawaWs : ComProtocol, IScaleApi
     {
         Description = FawaWsDescription;
 
-        OnAnswer += FawaWsAnswer;
+        OnAnswer = FawaWsAnswer;
 
         StatusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
         _registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
@@ -51,9 +51,8 @@ public class FawaWs : ComProtocol, IScaleApi
 
     #region Callbacks
 
-    private void FawaWsAnswer(object? sender, TelEventArgs telEventArgs)
+    private void FawaWsAnswer(ComTelegram tel)
     {
-        var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(FawaWsAnswer));
         var data = (ScaleData)tel.AppData; //StatusData or _registerData
         var inStr = Encoding.ASCII.GetString(tel.InData.Buff, 0, tel.InData.Cnt);

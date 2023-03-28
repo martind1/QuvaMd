@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.ComPort;
+﻿namespace Devices.ComPort;
 
 public interface IComPort : IAsyncDisposable
 {

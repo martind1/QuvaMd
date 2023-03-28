@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Quva.Devices.Card;
+namespace Devices.Card;
 
 /// <summary>
 ///     Simple Card Reader only waits for Number
@@ -22,7 +22,7 @@ public class Reader : ComProtocol, ICardApi
     {
         Description = ReaderDescription;
 
-        OnAnswer += ReaderAnswer;
+        OnAnswer = ReaderAnswer;
 
         _readData = new CardData(device.Code, CardCommands.Read.ToString());
     }
@@ -61,9 +61,8 @@ public class Reader : ComProtocol, ICardApi
 
     #region Callbacks
 
-    private void ReaderAnswer(object? sender, TelEventArgs telEventArgs)
+    private void ReaderAnswer(ComTelegram tel)
     {
-        var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ReaderAnswer));
         var inBuff = tel.InData;
         var inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);

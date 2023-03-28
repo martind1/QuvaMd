@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using Quva.Devices;
-using Quva.Devices.Scale;
+using Devices;
+using Devices.Scale;
+using Serilog;
 
 namespace Quva.DeviceSimulator;
 
@@ -12,20 +13,21 @@ namespace Quva.DeviceSimulator;
 public partial class DeviceTestWindow : Window
 {
     private string? _scaleStatus;
-    private readonly IDeviceService svc;
+    private readonly IDeviceService _svc;
 
     public DeviceTestWindow(IDeviceService svc)
     {
         InitializeComponent();
-        this.svc = svc;
+        _svc = svc;
     }
 
     private void DeviceTestWindow_Closed(object sender, EventArgs e)
     {
-        svc.CloseDevice("HOH.FW2");
-        svc.CloseDevice("HOH.DISP1");
+        _svc.CloseDevice("HOH.FW2");
+        _svc.CloseDevice("HOH.DISP1");
         Application.Current.MainWindow.Show();
-        Close();
+        //Close();
+        Hide();
     }
 
     private void protLb(string message)
@@ -35,7 +37,7 @@ public partial class DeviceTestWindow : Window
             Dispatcher.Invoke(new ParametrizedMethodInvoker(protLb), message);
             return;
         }
-
+        Log.Debug(message);
         message = DateTime.Now.ToString("T") + " " + message;
         lbProt.Items.Insert(0, message);
         while (lbProt.Items.Count > 1000) lbProt.Items.RemoveAt(1000);
@@ -43,37 +45,36 @@ public partial class DeviceTestWindow : Window
 
     private void DeviceTestWindow_Initialized(object sender, EventArgs e)
     {
-        //Service anlegen
-        //svc = new DeviceService();
-        protLb("DeviceService created");
+        //Service anlegen - now DI
+        //_svc = new DeviceService();
     }
 
     private async void BtnDisplayShow_Click(object sender, RoutedEventArgs e)
     {
         //C:\Portlistener\listener.exe 14080
         var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
-        var data = await svc.DisplayShow("HOH.DISP1", message);
+        var data = await _svc.DisplayShow("HOH.DISP1", message);
         protLb($"DisplayShow Err:{data.ErrorNr} {data.ErrorText} Msg:{data.Message}");
     }
 
     private async void BtnCardRead_Click(object sender, RoutedEventArgs e)
     {
         //telnet localhost 14070
-        var data = await svc.CardRead("HOH.TRANSP1");
+        var data = await _svc.CardRead("HOH.TRANSP1");
         protLb($"CardRead Err:{data.ErrorNr} {data.ErrorText} Card:{data.CardNumber}");
     }
 
     private async void BtnScaleRegister_Click(object sender, RoutedEventArgs e)
     {
         //ShTcpSvr
-        var data = await svc.ScaleRegister("HOH.FW2");
+        var data = await _svc.ScaleRegister("HOH.FW2");
         protLb(
             $"ScaleRegister Err:{data.ErrorNr} Display:{data.Display} Eichnr:{data.CalibrationNumber} Weight:{data.Weight} Unit:{data.Unit}");
     }
 
     private async void BtnScaleStatusStart_Click(object sender, RoutedEventArgs e)
     {
-        var result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
+        var result = await _svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
         protLb("ScaleStatusStart Started");
     }
 
@@ -88,10 +89,10 @@ public partial class DeviceTestWindow : Window
 
     private async void BtnDisplayScale_Click(object sender, RoutedEventArgs e)
     {
-        var result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
+        var result = await _svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
         protLb("ScaleStatus Started");
 
-        _ = await svc.DisplayShowScale("HOH.DISP1", "HOH.FW2");
+        _ = await _svc.DisplayShowScale("HOH.DISP1", "HOH.FW2");
         protLb("DisplayShow Started");
     }
 

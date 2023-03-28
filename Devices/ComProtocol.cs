@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using Quva.Devices.ComPort;
+using Devices.ComPort;
 using Serilog;
 
-namespace Quva.Devices;
+namespace Devices;
 
 public class ComProtocol : IAsyncDisposable
 {
@@ -42,13 +42,13 @@ public class ComProtocol : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    public event EventHandler<TelEventArgs>? OnAnswer;
-    public event EventHandler<UserFnEventArgs>? OnUserFn;
-
-    private void DoAnswer(TelEventArgs e)
-    {
-        OnAnswer?.Invoke(this, e);
-    }
+    //Callbacks:
+    public delegate void AnswerDelegate(ComTelegram tel);
+    public delegate void UserFnDelegate(ComTelegram tel, string userFn);
+    public delegate void SimulDelegate(ComTelegram tel);
+    public AnswerDelegate? OnAnswer { get; set; }
+    public UserFnDelegate? OnUserFn { get; set; }
+    public SimulDelegate? OnSimul { get; set; }
 
     protected virtual async ValueTask DisposeAsyncCore()
     {
@@ -71,7 +71,7 @@ public class ComProtocol : IAsyncDisposable
     private async Task<bool> SendAsync(ComTelegram tel, string descParam)
     {
         var result = false;
-        ByteBuff tempBuff = new(1024); //Len = 0
+        ByteBuff tempBuff = new(1024); //Cnt = 0
         // evaluate params and send bytes
         for (var i = 0; i < descParam.Length; i++)
             if (descParam[i] == '^' && i < descParam.Length - 1 && (byte)descParam[i + 1] > 64)
@@ -91,14 +91,15 @@ public class ComProtocol : IAsyncDisposable
                 var p = descParam[i..].IndexOf(']');
                 var userFnk = descParam[(i + 1)..(i + p - 1)];
                 i += p;
-                DoUserFn(new UserFnEventArgs(tel, userFnk));
+                DoUserFn(tel, userFnk);
             }
             else
             {
                 tempBuff.Buff[tempBuff.Cnt++] = (byte)descParam[i];
             }
 
-        if (tempBuff.Cnt > 0) result = await ComPort.WriteAsync(tempBuff);
+        if (tempBuff.Cnt > 0)
+            result = await ComPort.WriteAsync(tempBuff);
         return await Task.FromResult(result);
     }
 
@@ -111,7 +112,7 @@ public class ComProtocol : IAsyncDisposable
         dummydata.Cnt = 0;
         if (_comPort != null)
         {
-            dummydata.Cnt = await ComPort.InCountAsync(0);
+            dummydata.Cnt = await ComPort.InCountAsync(-1);  //always check tcp
             if (dummydata.Cnt > 0)
                 await ComPort.ReadAsync(dummydata);
         }
@@ -219,7 +220,7 @@ public class ComProtocol : IAsyncDisposable
                 }
                 else
                 {
-                    delimiter[nDelim++] = (byte)slTok[i][0]; //zB < (IT6000)
+                    delimiter[nDelim++] = (byte)slTok[i][0]; //zB > (IT6000)
                 }
         }
         catch (Exception ex)
@@ -315,13 +316,12 @@ public class ComProtocol : IAsyncDisposable
             await ComPort.FlushAsync();
 
             // answer data to tel.AppData
-            DoAnswer(new TelEventArgs(tel));
+            OnAnswer?.Invoke(tel);
         }
         else
         {
             _log.Warning($"RunTelegram [{tel.Error}] {tel.ErrorText}");
         }
-
         return await Task.FromResult(tel);
     }
 
@@ -393,6 +393,9 @@ public class ComProtocol : IAsyncDisposable
         }
         else if (descCmd == "B") //B: - Send Command
         {
+            //call simul callback to fill OutData
+            OnSimul?.Invoke(tel);
+
             bResult = await ComPort.WriteAsync(tel.OutData);
             if (!bResult)
             {
@@ -444,10 +447,10 @@ public class ComProtocol : IAsyncDisposable
     ///     Callback of SendAsync. For sending individual characters and/or computing block checks
     /// </summary>
     /// <param name="e"></param>
-    private void DoUserFn(UserFnEventArgs e)
+    private void DoUserFn(ComTelegram tel, string userFn)
     {
         var bb = new ByteBuff(1);
-        if (e.UserFn.Equals("BCC", StringComparison.OrdinalIgnoreCase))
+        if (userFn.Equals("BCC", StringComparison.OrdinalIgnoreCase))
         {
             bb.Buff[0] = (byte)ComPort.Bcc;
             bb.Cnt = 1;
@@ -455,7 +458,7 @@ public class ComProtocol : IAsyncDisposable
         }
         else
         {
-            OnUserFn?.Invoke(this, e);
+            OnUserFn?.Invoke(tel, userFn);
         }
     }
 

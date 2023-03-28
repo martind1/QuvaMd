@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows;
+using Devices;
+using Devices.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quva.Devices;
-using Quva.Devices.Data;
 using Serilog;
 using Serilog.Debugging;
 
@@ -15,8 +15,8 @@ namespace Quva.DeviceSimulator;
 /// </summary>
 public partial class App : Application
 {
-    public readonly IHost host;
-    public IConfiguration configuration;
+    public static IHost? host { get; private set; }
+    public static IConfiguration? configuration { get; private set; }
 
     public App()
     {
@@ -28,7 +28,8 @@ public partial class App : Application
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration)
             .CreateLogger();
-        Log.Information("Initializing Serilog....\r\n");
+        Log.Information("\r\n");
+        Log.Information("Initializing Serilog....");
 
         host = Host.CreateDefaultBuilder()
             .ConfigureServices((context, services) => { ConfigureServices(context.Configuration, services); })
@@ -42,12 +43,13 @@ public partial class App : Application
         services.AddSingleton<IDeviceService, DeviceService>();
 
         services.AddSingleton<MainWindow>();
-
         services.AddTransient<DeviceTestWindow>();
+        services.AddTransient<ScaleIT9000Window>();
     }
 
     protected override async void OnStartup(StartupEventArgs e)
     {
+        ArgumentNullException.ThrowIfNull(host);
         await host.StartAsync();
 
         var mainWindow = host.Services.GetRequiredService<MainWindow>();
@@ -58,6 +60,7 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
+        ArgumentNullException.ThrowIfNull(host);
         using (host)
         {
             await host.StopAsync(TimeSpan.FromSeconds(5));

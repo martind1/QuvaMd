@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using Quva.Devices.ComPort;
+using Devices.ComPort;
 
-namespace Quva.Devices.Data;
+namespace Devices.Data;
 
 public class DataService : IDataService
 {

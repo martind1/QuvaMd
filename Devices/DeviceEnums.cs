@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices;
+﻿namespace Devices;
 
 public enum DeviceType
 {
@@ -7,7 +7,8 @@ public enum DeviceType
     Card,
     Display,
     Cam,
-    SpsVisu
+    SpsVisu,
+    Simul
 }
 
 [Flags]

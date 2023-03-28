@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace Quva.Devices;
+namespace Devices;
 
 public class DeviceOptions
 {
@@ -31,7 +31,7 @@ public class DeviceOptions
     public string Option(string key, string dflt)
     {
         ArgumentNullException.ThrowIfNull(Options);
-        if (!Options.TryGetValue(key, out var result)) 
+        if (!Options.TryGetValue(key, out var result))
             result = dflt;
         return result;
     }

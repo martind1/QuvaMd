@@ -4,7 +4,7 @@
   "Name": "Simul IT9000 TCP-Host",
   "Roles": 0,
   "ParamString": "Listen:1234",
-  "DeviceType": "Scale",
+  "DeviceType": "Simul",
   "ModulCode": "SIM.IT9000",
   "Transport": "All",
   "Packaging": "All",

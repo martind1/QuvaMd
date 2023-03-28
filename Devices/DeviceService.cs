@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Quva.Devices.Cam;
-using Quva.Devices.Card;
-using Quva.Devices.Data;
-using Quva.Devices.Display;
-using Quva.Devices.Scale;
+﻿using Devices.Cam;
+using Devices.Card;
+using Devices.Data;
+using Devices.Display;
+using Devices.Scale;
+using Microsoft.AspNetCore.Http;
 using Serilog;
-using static Quva.Devices.ComDevice;
+using static Devices.ComDevice;
+using static Devices.ComProtocol;
 
-namespace Quva.Devices;
+namespace Devices;
 
 public class DeviceService : IAsyncDisposable, IDeviceService
 {
@@ -58,7 +59,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         ComDevice? device = null;
         try
         {
-            device = await OpenDevice(devicecode);
+            device = await AddDevice(devicecode, true);
             result = await device.CardCommand(command);
         }
         catch (Exception ex)
@@ -90,7 +91,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         try
         {
             result = Results.Ok();
-            device = await OpenDevice(devicecode);
+            device = await AddDevice(devicecode, false);
             device.CardCommandStart(command, onCardRead);
         }
         catch (Exception ex)
@@ -106,6 +107,29 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 
     #endregion Card
 
+    #region Simul
+
+    //only with callback:
+    public async Task<ComDevice?> SimulCommandStart(string devicecode, SimulDelegate onSimul)
+    {
+        ComDevice? device = null;
+        try
+        {
+            device = await AddDevice(devicecode, true);
+            device.SimulCommandStart(onSimul);
+        }
+        catch (Exception ex)
+        {
+            _log.Error(ex, $"SimulCommandStart({devicecode}])");
+            if (device != null)
+                await device.Close().ConfigureAwait(false);
+            device = null;
+        }
+        return await Task.FromResult(device);
+    }
+
+    #endregion Simul
+
     #region Camera
 
     public async Task<CamData> CamLoad(string devicecode, int camNumber)
@@ -120,7 +144,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         ComDevice? device = null;
         try
         {
-            device = await OpenDevice(devicecode);
+            device = await AddDevice(devicecode, true);
             result = await device.CamCommand(command, camNumber);
         }
         catch (Exception ex)
@@ -153,7 +177,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         ComDevice? device = null;
         try
         {
-            device = await OpenDevice(devicecode);
+            device = await AddDevice(devicecode, true);
             result = await device.DisplayCommand(command, message);
         }
         catch (Exception ex)
@@ -191,7 +215,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         try
         {
             result = Results.Ok();
-            device = await OpenDevice(devicecode);
+            device = await AddDevice(devicecode, false);
             device.ScaleCode = scaleCode;
             device.DisplayCommandStart(command, onDisplayShow);
         }
@@ -227,7 +251,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         ComDevice? device = null;
         try
         {
-            device = await OpenDevice(devicecode);
+            device = await AddDevice(devicecode, true);
             result = await device.ScaleCommand(command);
         }
         catch (Exception ex)
@@ -255,7 +279,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         try
         {
             result = Results.Ok();
-            device = await OpenDevice(devicecode);
+            device = await AddDevice(devicecode, false);
             device.ScaleCommandStart(ScaleCommands.Status.ToString(), onScaleStatus);
         }
         catch (Exception ex)
@@ -275,7 +299,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     //{
     //    try
     //    {
-    //        var _device = await OpenDevice<ComDevice>(devicecode);
+    //        var _device = await AddDevice<ComDevice>(devicecode);
     //        var result = await _device.Command(command);
     //        return await Task.FromResult(result);
     //    }
@@ -322,7 +346,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 
     #region internal calls
 
-    private async Task<ComDevice> OpenDevice(string devicecode)
+    private async Task<ComDevice> AddDevice(string devicecode, bool openFlag)
     {
         ComDevice? device;
         await _slim.WaitAsync();
@@ -330,11 +354,11 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         {
             if (DeviceList.TryGetValue(devicecode, out device))
             {
-                _log.Information($"[{devicecode}] OpenDevice: bereits vorhanden");
+                _log.Information($"[{devicecode}] AddDevice: bereits vorhanden");
             }
             else
             {
-                _log.Information($"[{devicecode}] OpenDevice: add");
+                _log.Information($"[{devicecode}] AddDevice: add");
                 device = new ComDevice(_dataService)
                 {
                     Code = devicecode //wichtig weil nicht in Constructor
@@ -342,7 +366,10 @@ public class DeviceService : IAsyncDisposable, IDeviceService
                 DeviceList.Add(devicecode, device);
                 await device.Load();
             }
-            await device.Open();
+            if (openFlag)
+            {
+                await device.Open();
+            }
         }
         finally
         {

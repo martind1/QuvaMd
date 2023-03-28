@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.Scale;
+﻿namespace Devices.Scale;
 
 /// <summary>
 ///     Interface for concrete Device Dialog Api

@@ -1,28 +1,6 @@
 ﻿using System.Text;
 
-namespace Quva.Devices;
-
-public class TelEventArgs : EventArgs
-{
-    public TelEventArgs(ComTelegram tel)
-    {
-        Tel = tel;
-    }
-
-    public ComTelegram Tel { get; set; }
-}
-
-public class UserFnEventArgs : EventArgs
-{
-    public UserFnEventArgs(ComTelegram tel, string userFn)
-    {
-        Tel = tel;
-        UserFn = userFn;
-    }
-
-    public ComTelegram Tel { get; set; }
-    public string UserFn { get; set; }
-}
+namespace Devices;
 
 public class ByteBuff
 {

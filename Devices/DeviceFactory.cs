@@ -1,10 +1,11 @@
-﻿using Quva.Devices.Cam;
-using Quva.Devices.Card;
-using Quva.Devices.ComPort;
-using Quva.Devices.Display;
-using Quva.Devices.Scale;
+﻿using Devices.Cam;
+using Devices.Card;
+using Devices.ComPort;
+using Devices.Display;
+using Devices.Scale;
+using Devices.Simul;
 
-namespace Quva.Devices;
+namespace Devices;
 
 public class DeviceFactory
 {
@@ -35,6 +36,18 @@ public class DeviceFactory
             _ => throw new NotImplementedException($"Modulcode.Scale {modulCode}")
         };
         return scaleApi;
+    }
+
+    public static ISimulApi GetSimulApi(ComDevice device)
+    {
+        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
+        var modulCode = device.Device.ModulCode;
+        ISimulApi simulApi = modulCode.ToUpper() switch
+        {
+            "SIM.IT9000" => new IT9000Simul(device),
+            _ => throw new NotImplementedException($"Modulcode.Scale {modulCode}")
+        };
+        return simulApi;
     }
 
     public static ICardApi GetCardApi(ComDevice device)

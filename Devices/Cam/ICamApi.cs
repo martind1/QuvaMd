@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.Cam;
+﻿namespace Devices.Cam;
 
 public interface ICamApi
 {

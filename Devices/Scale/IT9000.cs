@@ -2,18 +2,19 @@
 using System.Globalization;
 using System.Text;
 
-namespace Quva.Devices.Scale;
+namespace Devices.Scale;
 
 /// <summary>
 ///     Systec IT9000 scale 
 /// </summary>
 public class IT9000 : ComProtocol, IScaleApi
 {
+    public ScaleData StatusData { get; set; }
     private readonly ScaleData _registerData;
     private readonly DeviceOptions _deviceOptions;
     private readonly bool _it9000;
 
-    public string[] IT60Description =
+    public string[] IT9000Description =
     {
         ";Automatische Erzeugung. Ändern nicht möglich.",
         "I:",       //Clearinput
@@ -25,9 +26,9 @@ public class IT9000 : ComProtocol, IScaleApi
 
     public IT9000(ComDevice device) : base(device.Code, device.ComPort)
     {
-        Description = IT60Description;
+        Description = IT9000Description;
 
-        OnAnswer += IT60Answer;
+        OnAnswer = IT9000Answer;
 
         StatusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
         _registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
@@ -36,8 +37,6 @@ public class IT9000 : ComProtocol, IScaleApi
         _deviceOptions = device.Options;
         _it9000 = _deviceOptions.Option($"IT9000", false);
     }
-
-    public ScaleData StatusData { get; set; }
 
     public async Task<ScaleData> ScaleCommand(string command)
     {
@@ -51,25 +50,53 @@ public class IT9000 : ComProtocol, IScaleApi
             };
             return await Task.FromResult(data);
         }
-
         throw new NotImplementedException($"ScaleCommand({command}) not implemented");
     }
 
+    #region Commands
+
+    public async Task<ScaleData> Status()
+    {
+        var tel = await RunTelegram(StatusData, "<RM>");
+        if (tel.Error != 0)
+        {
+            StatusData.ErrorNr = 99;
+            StatusData.ErrorText = tel.ErrorText;
+            StatusData.Display = tel.ErrorText;
+        }
+        return await Task.FromResult(StatusData);
+    }
+
+    public async Task<ScaleData> Register()
+    {
+        var tel = await RunTelegram(_registerData, "<RN>");
+        if (tel.Error != 0)
+        {
+            StatusData.ErrorNr = 99;
+            StatusData.ErrorText = tel.ErrorText;
+            StatusData.Display = tel.ErrorText;
+        }
+        return await Task.FromResult(_registerData);
+    }
+
+    #endregion
+
     #region Callbacks
 
-    private void IT60Answer(object? sender, TelEventArgs telEventArgs)
+    private void IT9000Answer(ComTelegram tel)
     {
-        var tel = telEventArgs.Tel;
-        ArgumentNullException.ThrowIfNull(tel.AppData, nameof(IT60Answer));
+        ArgumentNullException.ThrowIfNull(tel.AppData, nameof(IT9000Answer));
         var data = (ScaleData)tel.AppData; //StatusData or _registerData
         data.Reset();  //all 0
         var inStr = Encoding.ASCII.GetString(tel.InData.Buff, 0, tel.InData.Cnt);
+
+        double minWeight = _deviceOptions.Option("MinWeight", 0.0);
 
         //for all commands:
         var errorCode = inStr.Substring(1, 2);
         if (errorCode != "00")
         {
-            if (!Int32.TryParse(errorCode, out int err))
+            if (!int.TryParse(errorCode, out int err))
                 err = 99;
             data.ErrorNr = err;
             data.ErrorText = $"Fehler {err}";
@@ -117,10 +144,11 @@ public class IT9000 : ComProtocol, IScaleApi
             var terminalNumber = inStr.Substring(52, 3);
             var checkCharacter = inStr.Substring(55, 8);
 
+            data.Unit = ScaleUnit.Ton;
             double weight;
             try
             {
-                weight = Double.Parse(gross);
+                weight = double.Parse(gross);
             }
             catch (Exception ex)
             {
@@ -140,18 +168,19 @@ public class IT9000 : ComProtocol, IScaleApi
                 data.Status |= ScaleStatus.Underload;
                 weight = -weight;
             }
+            if (unit == "kg" && data.Unit == ScaleUnit.Ton)
+                weight /= 1000.0;
             data.Weight = weight;
-            data.Unit = ScaleUnit.Ton;
 
             if (data.Command == ScaleCommands.Status.ToString())
             {
-                _log.Debug($"[{DeviceCode}] IT60Answer.Status:{inStr}");
+                _log.Debug($"[{DeviceCode}] IT9000Answer.Status:{inStr}");
                 data.Status |= ScaleStatus.WeightOK;
                 data.Display = $"{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}";
             }
             else if (data.Command == ScaleCommands.Register.ToString())
             {
-                _log.Debug($"[{DeviceCode}] IT60Answer.Register:{inStr}");
+                _log.Debug($"[{DeviceCode}] IT9000Answer.Register:{inStr}");
                 data.CalibrationNumber = int.Parse(identNumber);
                 data.Status |= ScaleStatus.WeightOK;
                 data.Display = $"<{data.Weight:F2} {DeviceUtils.UnitShort(data.Unit)}>";
@@ -161,33 +190,4 @@ public class IT9000 : ComProtocol, IScaleApi
 
     #endregion
 
-    #region Commands
-
-    public async Task<ScaleData> Status()
-    {
-        var tel = await RunTelegram(StatusData, "<RM>");
-        if (tel.Error != 0)
-        {
-            StatusData.ErrorNr = 99;
-            StatusData.ErrorText = tel.ErrorText;
-            StatusData.Display = tel.ErrorText;
-        }
-
-        return await Task.FromResult(StatusData);
-    }
-
-    public async Task<ScaleData> Register()
-    {
-        var tel = await RunTelegram(_registerData, "<RN>");
-        if (tel.Error != 0)
-        {
-            StatusData.ErrorNr = 99;
-            StatusData.ErrorText = tel.ErrorText;
-            StatusData.Display = tel.ErrorText;
-        }
-
-        return await Task.FromResult(_registerData);
-    }
-
-    #endregion
 }

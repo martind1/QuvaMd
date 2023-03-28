@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.Display;
+﻿namespace Devices.Display;
 
 /// <summary>
 ///     Simple Display Shower only waits for Number
@@ -18,7 +18,7 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
     {
         Description = DefaultDescription;
 
-        OnAnswer += ShowAnswer;
+        OnAnswer = ShowAnswer;
 
         ShowData = new DisplayData(device.Code, DisplayCommands.Show.ToString());
         ArgumentNullException.ThrowIfNull(device.Options);
@@ -72,9 +72,8 @@ public class RemoteDisplay : ComProtocol, IDisplayApi
 
     #region Callbacks
 
-    private void ShowAnswer(object? sender, TelEventArgs telEventArgs)
+    private void ShowAnswer(ComTelegram tel)
     {
-        var tel = telEventArgs.Tel;
         ArgumentNullException.ThrowIfNull(tel.AppData, nameof(ShowAnswer));
         var inBuff = tel.InData;
         //string inStr = Encoding.ASCII.GetString(inBuff.Buff, 0, inBuff.Cnt);

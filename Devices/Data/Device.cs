@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using Quva.Devices.ComPort;
+using Devices.ComPort;
 
-namespace Quva.Devices.Data;
+namespace Devices.Data;
 
 public class Device
 {

@@ -1,16 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Devices.Card;
+using Devices.Data;
+using Devices.Display;
+using Devices.Scale;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quva.Devices.Card;
-using Quva.Devices.Data;
-using Quva.Devices.Display;
-using Quva.Devices.Scale;
 using Serilog;
 using Serilog.Debugging;
 
-namespace Quva.Devices;
+namespace Devices;
 
 internal class Program
 {
@@ -21,7 +21,8 @@ internal class Program
         SelfLog.Enable(
             msg => Console.WriteLine("Error from Serilog: {0}", msg));
         IConfiguration configSerilog = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", true, true)
+            //.AddJsonFile(@"c:\Keyfiles\quva-config.json", true, true)
+            .AddJsonFile(@"Devices.json", true, true)
             .Build();
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configSerilog)
@@ -34,7 +35,7 @@ internal class Program
         host = Host.CreateDefaultBuilder(args)
             .ConfigureServices(services =>
             {
-                services.AddSingleton<IDataService, DataService>(); 
+                services.AddSingleton<IDataService, DataService>();
                 services.AddSingleton<IDeviceService, DeviceService>();
             })
             .Build();
@@ -43,8 +44,8 @@ internal class Program
         // Service aufrufen:
         var testsvc = new TestDeviceService(host.Services);
 
-        var T = testsvc.Test1();
-        //Task T1 = testsvc.Test5();
+        //var T = testsvc.Test1();
+        Task T = testsvc.Test5();
         //Task T = testsvc.Test6();
         T.Wait(); //warten bis Task beendet
         Console.WriteLine("waiting for key press");
@@ -194,9 +195,16 @@ internal class TestDeviceService
         Log.Information("testsvc.Test5 Started");
     }
 
+    private string _oldDisplay = string.Empty;
+
     private async void MyScaleStatus(ScaleData scaleData)
     {
-        Log.Error($"### ScaleStatus {scaleData.Display} ###");
+        if (_oldDisplay != scaleData.Display)
+        {
+            if (scaleData.ErrorNr == 0)
+                _oldDisplay = scaleData.Display;
+            Log.Error($"### ScaleStatus {scaleData.Display} ###");
+        }
         if (scaleData.Weight == 5)
         {
             Log.Error($"### ScaleStatus 5 close {scaleData.DeviceCode} ###");

@@ -1,13 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Quva.Devices.Cam;
-using Quva.Devices.Card;
-using Quva.Devices.ComPort;
-using Quva.Devices.Data;
-using Quva.Devices.Display;
-using Quva.Devices.Scale;
+﻿using Devices.Cam;
+using Devices.Card;
+using Devices.ComPort;
+using Devices.Data;
+using Devices.Display;
+using Devices.Scale;
+using Devices.Simul;
 using Serilog;
+using static Devices.ComProtocol;
 
-namespace Quva.Devices;
+namespace Devices;
 
 public class ComDevice
 {
@@ -45,6 +46,7 @@ public class ComDevice
     public ICardApi? CardApi { get; set; }
     public IDisplayApi? DisplayApi { get; set; }
     public ICamApi? CamApi { get; set; }
+    public ISimulApi? SimulApi { get; set; }
 
     public virtual async Task Open()
     {
@@ -95,6 +97,8 @@ public class ComDevice
             DisplayApi = DeviceFactory.GetDisplayApi(this);
         else if (_device.DeviceType == DeviceType.Cam)
             CamApi = DeviceFactory.GetCamApi(this);
+        else if (_device.DeviceType == DeviceType.Simul)
+            SimulApi = DeviceFactory.GetSimulApi(this);
         else
             throw new NotImplementedException($"DeviceType {_device.DeviceType}");
     }
@@ -118,6 +122,7 @@ public class ComDevice
             }
             catch
             {
+                //stacktrace see DeviceService call
                 _log.Debug($"[{Code}] EXCEPTION Device.CamCommand({command},{camNumber})");
                 throw;
             }
@@ -126,7 +131,6 @@ public class ComDevice
         {
             _slim.Release();
         }
-
         return await Task.FromResult(result);
     }
 
@@ -155,7 +159,6 @@ public class ComDevice
         {
             _slim.Release();
         }
-
         return await Task.FromResult(result);
     }
 
@@ -173,24 +176,33 @@ public class ComDevice
         if (arg.IsCancellationRequested) return;
         ScaleData result;
         _log.Debug($"[{Code}] OnScaleCommand({_timerCommand})");
+        string debugStr = string.Empty;
         try
         {
+            debugStr = "Open";
             await Open();
-            result = await ScaleCommand(_timerCommand);
+            try
+            {
+                debugStr = "Command";
+                result = await ScaleCommand(_timerCommand);
+            }
+            catch
+            {
+                await Close(); //.ConfigureAwait(false);
+                throw;
+            }
         }
         catch (Exception ex)
         {
-            _log.Warning($"[{Code}] Fehler OnScaleCommand({ex.Message})");
-            await Close().ConfigureAwait(false);
+            _log.Warning(ex, $"[{Code}] Fehler OnScaleCommand() {debugStr}");
             result = new ScaleData(Code, _timerCommand)
             {
                 ErrorNr = 99,
-                ErrorText = ex.Message
+                ErrorText = ex.Message,
+                Display = ex.Message,
             };
         }
-
-        ArgumentNullException.ThrowIfNull(_onScaleStatus);
-        _onScaleStatus(result);
+        _onScaleStatus?.Invoke(result);
     }
 
     #endregion Scale Commands
@@ -218,7 +230,6 @@ public class ComDevice
         {
             _slim.Release();
         }
-
         return await Task.FromResult(result);
     }
 
@@ -243,7 +254,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            _log.Warning($"[{Code}] Fehler OnCardCommand({ex.Message})");
+            _log.Warning(ex, $"[{Code}] Fehler OnCardCommand()");
             await Close().ConfigureAwait(false);
             result = new CardData(Code, _timerCommand)
             {
@@ -251,9 +262,7 @@ public class ComDevice
                 ErrorText = ex.Message
             };
         }
-
-        ArgumentNullException.ThrowIfNull(_onCardRead);
-        _onCardRead(result);
+        _onCardRead?.Invoke(result);
     }
 
     #endregion Card Commands
@@ -284,7 +293,6 @@ public class ComDevice
         {
             _slim.Release();
         }
-
         return await Task.FromResult(result);
     }
 
@@ -316,7 +324,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            _log.Warning($"[{Code}] Fehler OnDisplayCommand({ex.Message})");
+            _log.Warning(ex, $"[{Code}] Fehler OnDisplayCommand()");
             await Close().ConfigureAwait(false);
             _ = new DisplayData(Code, _timerCommand)
             {
@@ -327,4 +335,59 @@ public class ComDevice
     }
 
     #endregion Display Commands
+
+    #region Simul Commands
+
+    public async Task<DeviceData> SimulCommand()
+    {
+        DeviceData result;
+        _log.Debug($"[{Code}] SimulCommand()");
+        // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
+        await _slim.WaitAsync();
+        try
+        {
+            _log.Information($"[{Code}] SimulCommand()");
+            ArgumentNullException.ThrowIfNull(SimulApi);
+            result = await SimulApi.SimulCommand();
+            _log.Debug($"[{Code}] END Device.SimulCommand()");
+        }
+        finally
+        {
+            _slim.Release();
+        }
+        return await Task.FromResult(result);
+    }
+
+    public void SimulCommandStart(SimulDelegate onSimul)
+    {
+        _log.Debug($"[{Code}] CALLBACK Device.SimulCommandStart()");
+        if (SimulApi is ComProtocol comProtocol)
+        {
+            comProtocol.OnSimul = onSimul;
+        }
+        else
+        {
+            throw new Exception("SimulApi missing or not of type ComProtocol");
+        }
+        _timerAsync = new TimerAsync(OnSimulCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+    }
+
+    private async Task OnSimulCommand(CancellationToken arg)
+    {
+        if (arg.IsCancellationRequested) return;
+        _log.Debug($"[{Code}] OnSimulCommand()");
+        try
+        {
+            await Open();
+            await SimulCommand();
+        }
+        catch (Exception ex)
+        {
+            _log.Warning(ex, $"[{Code}] Fehler OnSimulCommand()");
+            await Close().ConfigureAwait(false);
+        }
+    }
+
+
+    #endregion Simul Commands
 }

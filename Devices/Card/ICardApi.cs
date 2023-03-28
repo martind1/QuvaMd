@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.Card;
+﻿namespace Devices.Card;
 
 public interface ICardApi
 {

@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.Data;
+﻿namespace Devices.Data;
 
 public interface IDataService
 {

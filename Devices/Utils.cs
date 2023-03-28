@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Quva.Devices;
+namespace Devices;
 
 /// <summary>
 ///     Umgang mit StopWatch

@@ -1,4 +1,4 @@
-﻿namespace Quva.Devices.Display;
+﻿namespace Devices.Display;
 
 /// <summary>
 ///     Interface for concrete Device Dialog Api

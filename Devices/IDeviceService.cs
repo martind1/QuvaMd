@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Quva.Devices.Cam;
-using Quva.Devices.Card;
-using Quva.Devices.Display;
-using Quva.Devices.Scale;
+﻿using Devices.Cam;
+using Devices.Card;
+using Devices.Display;
+using Devices.Scale;
+using Microsoft.AspNetCore.Http;
+using static Devices.ComProtocol;
 
-namespace Quva.Devices;
+namespace Devices;
 
 public interface IDeviceService
 {
@@ -21,6 +22,8 @@ public interface IDeviceService
     Task<IResult> ScaleStatusStart(string devicecode, ComDevice.OnScaleStatus onScaleStatus);
 
     Task<CamData> CamLoad(string devicecode, int camNumber);
+
+    Task<ComDevice?> SimulCommandStart(string devicecode, SimulDelegate onSimul);
 
     Task CloseDevice(string devicecode);
     ValueTask DisposeAsync();
