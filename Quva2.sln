@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devices", "Devices\Devices.csproj", "{155CEF32-7832-4C19-8ED7-B39779CA0B54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quva.Services", "Quva.Services\Quva.Services.csproj", "{155CEF32-7832-4C19-8ED7-B39779CA0B54}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceSimulator", "DeviceSimulator\DeviceSimulator.csproj", "{9D529F16-E8B4-48E0-A04E-94940505BBA6}"
 EndProject

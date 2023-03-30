@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Windows;
-using Devices;
-using Devices.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quva.Services.Devices.Data;
+using Quva.Services.Interfaces.Shared;
+using Quva.Services.Services.Shared;
 using Serilog;
 using Serilog.Debugging;
 

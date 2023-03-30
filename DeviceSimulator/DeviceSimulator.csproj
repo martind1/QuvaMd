@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Devices\Devices.csproj" />
+    <ProjectReference Include="..\Quva.Services\Quva.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

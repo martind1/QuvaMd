@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using Devices;
-using Devices.Scale;
+using Quva.Services.Devices.Scale;
+using Quva.Services.Interfaces.Shared;
 using Serilog;
 
 namespace Quva.DeviceSimulator;

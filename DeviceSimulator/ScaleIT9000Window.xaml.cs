@@ -1,12 +1,13 @@
-﻿using Devices;
-using Devices.Simul;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Text;
 using System.Windows;
 using Serilog;
 using System.Windows.Controls;
 using System.Configuration;
+using Quva.Services.Devices;
+using Quva.Services.Devices.Simul;
+using Quva.Services.Interfaces.Shared;
 
 namespace Quva.DeviceSimulator;
 
@@ -82,7 +83,7 @@ public partial class ScaleIT9000Window : Window
         }
         //}));
         //write the answer to send:
-        Devices.Simul.IT9000Simul.OnIT9000Simul(tel, simulData);
+        Services.Devices.Simul.IT9000Simul.OnIT9000Simul(tel, simulData);
     }
 
     private void WeightSlider_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
