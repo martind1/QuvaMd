@@ -94,7 +94,6 @@ public class ComxPort : IComPort
             _log.Warning($"[{DeviceCode}] TCP({SerialParameter.ParamString}): allready opened");
             return;
         }
-
         try
         {
             _log.Information($"[{DeviceCode}] SerialPort.OpenAsync {SerialParameter.ParamString}");
