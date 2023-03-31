@@ -1,17 +1,17 @@
 {
   "Id": 1,
-  "Code": "HOH.FW1",
-  "Name": "Test FawaWS",
+  "Code": "HOH.FW2",
+  "Name": "Test Tecri IT9000",
   "Roles": 0,
-  "ParamString": "127.0.0.1:12002",
+  "ParamString": "COM2:9600:E:8:1:N",
   "DeviceType": "Scale",
-  "ModulCode": "FAWAWS",
+  "ModulCode": "IT9000",
   "Transport": "Truck",
   "Packaging": "Bulk",
-  "PortType": "Tcp",
+  "PortType": "Serial",
   "Options": {
     "GerNr": "1",
     "Unit": "Ton"
   },
-  "Comment": "localer ShTcpSvr.exe"
+  "Comment": "Test"
 }

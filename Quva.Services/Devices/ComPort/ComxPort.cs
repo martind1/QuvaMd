@@ -2,6 +2,8 @@
 using Serilog;
 using System.IO.Ports;
 using System.Linq.Expressions;
+using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 
 namespace Quva.Services.Devices.ComPort;
@@ -18,7 +20,7 @@ public class ComxPort : IComPort
     private readonly ByteBuff _inBuff;
     private readonly ILogger _log;
     private readonly ByteBuff _outBuff;
-    private SerialPort _serialPort;
+    private readonly SerialPort _serialPort;
     public ComxPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
     {
     }
@@ -50,7 +52,7 @@ public class ComxPort : IComPort
 
 
     // Setzt Parameter
-    // zB "COM1:9600:8:1:N[:H]"
+    // zB "COM1:9600:E:8:1:N[:H]"
     public void SetParamString(string paramstring)
     {
         var SL = paramstring.Split(":");
@@ -60,17 +62,17 @@ public class ComxPort : IComPort
 
         SerialParameter.PortName = SL[0].ToUpper();
         SerialParameter.BaudRate = int.Parse(SL[1]);
-        SerialParameter.DataBits = int.Parse(SL[2]);
-        SerialParameter.StopBits = (StopBits)int.Parse(SL[3]);
-        SerialParameter.Parity = SL[4] switch
+        SerialParameter.Parity = SL[2] switch
         {
             "N" => Parity.None,
             "O" => Parity.Odd,
             "E" => Parity.Even,
             "M" => Parity.Mark,
             "S" => Parity.Space,
-            _ => throw new ArgumentOutOfRangeException(nameof(Parity), $"Not expected Parity value: {SL[4]}"),
+            _ => throw new ArgumentOutOfRangeException(nameof(paramstring), $"Not expected Parity value: {SL[4]}"),
         };
+        SerialParameter.DataBits = int.Parse(SL[3]);
+        SerialParameter.StopBits = (StopBits)int.Parse(SL[4]);
         if (SL.Length > 5)
         {
             SerialParameter.Handshake = SL[5] switch
@@ -78,7 +80,8 @@ public class ComxPort : IComPort
                 "N" => Handshake.None,
                 "H" => Handshake.RequestToSend,
                 "S" => Handshake.XOnXOff,
-                _ => throw new ArgumentOutOfRangeException(nameof(Handshake), $"Not expected Handshake value: {SL[5]}"),
+                _ => throw new ArgumentOutOfRangeException(nameof(paramstring),
+                                                           $"Not expected Handshake value: {SL[5]}"),
             };
         }
         else
@@ -103,7 +106,7 @@ public class ComxPort : IComPort
             _serialPort.StopBits = SerialParameter.StopBits;
             _serialPort.Parity = SerialParameter.Parity;
             _serialPort.Handshake = SerialParameter.Handshake;
-    
+
             if (ComParameter.TimeoutMs == 0)
                 ComParameter.TimeoutMs = 10000; //overwritable in Desc. Bevore: Timeout.Infinite;
             if (ComParameter.Timeout2Ms == 0)
@@ -111,7 +114,10 @@ public class ComxPort : IComPort
 
             _serialPort.ReadTimeout = ComParameter.TimeoutMs;
             _serialPort.WriteTimeout = ComParameter.TimeoutMs;
-            _serialPort.Open();
+            await Task.Run(() =>
+            {
+                _serialPort.Open();  //since now is BaseStream available
+            });
         }
         catch
         {
@@ -123,20 +129,15 @@ public class ComxPort : IComPort
     {
         if (!IsConnected())
         {
-            _log.Warning($"[{DeviceCode}] TCP({SerialParameter.ParamString}): allready closed");
+            _log.Warning($"[{DeviceCode}] [{_serialPort.PortName}] allready closed");
             return;
         }
 
-        _log.Debug($"[{DeviceCode}] TCP({SerialParameter.ParamString}): CloseAsync()");
-        try
+        _log.Debug($"[{DeviceCode}] [{_serialPort.PortName}] CloseAsync()");
+        await Task.Run(() =>
         {
-            await Task.Run(() =>
-            {
-            });
-        }
-        finally
-        {
-        }
+            _serialPort.Close();  //with serialport.dispose 
+        });
     }
 
     protected virtual async ValueTask DisposeAsyncCore()
@@ -154,15 +155,35 @@ public class ComxPort : IComPort
         await OpenAsync();
     }
 
-    private static bool ClientIsConnected(Socket socket)
-    {
-        return !socket.Poll(1000, SelectMode.SelectRead) || socket.Available > 0;
-    }
-
     //muss vor Read aufgerufen werden. Ruft Flush auf.
     public async Task<int> InCountAsync(int WaitMs)
     {
         //clearinput: WaitMs=-1: always check tcp
+        if (_inBuff.Cnt > 0 && WaitMs >= 0)
+        {
+            return await Task.FromResult(_inBuff.Cnt);
+        }
+        var waitedMs = 0;
+        await FlushAsync();
+        while (true)
+        {
+            if (_serialPort.BytesToRead > 0)
+            {
+                var offset = _inBuff.Cnt;
+                var readCount = await _serialPort.BaseStream
+                    .ReadAsync(_inBuff.Buff.AsMemory(offset, _inBuff.Buff.Length - _inBuff.Cnt));
+                _inBuff.Cnt += readCount;
+                _log.Debug($"[{DeviceCode}] AVAIL({WaitMs}) \'{_inBuff.DebugString(offset)}\'");
+                break;
+            }
+            if (WaitMs == 0)
+                break;
+            if (waitedMs >= WaitMs)
+                break;
+            waitedMs += 100;
+            _log.Debug($"[{DeviceCode}] AVAIL delay({waitedMs}/{WaitMs})");
+            await Task.Delay(100);
+        }
         return await Task.FromResult(_inBuff.Cnt);
     }
 
@@ -171,23 +192,51 @@ public class ComxPort : IComPort
     {
         var result = 0;
         int readCount = 0;
-        var offset = _inBuff.Cnt;
-        _log.Debug($"[{DeviceCode}] READ offs:{offset} len:{_inBuff.Buff.Length - _inBuff.Cnt} timeout:{ComParameter.TimeoutMs}");
-        try
+        // read from network into internal buffer, with timeout, only if internal buffer not long enough:
+        if (_inBuff.Cnt < buffer.Cnt)
         {
+            var offset = _inBuff.Cnt;
+            await FlushAsync();
+            _log.Debug(
+                $"[{DeviceCode}] [{_serialPort.PortName}] READ offs:{offset} len:{_inBuff.Buff.Length - _inBuff.Cnt} timeout:{ComParameter.TimeoutMs}");
+            try
+            {
+                var readTask = _serialPort.BaseStream.ReadAsync(_inBuff.Buff, offset, _inBuff.Buff.Length - _inBuff.Cnt);
+                if (ComParameter.TimeoutMs > 0)
+                    await Task.WhenAny(readTask, Task.Delay(ComParameter.TimeoutMs)); //<-- timeout
+                else
+                    await readTask; //ohne timeout
+                if (!readTask.IsCompleted)
+                {
+                    try
+                    {
+                        _log.Warning($"[{DeviceCode}] [{_serialPort.PortName}] Read Timeout. Close _tcpClient:");
+                        await CloseAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
+                        _log.Warning($"[{DeviceCode}] error closing SerialPort at ReadAsync {_serialPort.PortName}", ex);
+                    }
+                }
+                else
+                {
+                    readCount = await readTask;
+                    _inBuff.Cnt += readCount;
+                    _log.Debug($"[{DeviceCode}] [{_serialPort.PortName}] READ \'{_inBuff.DebugString(offset)}\'");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Warning($"[{DeviceCode}] [{_serialPort.PortName}] Read error {ex.Message}");
+                readCount = 0;
+            }
+            if (readCount == 0)
+            {
+                _log.Warning($"[{DeviceCode}] [{_serialPort.PortName}] Read 0bytes. Close _tcpClient:");
+                await CloseAsync();
+            }
         }
-        catch (Exception ex)
-        {
-            _log.Warning($"[{DeviceCode}] Read error {ex.Message}");
-            readCount = 0;
-        }
-        if (readCount == 0)
-        {
-            //reading zero bytes - blog.stephencleary.com/2009/06/using-socket-as-connected-socket.html
-            _log.Warning($"[{DeviceCode}] Read 0bytes. Close _tcpClient:");
-            await CloseAsync();
-        }
-
         // move from internal buffer[0..] to buffer[0..]; shift internal buffer; max buffer.Cnt
         if (_inBuff.Cnt > 0)
         {
@@ -222,15 +271,23 @@ public class ComxPort : IComPort
     {
         if (_outBuff.Cnt > 0)
         {
-            _log.Debug($"[{DeviceCode}] WRITE \'{_outBuff.DebugString()}\'");
+            _log.Debug($"[{DeviceCode}] [{_serialPort.PortName}] WRITE \'{_outBuff.DebugString()}\'");
+            var writeTask = _serialPort.BaseStream.WriteAsync(_outBuff.Buff, 0, _outBuff.Cnt);
             _outBuff.Cnt = 0;
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                _log.Warning($"[{DeviceCode}] error closing SerialPort at WriteAsync {SerialParameter.ParamString}", ex);
-            }
+            if (ComParameter.TimeoutMs > 0)
+                await Task.WhenAny(writeTask, Task.Delay(ComParameter.TimeoutMs)); //<-- timeout
+            else
+                await writeTask; //ohne timeout
+            if (!writeTask.IsCompleted)
+                try
+                {
+                    _serialPort.Close();
+                }
+                catch (Exception ex)
+                {
+                    // maybe ObjectDisposedException - https://stackoverflow.com/questions/62161695
+                    _log.Warning($"[{DeviceCode}] error closing TcpPort at WriteAsync {_serialPort.PortName}", ex);
+                }
         }
     }
 }

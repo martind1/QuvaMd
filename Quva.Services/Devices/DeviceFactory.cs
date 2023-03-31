@@ -17,10 +17,10 @@ public class DeviceFactory
         {
             PortType.Tcp => new TcpPort(device),
             PortType.Http => new HttpPort(device),
-            PortType.Serial => throw new NotImplementedException("Serial not implemented"),
+            PortType.Serial => new ComxPort(device),
             PortType.Udp => throw new NotImplementedException("UDP not implemented"),
             PortType.None => null,
-            _ => throw new NotImplementedException("only TCP implemented")
+            _ => throw new NotImplementedException($"PortType {portType} not implemented")
         };
         return comPort;
     }

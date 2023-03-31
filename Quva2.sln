@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quva.Services", "Quva.Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceSimulator", "DeviceSimulator\DeviceSimulator.csproj", "{9D529F16-E8B4-48E0-A04E-94940505BBA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp1", "WinFormsApp1\WinFormsApp1.csproj", "{AA71F905-D509-46BD-B1CD-B401CF47C167}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9D529F16-E8B4-48E0-A04E-94940505BBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D529F16-E8B4-48E0-A04E-94940505BBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D529F16-E8B4-48E0-A04E-94940505BBA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA71F905-D509-46BD-B1CD-B401CF47C167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA71F905-D509-46BD-B1CD-B401CF47C167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA71F905-D509-46BD-B1CD-B401CF47C167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA71F905-D509-46BD-B1CD-B401CF47C167}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,11 +1,11 @@
 {
   "Id": 1,
   "Code": "HOH.FW2",
-  "Name": "Test Tecri FawaWs",
+  "Name": "Test Tecri IT9000",
   "Roles": 0,
-  "ParamString": "TECRI:12002",
+  "ParamString": "127.0.0.1:1234",
   "DeviceType": "Scale",
-  "ModulCode": "FAWAWS",
+  "ModulCode": "IT9000",
   "Transport": "Truck",
   "Packaging": "Bulk",
   "PortType": "Tcp",
@@ -13,5 +13,5 @@
     "GerNr": "1",
     "Unit": "Ton"
   },
-  "Comment": "Tecri HOH IT6000 Scale"
+  "Comment": "Test"
 }

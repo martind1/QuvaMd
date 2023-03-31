@@ -32,7 +32,7 @@ internal class Program
         Log.Error("\r\n");
         Log.Error("Initializing Serilog....");
         //var cs = Crypt.EncryptString("b14ca5898a4e4133bbce2ea2315a1916", "QUVATESTNEU");
-        Log.Error($"cs:{cs}");
+        //Log.Error($"cs:{cs}");
 
         //Service dependency injection:
         //using 
@@ -48,14 +48,14 @@ internal class Program
         // Service aufrufen:
         var testsvc = new TestDeviceService(host.Services);
 
-        var T = testsvc.Test1();
-        //Task T = testsvc.Test5();
-        //Task T = testsvc.Test6();
-        T.Wait(); //warten bis Task beendet
+        //var T = testsvc.Test1();
+        Task T1 = testsvc.Test5();
+        Task T2 = testsvc.Test6();
+        //T.Wait(); //warten bis Task beendet
         Console.WriteLine("waiting for key press");
         Console.ReadKey(); //warten auf Taste
-
         //testsvc.Test2();
+        testsvc.svc.DisposeAsync();
     }
 }
 
@@ -90,11 +90,13 @@ internal class TestDeviceService
         //var data3 = await svc.CardRead("HOH.TRANSP1");
         //Log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
 
-        //var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
+        var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
         //var data4 = await svc.DisplayShow("HOH.DISP1", message);
-        //Log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
+        var data4 = await svc.DisplayShow("HOH.DISP2", message);
+        Log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
 
         //var data5 = await svc.CamLoad("HOH.CAMS", 0);
+        /*
         var T1 = svc.CamLoad("HOH.CAMS", 0);
         var T2 = svc.CamLoad("HOH.CAMS", 1);
         var T3 = svc.CamLoad("HOH.CAMS", 2);
@@ -120,6 +122,7 @@ internal class TestDeviceService
         //Log.Information($"CamLoad3 Err:{data4.ErrorNr} {data4.ErrorText} Size:{data4.ImageSize}");
         //ArgumentNullException.ThrowIfNull(data4.ImageBytes);
         //File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM3.{data4.ImageFormat}", data4.ImageBytes); 
+        */
     }
 
     /// <summary>
@@ -195,7 +198,7 @@ internal class TestDeviceService
     public async Task Test5()
     {
         Log.Information("testsvc.Test5");
-        var result = await svc.ScaleStatusStart("HOH.FW2", MyScaleStatus);
+        var result = await svc.ScaleStatusStart("HOH.FW1", MyScaleStatus);
         Log.Information("testsvc.Test5 Started");
     }
 
@@ -226,9 +229,9 @@ internal class TestDeviceService
     public async Task Test6()
     {
         Log.Information("testsvc.Test6");
-        //IResult result = await svc.DisplayShowStart("HOH.DISP1", MyShow);
+        //Microsoft.AspNetCore.Http.IResult result = await svc.DisplayShowStart("HOH.DISP2", MyShow);
         //ScaleDisplay:
-        var result = await svc.DisplayShowScale("HOH.DISP1", "HOH.FW2");
+        var result = await svc.DisplayShowScale("HOH.DISP2", "HOH.FW1");
         if (result == null)
         {
         }

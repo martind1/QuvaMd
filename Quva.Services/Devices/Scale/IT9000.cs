@@ -164,7 +164,7 @@ public class IT9000 : ComProtocol, IScaleApi
             if (bruttoNegative == "1")
             {
                 data.Status |= ScaleStatus.Underload;
-                weight = -weight;
+                //beware - is already negativ weight = -weight;
             }
             if (unit == "kg" && data.Unit == ScaleUnit.Ton)
                 weight /= 1000.0;
