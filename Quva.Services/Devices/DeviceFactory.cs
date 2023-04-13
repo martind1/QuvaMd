@@ -2,6 +2,7 @@
 using Quva.Services.Devices.Card;
 using Quva.Services.Devices.ComPort;
 using Quva.Services.Devices.Display;
+using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Devices.Simul;
 
@@ -29,60 +30,72 @@ public class DeviceFactory
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         var modulCode = device.Device.ModulCode;
-        IScaleApi scaleApi = modulCode.ToUpper() switch
+        IScaleApi Api = modulCode.ToUpper() switch
         {
             "IT9000" => new IT9000(device),
             "FAWAWS" => new FawaWs(device),
             _ => throw new NotImplementedException($"Modulcode.Scale {modulCode}")
         };
-        return scaleApi;
+        return Api;
     }
 
     public static ISimulApi GetSimulApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         var modulCode = device.Device.ModulCode;
-        ISimulApi simulApi = modulCode.ToUpper() switch
+        ISimulApi Api = modulCode.ToUpper() switch
         {
             "SIM.IT9000" => new IT9000Simul(device),
             _ => throw new NotImplementedException($"Modulcode.Scale {modulCode}")
         };
-        return simulApi;
+        return Api;
     }
 
     public static ICardApi GetCardApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         var modulCode = device.Device.ModulCode;
-        ICardApi cardApi = modulCode.ToUpper() switch
+        ICardApi Api = modulCode.ToUpper() switch
         {
             "READER" => new Reader(device),
             _ => throw new NotImplementedException($"Modulcode.Card {modulCode}")
         };
-        return cardApi;
+        return Api;
     }
 
     public static IDisplayApi GetDisplayApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         var modulCode = device.Device.ModulCode;
-        IDisplayApi displayApi = modulCode.ToUpper() switch
+        IDisplayApi Api = modulCode.ToUpper() switch
         {
             "REMOTEDISPLAY" => new RemoteDisplay(device),
             _ => throw new NotImplementedException($"Modulcode.Display {modulCode}")
         };
-        return displayApi;
+        return Api;
     }
 
     public static ICamApi GetCamApi(ComDevice device)
     {
         ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
         var modulCode = device.Device.ModulCode;
-        ICamApi displayApi = modulCode.ToUpper() switch
+        ICamApi Api = modulCode.ToUpper() switch
         {
             "HTTPCAM" => new HttpCam(device),
             _ => throw new NotImplementedException($"Modulcode.Cam {modulCode}")
         };
-        return displayApi;
+        return Api;
+    }
+
+    public static IModbusApi GetModbusApi(ComDevice device)
+    {
+        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
+        var modulCode = device.Device.ModulCode;
+        IModbusApi Api = modulCode.ToUpper() switch
+        {
+            "WAGO" => new WagoController(device),
+            _ => throw new NotImplementedException($"Modulcode.Modbus {modulCode}")
+        };
+        return Api;
     }
 }

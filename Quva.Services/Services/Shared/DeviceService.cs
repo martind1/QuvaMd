@@ -9,6 +9,7 @@ using Quva.Services.Devices.Scale;
 using Quva.Services.Devices.Cam;
 using Quva.Services.Devices;
 using Quva.Services.Interfaces.Shared;
+using Quva.Services.Devices.Modbus;
 
 namespace Quva.Services.Services.Shared;
 
@@ -321,6 +322,70 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 
     #endregion Scale
 
+    #region Modbus
+
+    public async Task<IResult> ModbusReadStart(string devicecode)
+    {
+        ComDevice? device = null;
+        IResult? result;
+        try
+        {
+            result = Results.Ok();
+            device = await AddDevice(devicecode, false);
+            device.ModbusCommandStart(ModbusCommands.ReadBlocks.ToString());
+        }
+        catch (Exception ex)
+        {
+            _log.Error(ex, $"ModbusStart({devicecode})");
+            result = Results.NotFound(ex.Message);
+            if (device != null)
+                await device.Close().ConfigureAwait(false);
+        }
+
+        return await Task.FromResult(result);
+    }
+
+    public string GetModbusValue(string devicecode, string variableName)
+    {
+        string? result = null;
+        if (DeviceList.TryGetValue(devicecode, out var device))
+        {
+            result = device.ModbusApi?.Data.GetValue(variableName);
+        }
+        return result ?? string.Empty;
+    }
+
+    public async Task<ModbusData> ModbusWrite(string devicecode, string variableName, string value)
+    {
+        return await ModbusCommand(devicecode, ModbusCommands.WriteVariable.ToString(), variableName, value);
+    }
+
+    public async Task<ModbusData> ModbusCommand(string devicecode, string command, string variableName, string value)
+    {
+        ModbusData result;
+        ComDevice? device = null;
+        try
+        {
+            device = await AddDevice(devicecode, true);
+            result = await device.ModbusCommand(command, variableName, value);
+        }
+        catch (Exception ex)
+        {
+            _log.Error(ex, $"ModbusCommand({devicecode}, {command})");
+            if (device != null)
+                await device.Close().ConfigureAwait(false);
+            result = new ModbusData(devicecode, command)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message,
+            };
+        }
+        return await Task.FromResult(result);
+    }
+
+
+    #endregion Modbus
+
     #region Helper functions
 
     /// <summary>
@@ -330,7 +395,10 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     public string GetScaleDisplay(string scaleCode)
     {
         string? result = null;
-        if (DeviceList.TryGetValue(scaleCode, out var device)) result = device.ScaleApi?.StatusData.Display;
+        if (DeviceList.TryGetValue(scaleCode, out var device))
+        {
+            result = device.ScaleApi?.StatusData.Display;
+        }
         return result ?? string.Empty;
     }
 

@@ -8,7 +8,8 @@ public enum DeviceType
     Display,
     Cam,
     SpsVisu,
-    Simul
+    Simul,
+    Modbus
 }
 
 [Flags]

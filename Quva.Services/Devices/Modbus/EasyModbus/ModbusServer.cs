@@ -23,11 +23,12 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using Microsoft.AspNetCore.Http;
+using Quva.Services.Devices.EasyModbus;
 using System.IO.Ports;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Quva.Services.Devices.EasyModbus
+namespace Quva.Services.Devices.Modbus.EasyModbus
 {
     #region class ModbusProtocol
     /// <summary>
@@ -343,10 +344,10 @@ namespace Quva.Services.Devices.EasyModbus
         public ModbusServer()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            holdingRegisters = new HoldingRegisters(this);
-            inputRegisters = new InputRegisters(this);
-            coils = new Coils(this);
-            discreteInputs = new DiscreteInputs(this);
+            holdingRegisters = new HoldingRegisters();
+            inputRegisters = new InputRegisters();
+            coils = new Coils();
+            discreteInputs = new DiscreteInputs();
 
         }
 
@@ -445,22 +446,22 @@ namespace Quva.Services.Devices.EasyModbus
                         if (tcpHandler != null)
                             tcpHandler.Disconnect();
                         if (udpClient != null)
-                        try
-                        {
-                            bytes = udpClient.Receive(ref iPEndPoint);
-                            portIn = iPEndPoint.Port;
-                            NetworkConnectionParameter networkConnectionParameter = new NetworkConnectionParameter();
-                            networkConnectionParameter.bytes = bytes;
-                            ipAddressIn = iPEndPoint.Address;
-                            networkConnectionParameter.portIn = portIn;
-                            networkConnectionParameter.ipAddressIn = ipAddressIn;
-                            ParameterizedThreadStart pts = new ParameterizedThreadStart(ProcessReceivedData);
-                            Thread processDataThread = new Thread(pts);
-                            processDataThread.Start(networkConnectionParameter);
-                        }
-                        catch (Exception)
-                        {
-                        }
+                            try
+                            {
+                                bytes = udpClient.Receive(ref iPEndPoint);
+                                portIn = iPEndPoint.Port;
+                                NetworkConnectionParameter networkConnectionParameter = new NetworkConnectionParameter();
+                                networkConnectionParameter.bytes = bytes;
+                                ipAddressIn = iPEndPoint.Address;
+                                networkConnectionParameter.portIn = portIn;
+                                networkConnectionParameter.ipAddressIn = ipAddressIn;
+                                ParameterizedThreadStart pts = new ParameterizedThreadStart(ProcessReceivedData);
+                                Thread processDataThread = new Thread(pts);
+                                processDataThread.Start(networkConnectionParameter);
+                            }
+                            catch (Exception)
+                            {
+                            }
                     }
 
                 }
@@ -524,7 +525,7 @@ namespace Quva.Services.Devices.EasyModbus
         #region Method ProcessReceivedData
         private void ProcessReceivedData(object? networkConnectionParameter)
         {
-            if ((networkConnectionParameter as NetworkConnectionParameter?) == null)
+            if (networkConnectionParameter as NetworkConnectionParameter? == null)
             {
                 return;
             }
@@ -2196,11 +2197,9 @@ namespace Quva.Services.Devices.EasyModbus
         public class HoldingRegisters
         {
             public short[] localArray = new short[65535];
-            //ModbusServer modbusServer;
 
-            public HoldingRegisters(ModbusServer modbusServer)
+            public HoldingRegisters()
             {
-                //this.modbusServer = modbusServer;
             }
 
             public short this[int x]
@@ -2217,11 +2216,9 @@ namespace Quva.Services.Devices.EasyModbus
         public class InputRegisters
         {
             public short[] localArray = new short[65535];
-            //ModbusServer modbusServer;
 
-            public InputRegisters(ModbusServer modbusServer)
+            public InputRegisters()
             {
-                //this.modbusServer = modbusServer;
             }
 
             public short this[int x]
@@ -2238,11 +2235,9 @@ namespace Quva.Services.Devices.EasyModbus
         public class Coils
         {
             public bool[] localArray = new bool[65535];
-            //ModbusServer modbusServer;
 
-            public Coils(ModbusServer modbusServer)
+            public Coils()
             {
-                //this.modbusServer = modbusServer;
             }
 
             public bool this[int x]
@@ -2259,11 +2254,9 @@ namespace Quva.Services.Devices.EasyModbus
         public class DiscreteInputs
         {
             public bool[] localArray = new bool[65535];
-            //ModbusServer modbusServer;
 
-            public DiscreteInputs(ModbusServer modbusServer)
+            public DiscreteInputs()
             {
-                //this.modbusServer = modbusServer;
             }
 
             public bool this[int x]

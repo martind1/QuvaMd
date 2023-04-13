@@ -26,7 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Quva.Services.Devices.EasyModbus
+namespace Quva.Services.Devices.Modbus.EasyModbus
 {
     /// <summary>
     /// Store Log-Data in a File

@@ -1,6 +1,7 @@
 ﻿using Quva.Services.Devices.ComPort;
 using Quva.Services.Services.Shared;
 using Serilog;
+using System;
 using System.Text;
 
 namespace Quva.Services.Devices;
@@ -455,7 +456,8 @@ public class ComProtocol : IAsyncDisposable
         {
             bb.Buff[0] = (byte)ComPort.Bcc;
             bb.Cnt = 1;
-            _ = ComPort.Write(bb);
+            //_ = ComPort.Write(bb);
+            Task<bool> task = Task.Run<bool>(async () => await ComPort.WriteAsync(bb));
         }
         else
         {

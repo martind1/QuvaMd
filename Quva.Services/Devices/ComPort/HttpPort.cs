@@ -86,10 +86,10 @@ public class HttpPort : IComPort
 
     public async Task<int> ReadAsync(ByteBuff buffer)
     {
-        //load image
         ArgumentNullException.ThrowIfNull(_httpParameter.URL);
         Uri uri = new(_httpParameter.URL);
         ArgumentNullException.ThrowIfNull(_httpClient, nameof(_httpClient));
+        //load image
         buffer.Buff = await _httpClient.GetByteArrayAsync(uri);
         buffer.Cnt = buffer.Buff.Length;
         _log.Debug($"[{DeviceCode}] HttpPort.ReadAsync {buffer.Cnt} {uri.Host}");
@@ -104,13 +104,6 @@ public class HttpPort : IComPort
     {
         //nothing to write
         return await Task.FromResult(true);
-    }
-
-    // write only to internal buffer. Write to network later in flush.
-    public bool Write(ByteBuff buffer)
-    {
-        //nothing to write
-        return true;
     }
 
     //muss vor Read und vor InCount und am Telegram Ende aufgerufen werden

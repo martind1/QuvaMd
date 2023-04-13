@@ -297,15 +297,6 @@ public class TcpPort : IComPort
         return await Task.FromResult(true);
     }
 
-    // write only to internal buffer. Write to network later in flush.
-    public bool Write(ByteBuff buffer)
-    {
-        for (var i = 0; i < buffer.Cnt; i++) Bcc ^= buffer.Buff[i];
-        buffer.AppendTo(_outBuff);
-
-        return true;
-    }
-
     //muss vor Read und vor InCount und am Telegram Ende aufgerufen werden
     public async Task FlushAsync()
     {

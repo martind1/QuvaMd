@@ -3,6 +3,7 @@ using Quva.Services.Devices.Card;
 using Quva.Services.Devices.ComPort;
 using Quva.Services.Devices.Data;
 using Quva.Services.Devices.Display;
+using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Devices.Simul;
 using Quva.Services.Services.Shared;
@@ -48,6 +49,7 @@ public class ComDevice
     public IDisplayApi? DisplayApi { get; set; }
     public ICamApi? CamApi { get; set; }
     public ISimulApi? SimulApi { get; set; }
+    public IModbusApi? ModbusApi { get; set; }
 
     public virtual async Task Open()
     {
@@ -100,6 +102,8 @@ public class ComDevice
             CamApi = DeviceFactory.GetCamApi(this);
         else if (_device.DeviceType == DeviceType.Simul)
             SimulApi = DeviceFactory.GetSimulApi(this);
+        else if (_device.DeviceType == DeviceType.Modbus)
+            ModbusApi = DeviceFactory.GetModbusApi(this);
         else
             throw new NotImplementedException($"DeviceType {_device.DeviceType}");
     }
@@ -195,7 +199,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            _log.Warning(ex, $"[{Code}] Fehler OnScaleCommand() {debugStr}");
+            _log.Warning(ex, $"[{Code}] Error OnScaleCommand() {debugStr}");
             result = new ScaleData(Code, _timerCommand)
             {
                 ErrorNr = 99,
@@ -255,7 +259,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            _log.Warning(ex, $"[{Code}] Fehler OnCardCommand()");
+            _log.Warning(ex, $"[{Code}] Error OnCardCommand()");
             await Close().ConfigureAwait(false);
             result = new CardData(Code, _timerCommand)
             {
@@ -325,7 +329,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            _log.Warning(ex, $"[{Code}] Fehler OnDisplayCommand()");
+            _log.Warning(ex, $"[{Code}] Error OnDisplayCommand()");
             await Close().ConfigureAwait(false);
             _ = new DisplayData(Code, _timerCommand)
             {
@@ -336,6 +340,55 @@ public class ComDevice
     }
 
     #endregion Display Commands
+
+    #region Modbus Commands
+
+    public async Task<ModbusData> ModbusCommand(string command, string variableName, string value)
+    {
+        ModbusData result;
+        _log.Debug($"[{Code}] WAIT Device.ModbusCommand({command}, {variableName})");
+        // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
+        await _slim.WaitAsync();
+        try
+        {
+            _log.Information($"[{Code}] START Device.ModbusCommand({command}, {variableName})");
+            ArgumentNullException.ThrowIfNull(ModbusApi);
+            result = await ModbusApi.ModbusCommand(command, variableName, value);
+            _log.Debug($"[{Code}] END Device.ModbusCommand({command}, {variableName})");
+        }
+        finally
+        {
+            _slim.Release();
+        }
+        return await Task.FromResult(result);
+    }
+
+    public void ModbusCommandStart(string command)
+    {
+        _log.Debug($"[{Code}] CALLBACK Device.ModbusCommandStart({command})");
+        ArgumentNullException.ThrowIfNull(ModbusApi);
+        _timerCommand = command;
+        _timerAsync = new TimerAsync(OnModbusCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(500));
+    }
+
+    private async Task OnModbusCommand(CancellationToken arg)
+    {
+        if (arg.IsCancellationRequested) return;
+        ArgumentNullException.ThrowIfNull(ModbusApi);
+        _log.Debug($"[{Code}] OnModbusCommand({_timerCommand})");
+        try
+        {
+            await Open();
+            await ModbusCommand(_timerCommand, "", "");  //no variable at ReadBlocks
+        }
+        catch (Exception ex)
+        {
+            _log.Warning(ex, $"[{Code}] Error OnModbusCommand()");
+            await Close().ConfigureAwait(false);
+        }
+    }
+
+    #endregion Modbus Commands
 
     #region Simul Commands
 
@@ -384,7 +437,7 @@ public class ComDevice
         }
         catch (Exception ex)
         {
-            _log.Warning(ex, $"[{Code}] Fehler OnSimulCommand()");
+            _log.Warning(ex, $"[{Code}] Error OnSimulCommand()");
             await Close().ConfigureAwait(false);
         }
     }
