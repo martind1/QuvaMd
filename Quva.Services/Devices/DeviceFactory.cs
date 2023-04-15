@@ -12,24 +12,24 @@ public class DeviceFactory
 {
     public static IComPort? GetComPort(ComDevice device)
     {
-        ArgumentNullException.ThrowIfNull(device.Device.PortType);
-        var portType = device.Device.PortType;
-        IComPort? comPort = portType switch
+        ArgumentNullException.ThrowIfNull(device.Device.Porttype);
+        var portType = device.Device.Porttype;
+        IComPort? comPort = (PortType)portType switch
         {
             PortType.Tcp => new TcpPort(device),
             PortType.Http => new HttpPort(device),
             PortType.Serial => new ComxPort(device),
             PortType.Udp => throw new NotImplementedException("UDP not implemented"),
             PortType.None => null,
-            _ => throw new NotImplementedException($"PortType {portType} not implemented")
+            _ => throw new NotImplementedException($"Porttype {portType} not implemented")
         };
         return comPort;
     }
 
     public static IScaleApi GetScaleApi(ComDevice device)
     {
-        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
-        var modulCode = device.Device.ModulCode;
+        ArgumentNullException.ThrowIfNull(device.Device.ModuleCode);
+        var modulCode = device.Device.ModuleCode;
         IScaleApi Api = modulCode.ToUpper() switch
         {
             "IT9000" => new IT9000(device),
@@ -41,8 +41,8 @@ public class DeviceFactory
 
     public static ISimulApi GetSimulApi(ComDevice device)
     {
-        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
-        var modulCode = device.Device.ModulCode;
+        ArgumentNullException.ThrowIfNull(device.Device.ModuleCode);
+        var modulCode = device.Device.ModuleCode;
         ISimulApi Api = modulCode.ToUpper() switch
         {
             "SIM.IT9000" => new IT9000Simul(device),
@@ -53,8 +53,8 @@ public class DeviceFactory
 
     public static ICardApi GetCardApi(ComDevice device)
     {
-        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
-        var modulCode = device.Device.ModulCode;
+        ArgumentNullException.ThrowIfNull(device.Device.ModuleCode);
+        var modulCode = device.Device.ModuleCode;
         ICardApi Api = modulCode.ToUpper() switch
         {
             "READER" => new Reader(device),
@@ -65,8 +65,8 @@ public class DeviceFactory
 
     public static IDisplayApi GetDisplayApi(ComDevice device)
     {
-        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
-        var modulCode = device.Device.ModulCode;
+        ArgumentNullException.ThrowIfNull(device.Device.ModuleCode);
+        var modulCode = device.Device.ModuleCode;
         IDisplayApi Api = modulCode.ToUpper() switch
         {
             "REMOTEDISPLAY" => new RemoteDisplay(device),
@@ -77,8 +77,8 @@ public class DeviceFactory
 
     public static ICamApi GetCamApi(ComDevice device)
     {
-        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
-        var modulCode = device.Device.ModulCode;
+        ArgumentNullException.ThrowIfNull(device.Device.ModuleCode);
+        var modulCode = device.Device.ModuleCode;
         ICamApi Api = modulCode.ToUpper() switch
         {
             "HTTPCAM" => new HttpCam(device),
@@ -89,8 +89,8 @@ public class DeviceFactory
 
     public static IModbusApi GetModbusApi(ComDevice device)
     {
-        ArgumentNullException.ThrowIfNull(device.Device.ModulCode);
-        var modulCode = device.Device.ModulCode;
+        ArgumentNullException.ThrowIfNull(device.Device.ModuleCode);
+        var modulCode = device.Device.ModuleCode;
         IModbusApi Api = modulCode.ToUpper() switch
         {
             "WAGO" => new WagoController(device),

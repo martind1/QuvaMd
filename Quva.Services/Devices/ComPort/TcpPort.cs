@@ -18,7 +18,7 @@ public class TcpPort : IComPort
     private TcpClient? _tcpClient;
     private TcpListener? _tcpServer;
 
-    public TcpPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
+    public TcpPort(ComDevice device) : this(device.Code, device.Device.Paramstring ?? string.Empty)
     {
     }
 

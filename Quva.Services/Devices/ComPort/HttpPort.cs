@@ -9,7 +9,7 @@ public class HttpPort : IComPort
     private readonly ILogger _log;
     private HttpClient? _httpClient;
 
-    public HttpPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
+    public HttpPort(ComDevice device) : this(device.Code, device.Device.Paramstring ?? string.Empty)
     {
     }
 

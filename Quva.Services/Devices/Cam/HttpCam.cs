@@ -26,7 +26,7 @@ public class HttpCam : ComProtocol, ICamApi
 
         ArgumentNullException.ThrowIfNull(device.Options);
         _deviceOptions = device.Options;
-        _url0 = device.Device.ParamString;
+        _url0 = device.Device.Paramstring;
     }
 
     public async Task<CamData> CamCommand(string command, int camNumber)
@@ -55,7 +55,7 @@ public class HttpCam : ComProtocol, ICamApi
         };
         if (camNumber == 0)
         {
-            ArgumentNullException.ThrowIfNull(_url0, "ParamString");
+            ArgumentNullException.ThrowIfNull(_url0, "Paramstring");
             _loadData.Url = _url0;
         }
         else

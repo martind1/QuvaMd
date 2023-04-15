@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Quva.Model.Dtos.RootManagement;
 using Quva.Services.Devices;
 using Quva.Services.Devices.Cam;
 using Quva.Services.Devices.Card;
@@ -10,6 +11,8 @@ namespace Quva.Services.Interfaces.Shared;
 
 public interface IDeviceService
 {
+    Task<DeviceDto?> GetDevice(string code);
+
     Task<CardData> CardRead(string devicecode);
     Task<IResult> CardReadStart(string devicecode, ComDevice.OnCardRead onCardRead);
 

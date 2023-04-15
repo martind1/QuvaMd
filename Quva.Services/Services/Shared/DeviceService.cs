@@ -1,31 +1,35 @@
-﻿using Microsoft.AspNetCore.Http;
-using Serilog;
-using static Quva.Services.Devices.ComDevice;
-using static Quva.Services.Devices.ComProtocol;
+﻿using Mapster;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Quva.Database.Models;
+using Quva.Model.Dtos.RootManagement;
+using Quva.Services.Devices;
+using Quva.Services.Devices.Cam;
 using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
-using Quva.Services.Devices.Data;
-using Quva.Services.Devices.Scale;
-using Quva.Services.Devices.Cam;
-using Quva.Services.Devices;
-using Quva.Services.Interfaces.Shared;
 using Quva.Services.Devices.Modbus;
+using Quva.Services.Devices.Scale;
+using Quva.Services.Interfaces.Shared;
+using Serilog;
+using System.Linq;
+using static Quva.Services.Devices.ComDevice;
+using static Quva.Services.Devices.ComProtocol;
 
 namespace Quva.Services.Services.Shared;
 
 public class DeviceService : IAsyncDisposable, IDeviceService
 {
     private readonly ILogger _log;
+    private readonly QuvaContext _context;
     private bool _disposeFlag = true;
-    private readonly IDataService _dataService;
     private readonly SemaphoreSlim _slim;
 
-    public DeviceService(IDataService dataService)
+    public DeviceService(QuvaContext context)
     {
         DeviceList = new Dictionary<string, ComDevice>();
         _log = Log.ForContext<DeviceService>();
         _log.Information("creating DeviceService");
-        _dataService = dataService;
+        _context = context;
         _slim = new SemaphoreSlim(1);
     }
 
@@ -47,6 +51,22 @@ public class DeviceService : IAsyncDisposable, IDeviceService
                 await CloseDevice(d);
         _disposeFlag = false;
     }
+
+    /// <summary>
+    /// Get Device from DB per Device Code
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    public async Task<DeviceDto?> GetDevice(string code)
+    {
+        var query = (from d in _context.Device
+                     .Include(p => p.DeviceParameter)
+                     where  d.Code == code
+                     select d);
+        var value = query.FirstOrDefault();
+        return await Task.FromResult(value?.Adapt<DeviceDto>());
+    }
+
 
     #region Card
 
@@ -429,7 +449,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
             else
             {
                 _log.Information($"[{devicecode}] AddDevice: add");
-                device = new ComDevice(_dataService)
+                device = new ComDevice(this)
                 {
                     Code = devicecode //wichtig weil nicht in Constructor
                 };

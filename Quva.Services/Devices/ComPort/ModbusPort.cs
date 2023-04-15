@@ -1,18 +1,7 @@
-﻿using AutoMapper.Execution;
-using Microsoft.Extensions.Logging.Abstractions;
-using Quva.Services.Devices.Data;
-using Quva.Services.Devices.EasyModbus;
+﻿using Quva.Services.Devices.EasyModbus;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Services.Shared;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.IO.Ports;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quva.Services.Devices.ComPort;
 
@@ -29,7 +18,7 @@ public class ModbusPort : IComPort
     private readonly ILogger _log;
     private readonly ByteBuff _outBuff;
     private readonly ModbusClient _modbusClient;
-    public ModbusPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
+    public ModbusPort(ComDevice device) : this(device.Code, device.Device.Paramstring ?? string.Empty)
     {
     }
 

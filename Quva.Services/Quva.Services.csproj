@@ -9,8 +9,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+		<PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.9" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="System.IO.Ports" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Quva.Database\Quva.Database.csproj" />
+	  <ProjectReference Include="..\Quva.Model\Quva.Model.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

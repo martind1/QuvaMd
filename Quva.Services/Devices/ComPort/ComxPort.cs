@@ -1,10 +1,6 @@
 ﻿using Quva.Services.Services.Shared;
 using Serilog;
 using System.IO.Ports;
-using System.Linq.Expressions;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
 
 namespace Quva.Services.Devices.ComPort;
 
@@ -21,7 +17,7 @@ public class ComxPort : IComPort
     private readonly ILogger _log;
     private readonly ByteBuff _outBuff;
     private readonly SerialPort _serialPort;
-    public ComxPort(ComDevice device) : this(device.Code, device.Device.ParamString ?? string.Empty)
+    public ComxPort(ComDevice device) : this(device.Code, device.Device.Paramstring ?? string.Empty)
     {
     }
 

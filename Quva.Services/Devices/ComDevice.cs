@@ -1,11 +1,12 @@
-﻿using Quva.Services.Devices.Cam;
+﻿using Quva.Model.Dtos.RootManagement;
+using Quva.Services.Devices.Cam;
 using Quva.Services.Devices.Card;
 using Quva.Services.Devices.ComPort;
-using Quva.Services.Devices.Data;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Devices.Simul;
+using Quva.Services.Interfaces.Shared;
 using Quva.Services.Services.Shared;
 using Serilog;
 using static Quva.Services.Devices.ComProtocol;
@@ -14,17 +15,17 @@ namespace Quva.Services.Devices;
 
 public class ComDevice
 {
-    private readonly IDataService _dataService;
+    private readonly IDeviceService _dataService;
     private readonly ILogger _log;
 
     private readonly SemaphoreSlim _slim;
-    private Device? _device; // from database table 
+    private DeviceDto? _device; // from database table 
     private TimerAsync? _timerAsync;
     private string _timerCommand = string.Empty;
     public DeviceOptions? Options;
 
 
-    public ComDevice(IDataService dataService)
+    public ComDevice(IDeviceService dataService)
     {
         //Code = devicecode; * kein Parameter wg CS0304
         _log = Log.ForContext<DeviceService>();
@@ -34,7 +35,7 @@ public class ComDevice
         _dataService = dataService;
     }
 
-    public Device Device
+    public DeviceDto Device
     {
         get => _device ?? throw new ArgumentNullException(nameof(_device));
         set => _device = value;
@@ -89,23 +90,23 @@ public class ComDevice
         //var _dataService = new DataService();
         _device = await _dataService.GetDevice(Code);
 
-        Options = new DeviceOptions(Code, _device.Options);
+        Options = new DeviceOptions(Code, Device.DeviceParameter);
 
         ComPort = DeviceFactory.GetComPort(this);
-        if (_device.DeviceType == DeviceType.Scale)
+        if ((DeviceType)Device.DeviceType == DeviceType.Scale)
             ScaleApi = DeviceFactory.GetScaleApi(this);
-        else if (_device.DeviceType == DeviceType.Card)
+        else if ((DeviceType)Device.DeviceType == DeviceType.Card)
             CardApi = DeviceFactory.GetCardApi(this);
-        else if (_device.DeviceType == DeviceType.Display)
+        else if ((DeviceType)Device.DeviceType == DeviceType.Display)
             DisplayApi = DeviceFactory.GetDisplayApi(this);
-        else if (_device.DeviceType == DeviceType.Cam)
+        else if ((DeviceType)Device.DeviceType == DeviceType.Cam)
             CamApi = DeviceFactory.GetCamApi(this);
-        else if (_device.DeviceType == DeviceType.Simul)
+        else if ((DeviceType)Device.DeviceType == DeviceType.Simul)
             SimulApi = DeviceFactory.GetSimulApi(this);
-        else if (_device.DeviceType == DeviceType.Modbus)
+        else if ((DeviceType)Device.DeviceType == DeviceType.Modbus)
             ModbusApi = DeviceFactory.GetModbusApi(this);
         else
-            throw new NotImplementedException($"DeviceType {_device.DeviceType}");
+            throw new NotImplementedException($"DeviceType {(DeviceType)Device.DeviceType}");
     }
 
     #region Camera Commands

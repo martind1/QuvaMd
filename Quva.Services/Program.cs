@@ -1,11 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Mapster;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Quva.Database.Models;
 using Quva.Services.Devices.Card;
-using Quva.Services.Devices.Data;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Interfaces.Shared;
+using Quva.Services.Mapping;
 using Quva.Services.Services.Shared;
 using Serilog;
 using Serilog.Debugging;
@@ -17,6 +23,9 @@ namespace Quva.Services;
 internal class Program
 {
     public static IHost? host;
+    private static string? User;
+    private static string? Pw;
+    private static string? Datasource;
 
     private static void Main(string[] args)
     {
@@ -34,23 +43,59 @@ internal class Program
         //var cs = Crypt.EncryptString("b14ca5898a4e4133bbce2ea2315a1916", "QUVATESTNEU");
         //Log.Error($"cs:{cs}");
 
+        //Database:
+        User = configSerilog.GetSection("database").GetSection("user").Value;
+        Pw = configSerilog.GetSection("database").GetSection("pw").Value;
+        Datasource = configSerilog.GetSection("database").GetSection("datasource").Value;
+        var conn = new SqlConnectionStringBuilder
+        {
+            Password = Pw,
+            DataSource = Datasource,
+            UserID = User,
+            PersistSecurityInfo = false
+        };
+
         //Service dependency injection:
-        //using 
-        host = Host.CreateDefaultBuilder(args)
-            .ConfigureServices(services =>
-            {
-                services.AddSingleton<IDataService, DataService>();
-                services.AddSingleton<IDeviceService, DeviceService>();
-            })
-            .Build();
+        var builder = WebApplication.CreateBuilder();
+        builder.Services.AddSingleton<IDeviceService, DeviceService>();
+        builder.Services.AddDbContextPool<QuvaContext>(opt =>
+                {
+                    opt.EnableSensitiveDataLogging();  //Serilog
+                    opt.UseOracle(conn.ConnectionString, opt =>
+                    {
+                        opt.UseOracleSQLCompatibility("11");
+                    });
+                });
+        builder.Services.AddSingleton(Log.Logger);
+        builder.Services.AddMapster();
+
+        //host = Host.CreateDefaultBuilder(args)
+        //    .ConfigureServices(services =>
+        //    {
+        //        services.AddSingleton<IDeviceService, DeviceService>();
+        //        services.AddDbContextPool<QuvaContext>(opt =>
+        //        {
+        //            //opt.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddConsole(); })).EnableSensitiveDataLogging();
+        //            opt.EnableSensitiveDataLogging();  //Serilog
+        //            opt.UseOracle(conn.ConnectionString, opt =>
+        //            {
+        //                opt.UseOracleSQLCompatibility("11");
+        //            });
+        //        });
+        //        services.AddSingleton(Log.Logger);
+        //    })
+        //    .Build();
+        builder.Host.UseSerilog();  //log sql
+        var app = builder.Build();
         Log.Information("added Service");
 
         // Service aufrufen:
-        var testsvc = new TestDeviceService(host.Services);
+        //var testsvc = new TestDeviceService(host.Services);
+        var testsvc = new TestDeviceService(app.Services);
 
-        //var T = testsvc.Test1();
-        Task T1 = testsvc.Test5();
-        Task T2 = testsvc.Test6();
+        var T = testsvc.Test1();
+        //Task T1 = testsvc.Test5();
+        //Task T2 = testsvc.Test6();
         //T.Wait(); //warten bis Task beendet
         Console.WriteLine("waiting for key press");
         Console.ReadKey(); //warten auf Taste
@@ -90,13 +135,13 @@ internal class TestDeviceService
         //var data3 = await svc.CardRead("HOH.TRANSP1");
         //Log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
 
-        var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
-        //var data4 = await svc.DisplayShow("HOH.DISP1", message);
-        var data4 = await svc.DisplayShow("HOH.DISP2", message);
-        Log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
+        //var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
+        ////var data4 = await svc.DisplayShow("HOH.DISP1", message);
+        //var data4 = await svc.DisplayShow("HOH.DISP2", message);
+        //Log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
 
         //var data5 = await svc.CamLoad("HOH.CAMS", 0);
-        /*
+        
         var T1 = svc.CamLoad("HOH.CAMS", 0);
         var T2 = svc.CamLoad("HOH.CAMS", 1);
         var T3 = svc.CamLoad("HOH.CAMS", 2);
@@ -122,7 +167,7 @@ internal class TestDeviceService
         //Log.Information($"CamLoad3 Err:{data4.ErrorNr} {data4.ErrorText} Size:{data4.ImageSize}");
         //ArgumentNullException.ThrowIfNull(data4.ImageBytes);
         //File.WriteAllBytes(@$"C:\Temp\angular\logs\CAM3.{data4.ImageFormat}", data4.ImageBytes); 
-        */
+        
     }
 
     /// <summary>
