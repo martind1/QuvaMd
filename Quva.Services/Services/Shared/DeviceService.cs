@@ -63,7 +63,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
                      .Include(p => p.DeviceParameter)
                      where  d.Code == code
                      select d);
-        var value = query.FirstOrDefault();
+        var value = await query.FirstOrDefaultAsync();
         return await Task.FromResult(value?.Adapt<DeviceDto>());
     }
 
