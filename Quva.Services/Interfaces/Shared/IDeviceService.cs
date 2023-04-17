@@ -4,6 +4,7 @@ using Quva.Services.Devices;
 using Quva.Services.Devices.Cam;
 using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
+using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using static Quva.Services.Devices.ComProtocol;
 
@@ -28,6 +29,10 @@ public interface IDeviceService
     Task<CamData> CamLoad(string devicecode, int camNumber);
 
     Task<ComDevice?> SimulCommandStart(string devicecode, SimulDelegate onSimul);
+
+    Task<IResult> ModbusReadStart(string devicecode);
+    string GetModbusValue(string devicecode, string variableName);
+    Task<ModbusData> ModbusWrite(string devicecode, string variableName, string value);
 
     Task CloseDevice(string devicecode);
     ValueTask DisposeAsync();

@@ -1,28 +1,27 @@
 ﻿using Quva.Model.Dtos.RootManagement;
-using Quva.Services.Services.Shared;
 using Serilog;
 
 namespace Quva.Services.Devices;
 
 public class DeviceOptions
 {
-    private readonly ILogger CLog;
+    private readonly ILogger _log;
     public string DeviceCode { get; set; }
     public Dictionary<string, string>? Options { get; set; }
 
 
     public DeviceOptions(string deviceCode, ICollection<DeviceParameterDto>? deviceParameters)
     {
-        CLog = Log.ForContext<DeviceService>();
+        _log = Log.ForContext<DeviceOptions>();
         DeviceCode = deviceCode;
-        //Options = options;
-        //ignore case in key:
-        var comparer = StringComparer.OrdinalIgnoreCase;
-        ArgumentNullException.ThrowIfNull(deviceParameters, "DeviceOptions(deviceParameters)");
+        var comparer = StringComparer.OrdinalIgnoreCase;  //ignore case in key
         Options = new Dictionary<string, string>(comparer);
-        foreach (var deviceParameter in deviceParameters)
+        if (deviceParameters != null)
         {
-            Options.Add(deviceParameter.Key, deviceParameter.Value);
+            foreach (var deviceParameter in deviceParameters)
+            {
+                Options.Add(deviceParameter.Key, deviceParameter.Value);
+            }
         }
     }
 
@@ -51,7 +50,7 @@ public class DeviceOptions
         }
         catch (Exception ex)
         {
-            CLog.Warning(ex, $"[{DeviceCode}] Fehler bei int Device.Option({key})");
+            _log.Warning(ex, $"[{DeviceCode}] Fehler bei int Device.Option({key})");
             return dflt;
         }
     }
@@ -70,7 +69,7 @@ public class DeviceOptions
         }
         catch (Exception ex)
         {
-            CLog.Warning(ex, $"[{DeviceCode}] Fehler bei double Device.Option({key})");
+            _log.Warning(ex, $"[{DeviceCode}] Fehler bei double Device.Option({key})");
             return dflt;
         }
     }

@@ -1,17 +1,10 @@
-﻿using Quva.Services.Devices.Modbus;
-using Quva.Services.Devices.Scale;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quva.Services.Devices.Modbus;
+﻿namespace Quva.Services.Devices.Modbus;
 
 public class WagoController : ComProtocol, IModbusApi
 {
     public ModbusData Data { get; set; }
     private readonly DeviceOptions _deviceOptions;
+    private bool readAnswered = false;
 
     public string[] WagoControllerDescription =
     {
@@ -25,7 +18,7 @@ public class WagoController : ComProtocol, IModbusApi
     {
         Description = WagoControllerDescription;
         OnAnswer = WagoControllerAnswer;
-        Data = new ModbusData(device.Code, ModbusCommands.ReadBlocks.ToString());
+        Data = new ModbusData(device.Code, ModbusCommands.ReadBlocks.ToString(), device.Options);
 
         ArgumentNullException.ThrowIfNull(device.Options);
         _deviceOptions = device.Options;
@@ -38,6 +31,7 @@ public class WagoController : ComProtocol, IModbusApi
             var data = cmd switch
             {
                 ModbusCommands.ReadBlocks => await ReadBlocks(),
+                ModbusCommands.WriteVariable => await WriteVariable(variableName, value),
                 _ => throw new NotImplementedException($"ModbusCommand.{command} not implemented")
             };
             return await Task.FromResult(data);
@@ -50,10 +44,33 @@ public class WagoController : ComProtocol, IModbusApi
 
     public async Task<ModbusData> ReadBlocks()
     {
-
-        //ComPort.SetParamString(Data.Url); //set _httpParameter.URL
         _log.Debug($"[{DeviceCode}] WagoController.ReadBlocks");
-        var tel = await RunTelegram(Data, "ReadBlocks"); //no command to send
+        foreach (var modbusBlock in Data.modbusBlocks)
+        {
+            await ReadBlock(modbusBlock.Key);
+        }
+        return await Task.FromResult(Data);
+    }
+
+    public async Task<ModbusData> ReadBlock(string blockName)
+    {
+        //ComPort.SetParamString(Data.Url); //set _httpParameter.URL
+        _log.Debug($"[{DeviceCode}] WagoController.ReadBlock {blockName}");
+        var tel = await RunTelegram(Data, ModbusCommands.ReadBlock.ToString());
+        if (tel.Error != 0)
+        {
+            Data.ErrorNr = 99;
+            Data.ErrorText = tel.ErrorText;
+        }
+        return await Task.FromResult(Data);
+    }
+
+    public async Task<ModbusData> WriteVariable(string variableName, string value)
+    {
+        // TODO: writing Bit of Register Block: other Bits from Data.Blocks
+        
+        _log.Debug($"[{DeviceCode}] WagoController.WriteVariable");
+        var tel = await RunTelegram(Data, Data.WriteCommand(variableName, value));
         if (tel.Error != 0)
         {
             Data.ErrorNr = 99;
@@ -76,6 +93,10 @@ public class WagoController : ComProtocol, IModbusApi
         {
             //Data.Status = ModbusStatus.WeightOK;
             _log.Debug($"[{DeviceCode}] WagoController.Answer");
+
+            //received Values to Block.data
+            Data.SetBlockData(Data.ReadBlockName, inBuff);
+
         }
     }
 

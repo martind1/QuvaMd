@@ -19,6 +19,7 @@ public class DeviceFactory
             PortType.Tcp => new TcpPort(device),
             PortType.Http => new HttpPort(device),
             PortType.Serial => new ComxPort(device),
+            PortType.Modbus => new ModbusPort(device),
             PortType.Udp => throw new NotImplementedException("UDP not implemented"),
             PortType.None => null,
             _ => throw new NotImplementedException($"Porttype {portType} not implemented")

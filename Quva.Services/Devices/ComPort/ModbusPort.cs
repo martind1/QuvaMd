@@ -1,6 +1,5 @@
 ﻿using Quva.Services.Devices.EasyModbus;
 using Quva.Services.Devices.Modbus;
-using Quva.Services.Services.Shared;
 using Serilog;
 
 namespace Quva.Services.Devices.ComPort;
@@ -11,7 +10,7 @@ public class ModbusPort : IComPort
     public string DeviceCode { get; }
     public PortType PortType { get; } = PortType.Modbus;
     public ComParameter ComParameter { get; set; }
-    public bool DirectMode { get; } = false;
+    public bool DirectMode { get; } = true;
     public uint Bcc { get; set; }
 
     private readonly ByteBuff _inBuff;
@@ -24,7 +23,7 @@ public class ModbusPort : IComPort
 
     public ModbusPort(string deviceCode, string paramString)
     {
-        _log = Log.ForContext<DeviceService>();
+        _log = Log.ForContext<ModbusPort>();
         DeviceCode = deviceCode; //for Debug Output
         ComParameter = new ComParameter();
         ModbusParameter = new ModbusParameter();
@@ -54,7 +53,7 @@ public class ModbusPort : IComPort
     {
         var SL = paramstring.Split(":");
         if (SL.Length != 2)
-            throw new ArgumentException("Wrong Paramstring. Must be Host:Port or Listen:Port", nameof(paramstring));
+            throw new ArgumentException("Wrong Paramstring. Must be Host:Port", nameof(paramstring));
         ModbusParameter.ParamString = paramstring;
         ModbusParameter.Host = SL[0];
         ModbusParameter.Port = int.Parse(SL[1]);
@@ -144,10 +143,10 @@ public class ModbusPort : IComPort
     {
         // calling Modbus function (readx, writex)
         // buffer: <function:1>|<Adress:2>|<Count:1>[|<values as byte array>]
+        _log.Debug($"[{DeviceCode}] WRITE Send \'{buffer.HexString()}\'");
         ModbusFunction modbusFunction = (ModbusFunction)buffer.Buff[0];
         int startingAddress = BitConverter.ToInt16(buffer.Buff, 1);
         int quantity = buffer.Buff[3];
-        // TODO: move Modbus responce to _inBuff
         bool[]? boolValues = null;
         int[]? intValues = null;
         switch (modbusFunction)
@@ -165,10 +164,12 @@ public class ModbusPort : IComPort
                 intValues = _modbusClient.ReadInputRegisters(startingAddress, quantity); 
                 break;
             case ModbusFunction.WriteSingleCoil: 
-                _modbusClient.WriteSingleCoil(startingAddress, buffer.Buff[4] != 0); 
+                boolValues = new bool[] { buffer.Buff[4] != 0 };
+                _modbusClient.WriteSingleCoil(startingAddress, boolValues[0]); 
                 break;
             case ModbusFunction.WriteSingleRegister: 
-                _modbusClient.WriteSingleRegister(startingAddress, BitConverter.ToInt16(buffer.Buff, 4)); 
+                intValues = new int[] { BitConverter.ToInt16(buffer.Buff, 4) };
+                _modbusClient.WriteSingleRegister(startingAddress, intValues[0]); 
                 break;
             case ModbusFunction.WriteMultipleCoils:
                 boolValues = new bool[buffer.Cnt - 4];
@@ -187,6 +188,7 @@ public class ModbusPort : IComPort
                 _modbusClient.WriteMultipleRegisters(startingAddress, intValues); 
                 break;
         }
+        // move Modbus responce to _inBuff
         if (boolValues != null && boolValues.Length > 0)
         {
             _inBuff.Cnt = boolValues.Length;
@@ -209,6 +211,7 @@ public class ModbusPort : IComPort
         {
             throw new Exception("_inBuff is undefined");
         }
+        _log.Debug($"[{DeviceCode}] WRITE Rece \'{_inBuff.HexString()}\'");
         return await Task.FromResult(true);
     }
 

@@ -131,6 +131,7 @@ public class TcpPort : IComPort
 
         _log.Debug($"[{DeviceCode}] TCP({TcpParameter.ParamString}): CloseAsync({_tcpClient != null})");
         if (_tcpClient != null)
+        {
             try
             {
                 await Task.Run(() =>
@@ -150,6 +151,7 @@ public class TcpPort : IComPort
                 _tcpClient = null;
                 _stream = null;
             }
+        }
         //_tcpServer remains (is stopped). see dispose
     }
 

@@ -22,7 +22,7 @@ namespace Quva.Services;
 
 internal class Program
 {
-    public static IHost? host;
+    //public static IHost? host;
     private static string? User;
     private static string? Pw;
     private static string? Datasource;
@@ -93,7 +93,7 @@ internal class Program
         //var testsvc = new TestDeviceService(host.Services);
         var testsvc = new TestDeviceService(app.Services);
 
-        var T = testsvc.Test1();
+        var T = testsvc.TestModbus();
         //Task T1 = testsvc.Test5();
         //Task T2 = testsvc.Test6();
         //T.Wait(); //warten bis Task beendet
@@ -115,10 +115,18 @@ internal class TestDeviceService
 
     public IDeviceService svc { get; set; }
 
-    /// <summary>
-    ///     klassische async Befehle
-    /// </summary>
-    /// <returns></returns>
+    public async Task TestModbus()
+    {
+        Log.Information("testsvc.TestModbus");
+
+        //var T1 = svc.ModbusWrite("HOH.WAGO", "BulbEntryGreen", "0");
+        var T1 = svc.ModbusWrite("HOH.WAGO", "BulbExitGreen", "1");
+        var T2 = svc.ModbusWrite("HOH.WAGO", "BulbExitRed", "1");
+        await Task.WhenAll(T1, T2);
+        var data1 = await T1;
+        Log.Information($"ModbusWrite Err:{data1.ErrorNr} {data1.ErrorText}");
+    }
+
     public async Task Test1()
     {
         Log.Information("testsvc.Test1");

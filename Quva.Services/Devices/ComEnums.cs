@@ -40,17 +40,28 @@ public class ByteBuff
             {
                 sb.Append('\\'); //^ -> \^
             }
-
             sb.Append((char)b);
         }
+        return sb.ToString();
+    }
 
+    public string HexString()
+    {
+        var sb = new StringBuilder(256);
+        for (var i = 0; i < Cnt; i++)
+        {
+            var b = Buff[i];
+            sb.Append(b.ToString("X3"));
+        }
         return sb.ToString();
     }
 
     // Duplicate other ByteBuff
+    //beware bc length - src.Buff.CopyTo(Buff, 0);
     public int CopyFrom(ByteBuff src)
     {
-        src.Buff.CopyTo(Buff, 0);
+        for (var i = 0; i < src.Cnt; i++)
+            Buff[i] = src.Buff[i];
         Cnt = src.Cnt;
         return Cnt;
     }

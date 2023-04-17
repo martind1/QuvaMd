@@ -11,7 +11,6 @@ using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
-using System.Linq;
 using static Quva.Services.Devices.ComDevice;
 using static Quva.Services.Devices.ComProtocol;
 
@@ -59,10 +58,12 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     /// <returns></returns>
     public async Task<DeviceDto?> GetDevice(string code)
     {
-        var query = (from d in _context.Device
+        var query = from d in _context.Device
                      .Include(p => p.DeviceParameter)
-                     where  d.Code == code
-                     select d);
+                    where d.Code == code
+                    select d;
+        //var testList = await query.ToListAsync();
+        //_log.Information($"{testList.Count} devices");
         var value = await query.FirstOrDefaultAsync();
         return await Task.FromResult(value?.Adapt<DeviceDto>());
     }
@@ -394,7 +395,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
             _log.Error(ex, $"ModbusCommand({devicecode}, {command})");
             if (device != null)
                 await device.Close().ConfigureAwait(false);
-            result = new ModbusData(devicecode, command)
+            result = new ModbusData(devicecode, command, null)
             {
                 ErrorNr = 99,
                 ErrorText = ex.Message,
