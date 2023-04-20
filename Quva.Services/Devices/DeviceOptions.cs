@@ -64,8 +64,9 @@ public class DeviceOptions
     {
         try
         {
-            var s = Option(key, dflt.ToString());
-            return double.Parse(s);
+            // dot as decimal separator
+            var s = Option(key, dflt.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            return double.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
         }
         catch (Exception ex)
         {

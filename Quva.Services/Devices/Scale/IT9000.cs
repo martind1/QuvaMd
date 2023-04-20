@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Quva.Services.Devices.Modbus;
+using System.Text;
 
 namespace Quva.Services.Devices.Scale;
 
@@ -8,9 +9,14 @@ namespace Quva.Services.Devices.Scale;
 public class IT9000 : ComProtocol, IScaleApi
 {
     public ScaleData StatusData { get; set; }
+    public bool PositionInit { get; set; } = false;
+    public string PositionCode { get; set; }
+    public ModbusData? PositionData { get; set; }
     private readonly ScaleData _registerData;
     private readonly DeviceOptions _deviceOptions;
     private readonly bool _it9000;
+    private readonly string _positionVariable;
+    private readonly string _positionOkValue;
 
     public string[] IT9000Description =
     {
@@ -34,6 +40,24 @@ public class IT9000 : ComProtocol, IScaleApi
         ArgumentNullException.ThrowIfNull(device.Options);
         _deviceOptions = device.Options;
         _it9000 = _deviceOptions.Option($"IT9000", false);
+        PositionCode = _deviceOptions.Option("POSITION_CODE", string.Empty);
+        _positionVariable = _deviceOptions.Option("POSITION_VARIABLE", string.Empty);
+        _positionOkValue = _deviceOptions.Option("POSITION_OK_VALUE", "0");
+    }
+
+    public bool PositionOk()
+    {
+        bool result = true;
+        if (PositionCode != string.Empty && PositionInit)
+        {
+            foreach (string variable in _positionVariable.Split(';'))
+            {
+                string value = PositionData?.GetValue(variable) ?? _positionOkValue;
+                if (value != _positionOkValue)
+                    result = false;
+            }
+        }
+        return result;
     }
 
     public async Task<ScaleData> ScaleCommand(string command)
@@ -67,12 +91,23 @@ public class IT9000 : ComProtocol, IScaleApi
 
     public async Task<ScaleData> Register()
     {
-        var tel = await RunTelegram(_registerData, "<RN>");
-        if (tel.Error != 0)
+        if (!PositionOk())
         {
-            StatusData.ErrorNr = 99;
-            StatusData.ErrorText = tel.ErrorText;
-            StatusData.Display = tel.ErrorText;
+            _registerData.ErrorNr = 13;
+            _registerData.Status = ScaleStatus.PositionError;
+            _registerData.ErrorText = "PositionError";
+            _registerData.Display = _registerData.ErrorText;
+        }
+        else
+        {
+            var tel = await RunTelegram(_registerData, "<RN>");
+            if (tel.Error != 0)
+            {
+                _registerData.ErrorNr = 99;
+                _registerData.Status = ScaleStatus.Timeout;
+                _registerData.ErrorText = tel.ErrorText;
+                _registerData.Display = _registerData.ErrorText;
+            }
         }
         return await Task.FromResult(_registerData);
     }
@@ -146,7 +181,8 @@ public class IT9000 : ComProtocol, IScaleApi
             double weight;
             try
             {
-                weight = double.Parse(gross);
+                //_430.00
+                weight = double.Parse(gross, System.Globalization.CultureInfo.InvariantCulture);
             }
             catch (Exception ex)
             {
@@ -161,6 +197,10 @@ public class IT9000 : ComProtocol, IScaleApi
 
             if (stillstand == "1")
                 data.Status |= ScaleStatus.NoStandstill;
+            if (weight < minWeight)
+                data.Status |= ScaleStatus.Underload;
+            if (!PositionOk())
+                data.Status |= ScaleStatus.PositionError;
             if (bruttoNegative == "1")
             {
                 data.Status |= ScaleStatus.Underload;

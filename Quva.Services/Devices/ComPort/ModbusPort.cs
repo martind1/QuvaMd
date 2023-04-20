@@ -135,11 +135,20 @@ public class ModbusPort : IComPort
         return await Task.FromResult(buffer.Cnt);
     }
 
+    public delegate bool AsyncMethodCaller(ByteBuff buffer);
+
+    public async Task<bool> WriteAsync(ByteBuff buffer)
+    {
+        //calling sync method from async
+        //https://codereview.stackexchange.com/questions/109864/calling-synchronous-code-in-asynchronous-method
+        return await Task.Run(() => Write(buffer));
+    }
+
     /// <summary>
     ///     write only to internal buffer. Write to network later in flush.
     /// </summary>
     /// <returns>new Count in internal buffer</returns>
-    public async Task<bool> WriteAsync(ByteBuff buffer)
+    private bool Write(ByteBuff buffer)
     {
         // calling Modbus function (readx, writex)
         // buffer: <function:1>|<Adress:2>|<Count:1>[|<values as byte array>]
@@ -212,7 +221,7 @@ public class ModbusPort : IComPort
             throw new Exception("_inBuff is undefined");
         }
         _log.Debug($"[{DeviceCode}] WRITE Rece \'{_inBuff.HexString()}\'");
-        return await Task.FromResult(true);
+        return true;
     }
 
     //muss vor Read und vor InCount und am Telegram Ende aufgerufen werden

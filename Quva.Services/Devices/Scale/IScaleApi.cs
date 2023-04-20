@@ -1,4 +1,6 @@
-﻿namespace Quva.Services.Devices.Scale;
+﻿using Quva.Services.Devices.Modbus;
+
+namespace Quva.Services.Devices.Scale;
 
 /// <summary>
 ///     Interface for concrete Device Dialog Api
@@ -7,6 +9,10 @@ public interface IScaleApi
 {
     ScaleData StatusData { get; set; }
     Task<ScaleData> ScaleCommand(string command);
+
+    bool PositionInit { get; set; }
+    string PositionCode { get; set; }
+    ModbusData? PositionData { get; set; }
 }
 
 public class ScaleData : DeviceData

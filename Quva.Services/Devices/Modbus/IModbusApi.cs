@@ -15,12 +15,14 @@ public class ModbusData : DeviceData
     public IDictionary<string, ModbusBlock> modbusBlocks { get; set; }
     public IDictionary<string, ModbusVariable> modbusVariables { get; set; }
     //runtime:
+    public IList<string> changedBlocks { get; set; }
     public string ReadBlockName = string.Empty;
 
     public ModbusData(string deviceCode, string command, DeviceOptions? deviceOptions) : base(deviceCode, command)
     {
         modbusBlocks = new Dictionary<string, ModbusBlock>();
         modbusVariables = new Dictionary<string, ModbusVariable>();
+        changedBlocks = new List<string>();
 
         if (deviceOptions == null || deviceOptions.Options == null) return;
         // load Blocks and Variables from Device.Options
@@ -33,13 +35,15 @@ public class ModbusData : DeviceData
                 values[0] == ModbusFunction.ReadInputRegisters.ToString() ||
                 values[0] == ModbusFunction.WriteSingleCoil.ToString() ||
                 values[0] == ModbusFunction.WriteSingleRegister.ToString() ||
+                values[0] == ModbusFunction.ToggleSingleRegister.ToString() ||
                 values[0] == ModbusFunction.WriteMultipleCoils.ToString() ||
                 values[0] == ModbusFunction.WriteMultipleRegisters.ToString())
             {
                 modbusBlocks.Add(option.Key, new ModbusBlock(values));
+                changedBlocks.Add(option.Key);
             }
         }
-        // important variables after blocks
+        // variables _after_ blocks
         foreach (var option in deviceOptions.Options)
         {
             var values = option.Value.Split('|');
@@ -53,10 +57,11 @@ public class ModbusData : DeviceData
                 }
                 else
                 {
-                    throw new ArgumentException($"wrong block {values[1]}", nameof(deviceOptions));
+                    throw new ArgumentException($"wrong block ({values[1]})", nameof(deviceOptions));
                 }
             }
         }
+        // else option not for us, no error, E.g. comments
     }
 
     public override void Reset()
@@ -64,7 +69,28 @@ public class ModbusData : DeviceData
         base.Reset();
     }
 
-    public ByteBuff WriteCommand(string variableName, string value)
+    public ByteBuff ReadBlockCommand(string blockName)
+    {
+        //building byte buffer for Read
+        // buffer: <function:1>|<Adress:2>|<Count:1>
+        var byteList = new List<Byte>();
+        if (!modbusBlocks.TryGetValue(blockName, out ModbusBlock? block))
+        {
+            throw new ArgumentException($"unknown Block {blockName}", nameof(blockName));
+        }
+
+
+        byte[] byteAddress = BitConverter.GetBytes((short)block.address);
+        byteList.Add((byte)block.function);
+        byteList.Add(byteAddress[0]);
+        byteList.Add(byteAddress[1]);
+        byteList.Add((byte)block.quantity);
+
+        ByteBuff result = new(byteList.ToArray(), byteList.Count);
+        return result;
+    }
+
+    public ByteBuff WriteVariableCommand(string variableName, string value)
     {
         //building byte buffer for Write
         // buffer: <function:1>|<Adress:2>|<Count:1>[|<values as byte array>]
@@ -89,13 +115,10 @@ public class ModbusData : DeviceData
         };
         if (variable.datatype == ModbusDatatype.Bit && !block.isCoil)
         {
-            if (!block.isToggle)
-            {
-                //get Register, set bit, set byteData
-                int oldValue = BitConverter.ToInt16(block.data, 0);
-                int newValue = oldValue | 1 << variable.offset;
-                byteData = BitConverter.GetBytes((short)newValue);
-            }
+            // toggle means the edge counts (0 to 1)
+            int oldValue = block.isToggle ? 0 : BitConverter.ToInt16(block.data, 0);
+            int newValue = oldValue | 1 << variable.offset;
+            byteData = BitConverter.GetBytes((short)newValue);
         }
         else
         {
@@ -139,12 +162,22 @@ public class ModbusData : DeviceData
 
     public void SetBlockData(string blockName, ByteBuff readData)
     {
+        bool changed = false;
         if (modbusBlocks.TryGetValue(blockName, out var block))
         {
             for (int i = 0; i < readData.Cnt; i++)
             {
-                block.data[i] = readData.Buff[i];
+                if (block.data[i] != readData.Buff[i])
+                {
+                    changed = true;
+                    block.data[i] = readData.Buff[i];
+                }
             }
+        }
+        if (changed)
+        {
+            if (!changedBlocks.Contains(blockName))
+                changedBlocks.Add(blockName);
         }
     }
 
@@ -224,7 +257,7 @@ public record ModbusBlock
 
     public ModbusBlock(string[] values)
     {
-        if (values[0] == "ToggleSingleRegister")
+        if (values[0] == ModbusFunction.ToggleSingleRegister.ToString())
         {
             isToggle = true;  //set bit=0 after sent
             function = ModbusFunction.WriteSingleRegister;
@@ -236,6 +269,15 @@ public record ModbusBlock
         }
         address = int.Parse(values[1]);
         quantity = values.Length > 2 ? int.Parse(values[2]) : 1;
+
+        if (address > ushort.MaxValue)
+        {
+            throw new ArgumentException($"address too large ({address})");
+        }
+        if (quantity > 125)
+        {
+            throw new ArgumentException($"quantity too large ({quantity})");
+        }
 
         data = new byte[byteCount];
     }
@@ -257,6 +299,7 @@ public enum ModbusFunction
     ReadInputRegisters = 4,
     WriteSingleCoil = 5,
     WriteSingleRegister = 6,
+    ToggleSingleRegister = 106,
     WriteMultipleCoils = 15,
     WriteMultipleRegisters = 16
 }

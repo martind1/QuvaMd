@@ -6,6 +6,7 @@ using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
+using static Quva.Services.Devices.ComDevice;
 using static Quva.Services.Devices.ComProtocol;
 
 namespace Quva.Services.Interfaces.Shared;
@@ -30,9 +31,10 @@ public interface IDeviceService
 
     Task<ComDevice?> SimulCommandStart(string devicecode, SimulDelegate onSimul);
 
-    Task<IResult> ModbusReadStart(string devicecode);
+    Task<ModbusData> ModbusReadStart(string devicecode, OnModbusRead? onModbusRead);
     string GetModbusValue(string devicecode, string variableName);
     Task<ModbusData> ModbusWrite(string devicecode, string variableName, string value);
+    Task<ModbusData> ModbusCommand(string devicecode, string command, string variableName, string value);
 
     Task CloseDevice(string devicecode);
     ValueTask DisposeAsync();

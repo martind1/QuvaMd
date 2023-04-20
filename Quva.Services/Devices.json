@@ -13,7 +13,7 @@
       "Override": {
         "Microsoft": "Warning",
         "Microsoft.EntityFrameworkCore.Database.Command": "Information",
-        "Quva": "Debug"
+        "Quva": "Error"
       }
     },
     "Enrich": [

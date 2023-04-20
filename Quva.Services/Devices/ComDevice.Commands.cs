@@ -60,6 +60,18 @@ public partial class ComDevice
         {
             _log.Information($"[{Code}] START Device.ScaleCommand({command})");
             ArgumentNullException.ThrowIfNull(ScaleApi);
+            //external device for Positioning
+            if (ScaleApi.PositionCode != string.Empty)
+            {
+                //MODBUS_CODE=HOH.WAGO
+                if (!ScaleApi.PositionInit)
+                {
+                    ScaleApi.PositionInit = true;
+                    ScaleApi.PositionData = await _dataService.ModbusReadStart(ScaleApi.PositionCode, null);
+                }
+
+            }
+
             result = await ScaleApi.ScaleCommand(command);
             _log.Debug($"[{Code}] END Device.ScaleCommand({command})");
         }
@@ -72,6 +84,8 @@ public partial class ComDevice
 
     public void ScaleCommandStart(string command, OnScaleStatus onScaleStatus)
     {
+        if (_timerAsync != null)
+            throw new Exception("already started");
         _log.Debug($"[{Code}] CALLBACK Device.ScaleCommandStart({command})");
         ArgumentNullException.ThrowIfNull(ScaleApi);
         _onScaleStatus = onScaleStatus;
@@ -143,6 +157,8 @@ public partial class ComDevice
 
     public void CardCommandStart(string command, OnCardRead onCardRead)
     {
+        if (_timerAsync != null)
+            throw new Exception("already started");
         _log.Debug($"[{Code}] CALLBACK Device.CardCommandStart({command})");
         ArgumentNullException.ThrowIfNull(CardApi);
         _onCardRead = onCardRead;
@@ -206,6 +222,8 @@ public partial class ComDevice
 
     public void DisplayCommandStart(string command, OnDisplayShow onDisplayShow)
     {
+        if (_timerAsync != null)
+            throw new Exception("already started"); 
         _log.Debug($"[{Code}] CALLBACK Device.DisplayCommandStart({command})");
         ArgumentNullException.ThrowIfNull(DisplayApi);
         _onDisplayShow = onDisplayShow;
@@ -246,6 +264,11 @@ public partial class ComDevice
 
     #region Modbus Commands
 
+    public delegate void OnModbusRead(ModbusData scaleData);
+
+    private OnModbusRead? _onModbusRead { get; set; }
+
+
     public async Task<ModbusData> ModbusCommand(string command, string variableName, string value)
     {
         ModbusData result;
@@ -266,12 +289,22 @@ public partial class ComDevice
         return await Task.FromResult(result);
     }
 
-    public void ModbusCommandStart(string command)
+    public ModbusData ModbusCommandStart(string command, OnModbusRead? onModbusRead)
     {
-        _log.Debug($"[{Code}] CALLBACK Device.ModbusCommandStart({command})");
-        ArgumentNullException.ThrowIfNull(ModbusApi);
-        _timerCommand = command;
-        _timerAsync = new TimerAsync(OnModbusCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(500));
+        if (_timerAsync != null)
+        {
+            _log.Debug($"[{Code}] ALREADY STARTED Device.ModbusCommandStart({command})");
+            ArgumentNullException.ThrowIfNull(ModbusApi);
+        }
+        else
+        {
+            _log.Debug($"[{Code}] CALLBACK Device.ModbusCommandStart({command})");
+            ArgumentNullException.ThrowIfNull(ModbusApi);
+            _onModbusRead = onModbusRead;
+            _timerCommand = command;
+            _timerAsync = new TimerAsync(OnModbusCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(500));
+        }
+        return ModbusApi.Data;  //for scale positioning
     }
 
     private async Task OnModbusCommand(CancellationToken arg)
@@ -279,16 +312,33 @@ public partial class ComDevice
         if (arg.IsCancellationRequested) return;
         ArgumentNullException.ThrowIfNull(ModbusApi);
         _log.Debug($"[{Code}] OnModbusCommand({_timerCommand})");
+        ModbusData result;
+        string debugStr = string.Empty;
         try
         {
+            debugStr = "Open";
             await Open();
-            await ModbusCommand(_timerCommand, "", "");  //no variable at ReadBlocks
+            try
+            {
+                debugStr = "Command";
+                result = await ModbusCommand(_timerCommand, "", "");  //no variable at ReadBlocks
+            }
+            catch
+            {
+                await Close(); //.ConfigureAwait(false);
+                throw;
+            }
         }
         catch (Exception ex)
         {
             _log.Warning(ex, $"[{Code}] Error OnModbusCommand()");
-            await Close().ConfigureAwait(false);
+            result = new ModbusData(Code, _timerCommand, null)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message,
+            };
         }
+        _onModbusRead?.Invoke(result);
     }
 
     #endregion Modbus Commands
@@ -317,6 +367,8 @@ public partial class ComDevice
 
     public void SimulCommandStart(SimulDelegate onSimul)
     {
+        if (_timerAsync != null)
+            throw new Exception("already started");
         _log.Debug($"[{Code}] CALLBACK Device.SimulCommandStart()");
         if (SimulApi is ComProtocol comProtocol)
         {

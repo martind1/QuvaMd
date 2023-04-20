@@ -1,14 +1,12 @@
-﻿using Mapster;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Quva.Database.Models;
 using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
+using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Mapping;
@@ -93,7 +91,8 @@ internal class Program
         //var testsvc = new TestDeviceService(host.Services);
         var testsvc = new TestDeviceService(app.Services);
 
-        var T = testsvc.TestModbus();
+        var T = testsvc.TestPosition();
+        //var T = testsvc.TestModbus();
         //Task T1 = testsvc.Test5();
         //Task T2 = testsvc.Test6();
         //T.Wait(); //warten bis Task beendet
@@ -115,17 +114,64 @@ internal class TestDeviceService
 
     public IDeviceService svc { get; set; }
 
+    private string _oldDisplay = string.Empty;
+    private ScaleStatus _oldScaleStatus;
+
     public async Task TestModbus()
     {
         Log.Information("testsvc.TestModbus");
 
         //var T1 = svc.ModbusWrite("HOH.WAGO", "BulbEntryGreen", "0");
-        var T1 = svc.ModbusWrite("HOH.WAGO", "BulbExitGreen", "1");
-        var T2 = svc.ModbusWrite("HOH.WAGO", "BulbExitRed", "1");
-        await Task.WhenAll(T1, T2);
+        //var T1 = svc.ModbusWrite("HOH.WAGO", "BulbExitGreen", "1");
+        //var T2 = svc.ModbusWrite("HOH.WAGO", "BulbExitRed", "1");
+        //await Task.WhenAll(T1, T2);
+        //var data1 = await T1;
+        //var data2 = await T2;
+        //Log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText} Err2:{data2.ErrorNr} {data2.ErrorText}");
+
+
+        //var T1 = svc.ModbusCommand("HOH.WAGO", ModbusCommands.ReadBlock.ToString(), "Inputs", "1");
+        //var data1 = await T1;
+        //Log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText}");
+        //string v1 = svc.GetModbusValue("HOH.WAGO", "EntryIsOccupied");
+        //string v2 = svc.GetModbusValue("HOH.WAGO", "ExitIsOccupied");
+        //Log.Information($"ModbusRead V1.3:{v1} V2.4:{v2}");
+
+        var T1 = svc.ModbusReadStart("HOH.WAGO", MyModbusRead);
+        var T2 = svc.ModbusReadStart("HOH.WAGO", MyModbusRead);  //test doppelter Aufruf
         var data1 = await T1;
-        Log.Information($"ModbusWrite Err:{data1.ErrorNr} {data1.ErrorText}");
+        var data2 = await T2;
+        Log.Error($"ModbusReadStart1:{data1}");
+        Log.Error($"ModbusReadStart2:{data2}");
     }
+
+    private void MyModbusRead(ModbusData Data)
+    {
+        if (Data.changedBlocks.Contains("Inputs"))
+        {
+            Data.changedBlocks.Remove("Inputs");
+            string v1 = svc.GetModbusValue("HOH.WAGO", "EntryIsOccupied");
+            string v2 = svc.GetModbusValue("HOH.WAGO", "ExitIsOccupied");
+            Log.Error($"### MyModbus 3:{v1} 4:{v2}");
+        }
+    }
+
+    public async Task TestPosition() 
+    {
+        Log.Information("Test IT9000 + Modbus Wago Positioning");
+        var T1 = await svc.ScaleStatusStart("HOH.FW1", MyScalePosition);
+
+    }
+    private void MyScalePosition(ScaleData scaleData)
+    {
+        if (_oldDisplay != scaleData.Display || _oldScaleStatus != scaleData.Status)
+        {
+            Log.Error($"### Scale {scaleData.Display} * Status {scaleData.Status:F} ###");
+            _oldDisplay = scaleData.Display;
+            _oldScaleStatus = scaleData.Status;
+        }
+    }
+
 
     public async Task Test1()
     {
@@ -254,8 +300,6 @@ internal class TestDeviceService
         var result = await svc.ScaleStatusStart("HOH.FW1", MyScaleStatus);
         Log.Information("testsvc.Test5 Started");
     }
-
-    private string _oldDisplay = string.Empty;
 
     private async void MyScaleStatus(ScaleData scaleData)
     {

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Quva.Services.Devices.Modbus;
+using System.Globalization;
 using System.Text;
 
 namespace Quva.Services.Devices.Scale;
@@ -9,6 +10,9 @@ namespace Quva.Services.Devices.Scale;
 public class FawaWs : ComProtocol, IScaleApi
 {
     private readonly ScaleData _registerData;
+    public bool PositionInit { get; set; } = false;
+    public string PositionCode { get; set; }
+    public ModbusData? PositionData { get; set; }
 
     public string[] FawaWsDescription =
     {
@@ -29,6 +33,7 @@ public class FawaWs : ComProtocol, IScaleApi
 
         StatusData = new ScaleData(device.Code, ScaleCommands.Status.ToString());
         _registerData = new ScaleData(device.Code, ScaleCommands.Register.ToString());
+        PositionCode = string.Empty;
     }
 
     public ScaleData StatusData { get; set; }

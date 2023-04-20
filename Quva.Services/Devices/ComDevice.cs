@@ -20,7 +20,7 @@ public partial class ComDevice
 
     private readonly SemaphoreSlim _slim;
     private DeviceDto? _device; // from database table 
-    private TimerAsync? _timerAsync;
+    private TimerAsync? _timerAsync = null;
     public DeviceOptions? Options;
 
 

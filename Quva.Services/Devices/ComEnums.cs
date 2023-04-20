@@ -51,7 +51,8 @@ public class ByteBuff
         for (var i = 0; i < Cnt; i++)
         {
             var b = Buff[i];
-            sb.Append(b.ToString("X3"));
+            if (i > 0) sb.Append(' ');
+            sb.Append(b.ToString("X2"));
         }
         return sb.ToString();
     }

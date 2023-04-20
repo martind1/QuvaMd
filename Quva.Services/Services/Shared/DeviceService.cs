@@ -11,6 +11,7 @@ using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static Quva.Services.Devices.ComDevice;
 using static Quva.Services.Devices.ComProtocol;
 
@@ -110,7 +111,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 
     public async Task<IResult> CardCommandStart(string devicecode, string command, OnCardRead onCardRead)
     {
-        ComDevice? device = null;
+        ComDevice? device;
         IResult? result;
         try
         {
@@ -122,8 +123,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         {
             _log.Error(ex, $"CardCommandStart({devicecode}, {command})");
             result = Results.NotFound(ex.Message);
-            if (device != null)
-                await device.Close().ConfigureAwait(false);
+            //beware device.Close()
         }
 
         return await Task.FromResult(result);
@@ -234,7 +234,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     public async Task<IResult> DisplayCommandStart(string devicecode, string command, OnDisplayShow onDisplayShow,
         string? scaleCode)
     {
-        ComDevice? device = null;
+        ComDevice? device;
         IResult? result;
         try
         {
@@ -247,8 +247,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         {
             _log.Error(ex, $"DisplayCommandStart({devicecode}, {command})");
             result = Results.NotFound(ex.Message);
-            if (device != null)
-                await device.Close();
+            //beware device.Close()
         }
 
         return await Task.FromResult(result);
@@ -298,7 +297,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 
     public async Task<IResult> ScaleStatusStart(string devicecode, OnScaleStatus onScaleStatus)
     {
-        ComDevice? device = null;
+        ComDevice? device;
         IResult? result;
         try
         {
@@ -310,8 +309,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         {
             _log.Error(ex, $"ScaleStatusStart({devicecode})");
             result = Results.NotFound(ex.Message);
-            if (device != null)
-                await device.Close().ConfigureAwait(false);
+            //beware device.Close()
         }
 
         return await Task.FromResult(result);
@@ -345,24 +343,25 @@ public class DeviceService : IAsyncDisposable, IDeviceService
 
     #region Modbus
 
-    public async Task<IResult> ModbusReadStart(string devicecode)
+    public async Task<ModbusData> ModbusReadStart(string devicecode, OnModbusRead? onModbusRead)
     {
-        ComDevice? device = null;
-        IResult? result;
+        ComDevice? device;
+        ModbusData result;
         try
         {
-            result = Results.Ok();
             device = await AddDevice(devicecode, false);
-            device.ModbusCommandStart(ModbusCommands.ReadBlocks.ToString());
+            result = device.ModbusCommandStart(ModbusCommands.ReadBlocks.ToString(), onModbusRead);
         }
         catch (Exception ex)
         {
             _log.Error(ex, $"ModbusStart({devicecode})");
-            result = Results.NotFound(ex.Message);
-            if (device != null)
-                await device.Close().ConfigureAwait(false);
+            //beware device.Close()
+            result = new ModbusData(devicecode, ModbusCommands.ReadBlocks.ToString(), null)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message,
+            };
         }
-
         return await Task.FromResult(result);
     }
 

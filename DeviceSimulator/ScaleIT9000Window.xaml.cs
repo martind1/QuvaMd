@@ -108,7 +108,7 @@ public partial class ScaleIT9000Window : Window
         internal string edCalibrationNumber_Text = string.Empty;
         internal bool chbStandStill_Checked;
     }
-    private TransferRecord transferObject;
+    private readonly TransferRecord transferObject;
 
     private void SetTranfsferObject()
     {
