@@ -132,8 +132,6 @@ public class IT9000 : ComProtocol, IScaleApi
             if (!int.TryParse(errorCode, out int err))
                 err = 99;
             data.ErrorNr = err;
-            data.ErrorText = $"Fehler {err}";
-            data.Display = data.ErrorText;
             if (err == 13 || err == 18)
                 data.Status |= ScaleStatus.NoStandstill;
             else if (err == 12)
@@ -149,6 +147,9 @@ public class IT9000 : ComProtocol, IScaleApi
                 32 or 33 => ScaleStatus.ScaleNumberError,
                 _ => ScaleStatus.ScaleFault,
             };
+            //data.ErrorText = $"Error {err}";
+            data.ErrorText = data.Status.ToString("F");
+            data.Display = data.ErrorText;
             return;
         }  //error
 
@@ -195,6 +196,9 @@ public class IT9000 : ComProtocol, IScaleApi
                 return;
 
 
+            if (unit == "kg" && data.Unit == ScaleUnit.Ton)
+                weight /= 1000.0;
+            data.Weight = weight;
             if (stillstand == "1")
                 data.Status |= ScaleStatus.NoStandstill;
             if (weight < minWeight)
@@ -206,9 +210,6 @@ public class IT9000 : ComProtocol, IScaleApi
                 data.Status |= ScaleStatus.Underload;
                 //beware - is already negativ weight = -weight;
             }
-            if (unit == "kg" && data.Unit == ScaleUnit.Ton)
-                weight /= 1000.0;
-            data.Weight = weight;
 
             if (data.Command == ScaleCommands.Status.ToString())
             {

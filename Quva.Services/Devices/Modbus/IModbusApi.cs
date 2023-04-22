@@ -1,4 +1,6 @@
-﻿namespace Quva.Services.Devices.Modbus;
+﻿using System.Globalization;
+
+namespace Quva.Services.Devices.Modbus;
 
 public interface IModbusApi
 {
@@ -110,7 +112,7 @@ public class ModbusData : DeviceData
         {
             ModbusDatatype.Bit => BitConverter.GetBytes(int.Parse(value) != 0),
             ModbusDatatype.Word => BitConverter.GetBytes((short)int.Parse(value)),
-            ModbusDatatype.Float => BitConverter.GetBytes(float.Parse(value)),
+            ModbusDatatype.Float => BitConverter.GetBytes(float.Parse(value, CultureInfo.InvariantCulture)),  // 4.30
             _ => throw new ArgumentException($"wrong datatype {variable.datatype}", nameof(variableName)),
         };
         if (variable.datatype == ModbusDatatype.Bit && !block.isCoil)
@@ -155,7 +157,7 @@ public class ModbusData : DeviceData
         if (modbusVariables.TryGetValue(variableName, out var variable))
         {
             // calculate from block.data
-            return variable.GetValue().ToString();
+            return variable.GetValue().ToString(CultureInfo.InvariantCulture);  // 4.3
         }
         return string.Empty;
     }

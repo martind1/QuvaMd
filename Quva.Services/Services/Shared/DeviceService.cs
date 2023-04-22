@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Quva.Database.Models;
 using Quva.Model.Dtos.RootManagement;
 using Quva.Services.Devices;
@@ -11,7 +12,6 @@ using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static Quva.Services.Devices.ComDevice;
 using static Quva.Services.Devices.ComProtocol;
 
@@ -19,17 +19,17 @@ namespace Quva.Services.Services.Shared;
 
 public class DeviceService : IAsyncDisposable, IDeviceService
 {
-    private readonly ILogger _log;
-    private readonly QuvaContext _context;
+    private readonly ILogger _log;    
+    private readonly IServiceScopeFactory _scopeFactory;
     private bool _disposeFlag = true;
     private readonly SemaphoreSlim _slim;
 
-    public DeviceService(QuvaContext context)
+    public DeviceService(IServiceScopeFactory scopeFactory)
     {
         DeviceList = new Dictionary<string, ComDevice>();
         _log = Log.ForContext<DeviceService>();
-        _log.Information("creating DeviceService");
-        _context = context;
+        _log.Information("creating DeviceService");        
+        _scopeFactory = scopeFactory;
         _slim = new SemaphoreSlim(1);
     }
 
@@ -59,14 +59,17 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     /// <returns></returns>
     public async Task<DeviceDto?> GetDevice(string code)
     {
-        var query = from d in _context.Device
-                     .Include(p => p.DeviceParameter)
-                    where d.Code == code
-                    select d;
-        //var testList = await query.ToListAsync();
-        //_log.Information($"{testList.Count} devices");
-        var value = await query.FirstOrDefaultAsync();
-        return await Task.FromResult(value?.Adapt<DeviceDto>());
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
+
+            var query = (from d in context.Device
+                 .Include(p => p.DeviceParameter)
+                         where d.Code == code
+                         select d);
+            var value = await query.FirstOrDefaultAsync();
+            return await Task.FromResult(value?.Adapt<DeviceDto>());
+        }        
     }
 
 

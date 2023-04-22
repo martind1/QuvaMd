@@ -56,7 +56,7 @@ public class IT9000Simul : ComProtocol, ISimulApi
     public static void OnIT9000Simul(ComTelegram tel, SimulData simulData)
     {
         string errorCode = simulData.ErrorNr.ToString("D2");  //0->00
-        string stillstand = simulData.Stillstand ? "1" : "0";
+        string moving = simulData.Stillstand ? "0" : "1";  
         string bruttoNegative = simulData.Negative ? "1" : "0";
         string scaleDate = DateTime.Now.ToString("dd.MM.yy");
         string scaleTime = DateTime.Now.ToString("HH:mm");
@@ -89,7 +89,7 @@ public class IT9000Simul : ComProtocol, ISimulApi
              //<000027.03.2321:18   01       0       0       0       1   83731>
              "<FFSSDDDDDDDDZZZZZIIIIWBBBBBBBBTTTTTTTTNNNNNNNNEEOORMMMCCCCCCCC>\r\n"
              .Replace("FF", errorCode)
-             .Replace("SS", stillstand + bruttoNegative)
+             .Replace("SS", moving + bruttoNegative)
              .Replace("DDDDDDDD", scaleDate)
              .Replace("ZZZZZ", scaleTime)
              .Replace("IIII", identNumber)

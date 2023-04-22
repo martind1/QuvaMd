@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Quva.Services.Devices;
+using Quva.Services.Devices.Simul;
+using Quva.Services.Interfaces.Shared;
+using Serilog;
+using System;
 using System.Globalization;
 using System.Text;
 using System.Windows;
-using Serilog;
 using System.Windows.Controls;
-using System.Configuration;
-using Quva.Services.Devices;
-using Quva.Services.Devices.Simul;
-using Quva.Services.Interfaces.Shared;
 
 namespace Quva.DeviceSimulator;
 
@@ -20,6 +19,7 @@ public partial class ScaleIT9000Window : Window
     private DeviceOptions? _deviceOptions;
     private DeviceOptions deviceOptions { get => _deviceOptions ?? throw new ArgumentNullException(nameof(_deviceOptions)); }
     private ComDevice? _comDevice;
+    private string _oldInstr = string.Empty;
 
     public ScaleIT9000Window(IDeviceService svc)
     {
@@ -50,7 +50,7 @@ public partial class ScaleIT9000Window : Window
 
 
         //bool isStatus = inStr.Equals("<RM>");
-        bool isRegister = inStr.Equals("<RN>");
+        bool isRegister = inStr.Contains("RN");
         double minWeight = deviceOptions.Option("MinWeight", 0.0);
         double maxWeight = deviceOptions.Option("MaxWeight", 49999.0);
 
@@ -64,6 +64,11 @@ public partial class ScaleIT9000Window : Window
         simulData.unitStr = "kg";
         simulData.Stillstand = transferObject.chbStandStill_Checked; // ?? false;
         simulData.Negative = transferObject.edWeight_Text.Contains('-');
+
+        if (_oldInstr != inStr)
+        {
+            Log.Debug($"inStr({_oldInstr})->({inStr})");
+        }
 
         if (isRegister)
         {

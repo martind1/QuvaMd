@@ -91,8 +91,8 @@ internal class Program
         //var testsvc = new TestDeviceService(host.Services);
         var testsvc = new TestDeviceService(app.Services);
 
-        var T = testsvc.TestPosition();
-        //var T = testsvc.TestModbus();
+        //var T = testsvc.TestPosition();
+        var T = testsvc.TestModbus();
         //Task T1 = testsvc.Test5();
         //Task T2 = testsvc.Test6();
         //T.Wait(); //warten bis Task beendet
@@ -116,18 +116,20 @@ internal class TestDeviceService
 
     private string _oldDisplay = string.Empty;
     private ScaleStatus _oldScaleStatus;
+    private long _oldSecond;
 
     public async Task TestModbus()
     {
         Log.Information("testsvc.TestModbus");
 
-        //var T1 = svc.ModbusWrite("HOH.WAGO", "BulbEntryGreen", "0");
-        //var T1 = svc.ModbusWrite("HOH.WAGO", "BulbExitGreen", "1");
-        //var T2 = svc.ModbusWrite("HOH.WAGO", "BulbExitRed", "1");
-        //await Task.WhenAll(T1, T2);
-        //var data1 = await T1;
-        //var data2 = await T2;
-        //Log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText} Err2:{data2.ErrorNr} {data2.ErrorText}");
+        var T1 = svc.ModbusWrite("HOH.WAGO", "BulbEntryGreen", "1");
+        var T2 = svc.ModbusWrite("HOH.WAGO", "BulbExitGreen", "1");
+        var T3 = svc.ModbusWrite("HOH.WAGO", "BulbExitRed", "1");
+        await Task.WhenAll(T1, T2, T3);
+        var data1 = await T1;
+        var data2 = await T2;
+        var data3 = await T3;
+        Log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText} Err2:{data2.ErrorNr} {data2.ErrorText} Err3:{data3.ErrorNr} {data3.ErrorText}");
 
 
         //var T1 = svc.ModbusCommand("HOH.WAGO", ModbusCommands.ReadBlock.ToString(), "Inputs", "1");
@@ -137,12 +139,12 @@ internal class TestDeviceService
         //string v2 = svc.GetModbusValue("HOH.WAGO", "ExitIsOccupied");
         //Log.Information($"ModbusRead V1.3:{v1} V2.4:{v2}");
 
-        var T1 = svc.ModbusReadStart("HOH.WAGO", MyModbusRead);
-        var T2 = svc.ModbusReadStart("HOH.WAGO", MyModbusRead);  //test doppelter Aufruf
-        var data1 = await T1;
-        var data2 = await T2;
-        Log.Error($"ModbusReadStart1:{data1}");
-        Log.Error($"ModbusReadStart2:{data2}");
+        //var T1 = svc.ModbusReadStart("HOH.WAGO", MyModbusRead);
+        //var T2 = svc.ModbusReadStart("HOH.WAGO", MyModbusRead);  //test doppelter Aufruf
+        //var data1 = await T1;
+        //var data2 = await T2;
+        //Log.Error($"ModbusReadStart1:{data1}");
+        //Log.Error($"ModbusReadStart2:{data2}");
     }
 
     private void MyModbusRead(ModbusData Data)
@@ -169,6 +171,13 @@ internal class TestDeviceService
             Log.Error($"### Scale {scaleData.Display} * Status {scaleData.Status:F} ###");
             _oldDisplay = scaleData.Display;
             _oldScaleStatus = scaleData.Status;
+        }
+        if (_oldSecond != DateTime.Now.ToFileTime() / 100000000)
+        {
+            _oldSecond = DateTime.Now.ToFileTime() / 100000000;
+            var T2 = svc.ScaleRegister("HOH.FW1");
+            ScaleData data = T2.GetAwaiter().GetResult();
+            Log.Information($"### Register:{data.ErrorNr} {data.Display} C:{data.CalibrationNumber} S:{data.Status:F}");
         }
     }
 
