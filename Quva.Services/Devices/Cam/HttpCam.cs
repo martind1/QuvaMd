@@ -94,6 +94,10 @@ public class HttpCam : ComProtocol, ICamApi
             _loadData.ImageBytes = inBuff.Buff;
             _loadData.ImageSize = inBuff.Cnt;
             _loadData.ImageFormat = _loadData.Url?.Split('.').Last(); // E.g. png or jpg
+            if (_loadData.ImageFormat?.Length > 4) 
+            {
+                _loadData.ImageFormat = "jpg";
+            }
             _log.Debug(
                 $"[{DeviceCode}] HttpCam.Answer({_loadData.CamNumber}) Size:{_loadData.ImageSize} Host:{new Uri(_loadData.Url ?? "").Host}");
         }

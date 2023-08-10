@@ -67,22 +67,6 @@ internal class Program
         builder.Services.AddSingleton(Log.Logger);
         builder.Services.AddMapster();
 
-        //host = Host.CreateDefaultBuilder(args)
-        //    .ConfigureServices(services =>
-        //    {
-        //        services.AddSingleton<IDeviceService, DeviceService>();
-        //        services.AddDbContextPool<QuvaContext>(opt =>
-        //        {
-        //            //opt.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddConsole(); })).EnableSensitiveDataLogging();
-        //            opt.EnableSensitiveDataLogging();  //Serilog
-        //            opt.UseOracle(conn.ConnectionString, opt =>
-        //            {
-        //                opt.UseOracleSQLCompatibility("11");
-        //            });
-        //        });
-        //        services.AddSingleton(Log.Logger);
-        //    })
-        //    .Build();
         builder.Host.UseSerilog();  //log sql
         var app = builder.Build();
         Log.Information("added Service");
