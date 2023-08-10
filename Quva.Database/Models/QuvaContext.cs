@@ -13,21 +13,2390 @@ public partial class QuvaContext : DbContext
     {
     }
 
+    public virtual DbSet<AdditionalBasicType> AdditionalBasicType { get; set; }
+
+    public virtual DbSet<BasicType> BasicType { get; set; }
+
+    public virtual DbSet<Batch> Batch { get; set; }
+
+    public virtual DbSet<Carrier> Carrier { get; set; }
+
+    public virtual DbSet<ConfigMessage> ConfigMessage { get; set; }
+
+    public virtual DbSet<ConfigMessagesDocument> ConfigMessagesDocument { get; set; }
+
+    public virtual DbSet<ConfigPlantMaterial> ConfigPlantMaterial { get; set; }
+
+    public virtual DbSet<ConfigPlantSalesOrg> ConfigPlantSalesOrg { get; set; }
+
+    public virtual DbSet<ConfigProductgroup> ConfigProductgroup { get; set; }
+
+    public virtual DbSet<ConfigSeal> ConfigSeal { get; set; }
+
+    public virtual DbSet<Contingent> Contingent { get; set; }
+
+    public virtual DbSet<Country> Country { get; set; }
+
+    public virtual DbSet<CustomerAgrParameter> CustomerAgrParameter { get; set; }
+
+    public virtual DbSet<CustomerAgreement> CustomerAgreement { get; set; }
+
+    public virtual DbSet<Debitor> Debitor { get; set; }
+
+    public virtual DbSet<DeliveryDocument> DeliveryDocument { get; set; }
+
+    public virtual DbSet<DeliveryHead> DeliveryHead { get; set; }
+
+    public virtual DbSet<DeliveryMessage> DeliveryMessage { get; set; }
+
+    public virtual DbSet<DeliveryOrder> DeliveryOrder { get; set; }
+
+    public virtual DbSet<DeliveryOrderDebitor> DeliveryOrderDebitor { get; set; }
+
+    public virtual DbSet<DeliveryOrderPosition> DeliveryOrderPosition { get; set; }
+
+    public virtual DbSet<DeliveryOrderPositionClass> DeliveryOrderPositionClass { get; set; }
+
+    public virtual DbSet<DeliveryOrderPositionText> DeliveryOrderPositionText { get; set; }
+
+    public virtual DbSet<DeliveryOrderText> DeliveryOrderText { get; set; }
+
+    public virtual DbSet<DeliveryPosition> DeliveryPosition { get; set; }
+
+    public virtual DbSet<DeliveryTransfer> DeliveryTransfer { get; set; }
+
+    public virtual DbSet<Deliveryheadview> Deliveryheadview { get; set; }
+
     public virtual DbSet<Device> Device { get; set; }
 
     public virtual DbSet<DeviceParameter> DeviceParameter { get; set; }
 
+    public virtual DbSet<IdentificationCard> IdentificationCard { get; set; }
+
+    public virtual DbSet<LoadingOrders> LoadingOrders { get; set; }
+
+    public virtual DbSet<LoadingPoint> LoadingPoint { get; set; }
+
     public virtual DbSet<Location> Location { get; set; }
+
+    public virtual DbSet<LocationParameter> LocationParameter { get; set; }
+
+    public virtual DbSet<Logo> Logo { get; set; }
+
+    public virtual DbSet<MappingAgrCategoryOption> MappingAgrCategoryOption { get; set; }
+
+    public virtual DbSet<MappingMaterialTypcla> MappingMaterialTypcla { get; set; }
+
+    public virtual DbSet<MappingSiloLoadingPoint> MappingSiloLoadingPoint { get; set; }
+
+    public virtual DbSet<MappingSoDebitor> MappingSoDebitor { get; set; }
+
+    public virtual DbSet<MappingUserWorkplace> MappingUserWorkplace { get; set; }
 
     public virtual DbSet<MappingWorkplaceDevice> MappingWorkplaceDevice { get; set; }
 
+    public virtual DbSet<Material> Material { get; set; }
+
+    public virtual DbSet<MessageDispatcher> MessageDispatcher { get; set; }
+
+    public virtual DbSet<MessageMember> MessageMember { get; set; }
+
+    public virtual DbSet<OdcAdjustmentDay> OdcAdjustmentDay { get; set; }
+
+    public virtual DbSet<OdcAdjustmentQuantity> OdcAdjustmentQuantity { get; set; }
+
+    public virtual DbSet<OrderDebitor> OrderDebitor { get; set; }
+
+    public virtual DbSet<OrderHead> OrderHead { get; set; }
+
+    public virtual DbSet<OrderPosition> OrderPosition { get; set; }
+
+    public virtual DbSet<OrderPositionText> OrderPositionText { get; set; }
+
+    public virtual DbSet<OrderText> OrderText { get; set; }
+
+    public virtual DbSet<Orderheadview> Orderheadview { get; set; }
+
+    public virtual DbSet<Plant> Plant { get; set; }
+
+    public virtual DbSet<Printer> Printer { get; set; }
+
+    public virtual DbSet<Productgroup> Productgroup { get; set; }
+
+    public virtual DbSet<QuantityUnit> QuantityUnit { get; set; }
+
+    public virtual DbSet<SalesOrganization> SalesOrganization { get; set; }
+
+    public virtual DbSet<Seal> Seal { get; set; }
+
+    public virtual DbSet<ShippingMethod> ShippingMethod { get; set; }
+
+    public virtual DbSet<Silo> Silo { get; set; }
+
+    public virtual DbSet<Transport> Transport { get; set; }
+
+    public virtual DbSet<TypeAgreementCategory> TypeAgreementCategory { get; set; }
+
+    public virtual DbSet<TypeAgreementOption> TypeAgreementOption { get; set; }
+
+    public virtual DbSet<TypeApplicationOptionGroup> TypeApplicationOptionGroup { get; set; }
+
+    public virtual DbSet<TypeApplicationOptionKey> TypeApplicationOptionKey { get; set; }
+
+    public virtual DbSet<TypeClassification> TypeClassification { get; set; }
+
+    public virtual DbSet<TypeOrderPositionText> TypeOrderPositionText { get; set; }
+
+    public virtual DbSet<TypeOrderText> TypeOrderText { get; set; }
+
+    public virtual DbSet<Unit> Unit { get; set; }
+
+    public virtual DbSet<Users> Users { get; set; }
+
+    public virtual DbSet<VAgrCategoryOption> VAgrCategoryOption { get; set; }
+
+    public virtual DbSet<VApplicationOptionKey> VApplicationOptionKey { get; set; }
+
+    public virtual DbSet<VAuditChanges> VAuditChanges { get; set; }
+
+    public virtual DbSet<VAuditEntity> VAuditEntity { get; set; }
+
+    public virtual DbSet<VConfigProductgroup> VConfigProductgroup { get; set; }
+
+    public virtual DbSet<VCustomerAgrParameter> VCustomerAgrParameter { get; set; }
+
+    public virtual DbSet<VDeliveryReport> VDeliveryReport { get; set; }
+
+    public virtual DbSet<VDeliveryTransfer> VDeliveryTransfer { get; set; }
+
+    public virtual DbSet<VDeliveryhead> VDeliveryhead { get; set; }
+
+    public virtual DbSet<VDeliveryposition> VDeliveryposition { get; set; }
+
+    public virtual DbSet<VLocationParameter> VLocationParameter { get; set; }
+
+    public virtual DbSet<VMaterial> VMaterial { get; set; }
+
+    public virtual DbSet<VMaterialStatistic> VMaterialStatistic { get; set; }
+
+    public virtual DbSet<VSiloMatrix> VSiloMatrix { get; set; }
+
+    public virtual DbSet<Vehicle> Vehicle { get; set; }
+
+    public virtual DbSet<Workplace> Workplace { get; set; }
+
+    public virtual DbSet<WorkplaceParameter> WorkplaceParameter { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("T_QUVA_API");
+        modelBuilder.HasDefaultSchema("QUVA_API");
+
+        modelBuilder.Entity<AdditionalBasicType>(entity =>
+        {
+            entity.ToTable("ADDITIONAL_BASIC_TYPE");
+
+            entity.HasIndex(e => new { e.IdBasicType, e.IdSilo }, "UK_SILO_BASIC_TYPE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdBasicType)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE");
+            entity.Property(e => e.IdSilo)
+                .HasPrecision(18)
+                .HasColumnName("ID_SILO");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Priority)
+                .HasPrecision(9)
+                .HasColumnName("PRIORITY");
+
+            entity.HasOne(d => d.IdBasicTypeNavigation).WithMany(p => p.AdditionalBasicType)
+                .HasForeignKey(d => d.IdBasicType)
+                .HasConstraintName("FK_ABT_BASIC_TYPE");
+
+            entity.HasOne(d => d.IdSiloNavigation).WithMany(p => p.AdditionalBasicType)
+                .HasForeignKey(d => d.IdSilo)
+                .HasConstraintName("FK_ABT_SILO");
+        });
+
+        modelBuilder.Entity<BasicType>(entity =>
+        {
+            entity.ToTable("BASIC_TYPE");
+
+            entity.HasIndex(e => new { e.IdLocation, e.IdMaterial }, "UK_ID_BASIC_TYPE_1").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdBasicType1)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE_1");
+            entity.Property(e => e.IdBasicType1Percentage)
+                .HasPrecision(9)
+                .HasColumnName("ID_BASIC_TYPE_1_PERCENTAGE");
+            entity.Property(e => e.IdBasicType2)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE_2");
+            entity.Property(e => e.IdBasicType2Percentage)
+                .HasPrecision(9)
+                .HasColumnName("ID_BASIC_TYPE_2_PERCENTAGE");
+            entity.Property(e => e.IdBasicType3)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE_3");
+            entity.Property(e => e.IdBasicType3Percentage)
+                .HasPrecision(9)
+                .HasColumnName("ID_BASIC_TYPE_3_PERCENTAGE");
+            entity.Property(e => e.IdBasicType4)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE_4");
+            entity.Property(e => e.IdBasicType4Percentage)
+                .HasPrecision(9)
+                .HasColumnName("ID_BASIC_TYPE_4_PERCENTAGE");
+            entity.Property(e => e.IdBasicType5)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE_5");
+            entity.Property(e => e.IdBasicType5Percentage)
+                .HasPrecision(9)
+                .HasColumnName("ID_BASIC_TYPE_5_PERCENTAGE");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.SpsCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SPS_CODE");
+
+            entity.HasOne(d => d.IdBasicType1Navigation).WithMany(p => p.InverseIdBasicType1Navigation)
+                .HasForeignKey(d => d.IdBasicType1)
+                .HasConstraintName("FK_ID_BASIC_TYPE_1");
+
+            entity.HasOne(d => d.IdBasicType2Navigation).WithMany(p => p.InverseIdBasicType2Navigation)
+                .HasForeignKey(d => d.IdBasicType2)
+                .HasConstraintName("FK_ID_BASIC_TYPE_2");
+
+            entity.HasOne(d => d.IdBasicType3Navigation).WithMany(p => p.InverseIdBasicType3Navigation)
+                .HasForeignKey(d => d.IdBasicType3)
+                .HasConstraintName("FK_ID_BASIC_TYPE_3");
+
+            entity.HasOne(d => d.IdBasicType4Navigation).WithMany(p => p.InverseIdBasicType4Navigation)
+                .HasForeignKey(d => d.IdBasicType4)
+                .HasConstraintName("FK_ID_BASIC_TYPE_4");
+
+            entity.HasOne(d => d.IdBasicType5Navigation).WithMany(p => p.InverseIdBasicType5Navigation)
+                .HasForeignKey(d => d.IdBasicType5)
+                .HasConstraintName("FK_ID_BASIC_TYPE_5");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.BasicType)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BASIC_TYPE_LOCATION");
+
+            entity.HasOne(d => d.IdMaterialNavigation).WithMany(p => p.BasicType)
+                .HasForeignKey(d => d.IdMaterial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BASIC_TYPE_MATERIAL");
+        });
+
+        modelBuilder.Entity<Batch>(entity =>
+        {
+            entity.ToTable("BATCH");
+
+            entity.HasIndex(e => e.BatchName, "UK_BATCH_BATCH_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.BatchName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("BATCH_NAME");
+            entity.Property(e => e.BlockingReason)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("BLOCKING_REASON");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdConfigPlantMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_CONFIG_PLANT_MATERIAL");
+            entity.Property(e => e.IdUnit)
+                .HasPrecision(18)
+                .HasColumnName("ID_UNIT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.ProductionDate)
+                .HasColumnType("DATE")
+                .HasColumnName("PRODUCTION_DATE");
+            entity.Property(e => e.SampleNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SAMPLE_NUMBER");
+            entity.Property(e => e.SampleResult)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SAMPLE_RESULT");
+            entity.Property(e => e.State)
+                .HasPrecision(9)
+                .HasColumnName("STATE");
+            entity.Property(e => e.Stock)
+                .HasPrecision(9)
+                .HasColumnName("STOCK");
+
+            entity.HasOne(d => d.IdConfigPlantMaterialNavigation).WithMany(p => p.Batch)
+                .HasForeignKey(d => d.IdConfigPlantMaterial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BATCH_CONFIG_PLANT_MATERIAL");
+
+            entity.HasOne(d => d.IdUnitNavigation).WithMany(p => p.Batch)
+                .HasForeignKey(d => d.IdUnit)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BATCH_UNIT");
+        });
+
+        modelBuilder.Entity<Carrier>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("UK_CARRIER_NAME");
+
+            entity.ToTable("CARRIER");
+
+            entity.HasIndex(e => e.Name, "CARRIER_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.Carrier)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CARRIER_LOCATION");
+        });
+
+        modelBuilder.Entity<ConfigMessage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_CONFIG_MESSAGES");
+
+            entity.ToTable("CONFIG_MESSAGE");
+
+            entity.HasIndex(e => new { e.IdMessageDispatcher, e.IdLocation, e.Cause }, "UK_CONFIG_MESSAGES").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_CONFIG_MESSAGES_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Cause)
+                .HasPrecision(9)
+                .HasColumnName("CAUSE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Condition)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("CONDITION");
+            entity.Property(e => e.Content)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DelayMinutes)
+                .HasPrecision(9)
+                .HasColumnName("DELAY_MINUTES");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdMessageDispatcher)
+                .HasPrecision(18)
+                .HasColumnName("ID_MESSAGE_DISPATCHER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Subject)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("SUBJECT");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.ConfigMessage)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CM_LOCATION");
+
+            entity.HasOne(d => d.IdMessageDispatcherNavigation).WithMany(p => p.ConfigMessage)
+                .HasForeignKey(d => d.IdMessageDispatcher)
+                .HasConstraintName("FK_CM_MESSAGE_DISPATCHER");
+        });
+
+        modelBuilder.Entity<ConfigMessagesDocument>(entity =>
+        {
+            entity.ToTable("CONFIG_MESSAGES_DOCUMENT");
+
+            entity.HasIndex(e => new { e.IdConfigMessages, e.DokumentType }, "UK_CONFIG_MESSAGES_DOCUMENT").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DokumentType)
+                .HasPrecision(9)
+                .HasColumnName("DOKUMENT_TYPE");
+            entity.Property(e => e.IdConfigMessages)
+                .HasPrecision(18)
+                .HasColumnName("ID_CONFIG_MESSAGES");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdConfigMessagesNavigation).WithMany(p => p.ConfigMessagesDocument)
+                .HasForeignKey(d => d.IdConfigMessages)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CMD_CONFIG_MESSAGES");
+        });
+
+        modelBuilder.Entity<ConfigPlantMaterial>(entity =>
+        {
+            entity.ToTable("CONFIG_PLANT_MATERIAL");
+
+            entity.HasIndex(e => new { e.IdPlant, e.IdMaterial }, "UK_CPM_ID_PLANT_ID_MATERIAL").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.BatchObligation)
+                .HasColumnType("NUMBER")
+                .HasColumnName("BATCH_OBLIGATION");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdProductgroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_PRODUCTGROUP");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdMaterialNavigation).WithMany(p => p.ConfigPlantMaterial)
+                .HasForeignKey(d => d.IdMaterial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CPM_MATERIAL");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.ConfigPlantMaterial)
+                .HasForeignKey(d => d.IdPlant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CPM_PLANT");
+
+            entity.HasOne(d => d.IdProductgroupNavigation).WithMany(p => p.ConfigPlantMaterial)
+                .HasForeignKey(d => d.IdProductgroup)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CPM_PRODUCTGROUP");
+        });
+
+        modelBuilder.Entity<ConfigPlantSalesOrg>(entity =>
+        {
+            entity.ToTable("CONFIG_PLANT_SALES_ORG");
+
+            entity.HasIndex(e => new { e.IdPlant, e.IdSalesOrganization }, "UK_CPSO_ID_PLANT_ID_SO").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLogo)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOGO");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdSalesOrganization)
+                .HasPrecision(18)
+                .HasColumnName("ID_SALES_ORGANIZATION");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.ReferenzDeliveryForm)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("REFERENZ_DELIVERY_FORM");
+            entity.Property(e => e.ReferenzLoadingForm)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("REFERENZ_LOADING_FORM");
+
+            entity.HasOne(d => d.IdLogoNavigation).WithMany(p => p.ConfigPlantSalesOrg)
+                .HasForeignKey(d => d.IdLogo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CPSO_LOGO");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.ConfigPlantSalesOrg)
+                .HasForeignKey(d => d.IdPlant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CPSO_PLANT");
+
+            entity.HasOne(d => d.IdSalesOrganizationNavigation).WithMany(p => p.ConfigPlantSalesOrg)
+                .HasForeignKey(d => d.IdSalesOrganization)
+                .HasConstraintName("FK_CPSO_SALES_ORGANIZATION");
+        });
+
+        modelBuilder.Entity<ConfigProductgroup>(entity =>
+        {
+            entity.ToTable("CONFIG_PRODUCTGROUP");
+
+            entity.HasIndex(e => new { e.IdPlant, e.MaterialKind, e.GroupKey }, "UK_CPG_PLANT_PRDG_KIND").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.GroupKey)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_KEY");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdProductgroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_PRODUCTGROUP");
+            entity.Property(e => e.MaterialKind)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_KIND");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.ConfigProductgroup)
+                .HasForeignKey(d => d.IdPlant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CPG_PLANT");
+
+            entity.HasOne(d => d.IdProductgroupNavigation).WithMany(p => p.ConfigProductgroup)
+                .HasForeignKey(d => d.IdProductgroup)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CPG_PRODUCTGROUP");
+        });
+
+        modelBuilder.Entity<ConfigSeal>(entity =>
+        {
+            entity.ToTable("CONFIG_SEAL");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.FilterExpression)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FILTER_EXPRESSION");
+            entity.Property(e => e.FilterField)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FILTER_FIELD");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdSeal)
+                .HasPrecision(18)
+                .HasColumnName("ID_SEAL");
+            entity.Property(e => e.Kind)
+                .HasPrecision(9)
+                .HasColumnName("KIND");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Position)
+                .HasPrecision(9)
+                .HasColumnName("POSITION");
+            entity.Property(e => e.Width)
+                .HasPrecision(9)
+                .HasColumnName("WIDTH");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.ConfigSeal)
+                .HasForeignKey(d => d.IdPlant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CONFIG_SEAL_PLANT");
+
+            entity.HasOne(d => d.IdSealNavigation).WithMany(p => p.ConfigSeal)
+                .HasForeignKey(d => d.IdSeal)
+                .HasConstraintName("FK_CONFIG_SEAL_SEAL");
+        });
+
+        modelBuilder.Entity<Contingent>(entity =>
+        {
+            entity.ToTable("CONTINGENT");
+
+            entity.HasIndex(e => new { e.IdLocation, e.IdConfigPlantMaterial, e.IdLoadingPoint, e.IdDebitor }, "UK_CONTINGENT").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdConfigPlantMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_CONFIG_PLANT_MATERIAL");
+            entity.Property(e => e.IdDebitor)
+                .HasPrecision(18)
+                .HasColumnName("ID_DEBITOR");
+            entity.Property(e => e.IdLoadingPoint)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOADING_POINT");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdSilo1)
+                .HasPrecision(18)
+                .HasColumnName("ID_SILO_1");
+            entity.Property(e => e.IdSilo2)
+                .HasPrecision(18)
+                .HasColumnName("ID_SILO_2");
+            entity.Property(e => e.IdSilo3)
+                .HasPrecision(18)
+                .HasColumnName("ID_SILO_3");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.SiloPart1)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_PART_1");
+            entity.Property(e => e.SiloPart2)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_PART_2");
+            entity.Property(e => e.SiloPart3)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_PART_3");
+            entity.Property(e => e.ValidFrom)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_FROM");
+            entity.Property(e => e.ValidTo)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_TO");
+
+            entity.HasOne(d => d.IdConfigPlantMaterialNavigation).WithMany(p => p.Contingent)
+                .HasForeignKey(d => d.IdConfigPlantMaterial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CONT_CPM");
+
+            entity.HasOne(d => d.IdDebitorNavigation).WithMany(p => p.Contingent)
+                .HasForeignKey(d => d.IdDebitor)
+                .HasConstraintName("FK_CONT_DEBITOR");
+
+            entity.HasOne(d => d.IdLoadingPointNavigation).WithMany(p => p.Contingent)
+                .HasForeignKey(d => d.IdLoadingPoint)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CONT_LOADING_POINT");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.Contingent)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CONT_LOCATION");
+
+            entity.HasOne(d => d.IdSilo1Navigation).WithMany(p => p.ContingentIdSilo1Navigation)
+                .HasForeignKey(d => d.IdSilo1)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CONT_SILO_1");
+
+            entity.HasOne(d => d.IdSilo2Navigation).WithMany(p => p.ContingentIdSilo2Navigation)
+                .HasForeignKey(d => d.IdSilo2)
+                .HasConstraintName("FK_CONT_SILO_2");
+
+            entity.HasOne(d => d.IdSilo3Navigation).WithMany(p => p.ContingentIdSilo3Navigation)
+                .HasForeignKey(d => d.IdSilo3)
+                .HasConstraintName("FK_CONT_SILO_3");
+        });
+
+        modelBuilder.Entity<Country>(entity =>
+        {
+            entity.ToTable("COUNTRY");
+
+            entity.HasIndex(e => e.Code, "UK_COUNTRY_CODE").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_COUNTRY_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Eu)
+                .HasPrecision(1)
+                .HasColumnName("EU");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<CustomerAgrParameter>(entity =>
+        {
+            entity.ToTable("CUSTOMER_AGR_PARAMETER");
+
+            entity.HasIndex(e => new { e.IdAgreement, e.IdOption }, "UK_CUSTOMER_AGR_PARAMETER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0                     ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate               ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdAgreement)
+                .HasPrecision(18)
+                .HasColumnName("ID_AGREEMENT");
+            entity.Property(e => e.IdOption)
+                .HasPrecision(18)
+                .HasColumnName("ID_OPTION");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.ParameterValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("PARAMETER_VALUE");
+
+            entity.HasOne(d => d.IdAgreementNavigation).WithMany(p => p.CustomerAgrParameter)
+                .HasForeignKey(d => d.IdAgreement)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CUSAGRPAR_AGREEMENT");
+
+            entity.HasOne(d => d.IdOptionNavigation).WithMany(p => p.CustomerAgrParameter)
+                .HasForeignKey(d => d.IdOption)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CUSAGRPAR_OPTION");
+        });
+
+        modelBuilder.Entity<CustomerAgreement>(entity =>
+        {
+            entity.ToTable("CUSTOMER_AGREEMENT");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0                     ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate               ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.FlagCarrier)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_CARRIER");
+            entity.Property(e => e.FlagGoodsRecipient)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_GOODS_RECIPIENT");
+            entity.Property(e => e.FlagInvoiceRecipient)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_INVOICE_RECIPIENT");
+            entity.Property(e => e.IdCategory)
+                .HasPrecision(18)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("ID_CATEGORY");
+            entity.Property(e => e.IdCountry)
+                .HasPrecision(18)
+                .HasColumnName("ID_COUNTRY");
+            entity.Property(e => e.IdDebitor)
+                .HasPrecision(18)
+                .HasColumnName("ID_DEBITOR");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.PackagingType)
+                .HasPrecision(9)
+                .HasColumnName("PACKAGING_TYPE");
+            entity.Property(e => e.TransportType)
+                .HasPrecision(9)
+                .HasColumnName("TRANSPORT_TYPE");
+            entity.Property(e => e.ValidFrom)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_FROM");
+            entity.Property(e => e.ValidTo)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_TO");
+
+            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.CustomerAgreement)
+                .HasForeignKey(d => d.IdCategory)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CUSAGR_CATEGORY");
+
+            entity.HasOne(d => d.IdCountryNavigation).WithMany(p => p.CustomerAgreement)
+                .HasForeignKey(d => d.IdCountry)
+                .HasConstraintName("FK_CUSAGR_COUNTRY");
+
+            entity.HasOne(d => d.IdDebitorNavigation).WithMany(p => p.CustomerAgreement)
+                .HasForeignKey(d => d.IdDebitor)
+                .HasConstraintName("FK_CUSAGR_DEBITOR");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.CustomerAgreement)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CUSAGR_LOCATION");
+
+            entity.HasOne(d => d.IdMaterialNavigation).WithMany(p => p.CustomerAgreement)
+                .HasForeignKey(d => d.IdMaterial)
+                .HasConstraintName("FK_CUSAGR_MATERIAL");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.CustomerAgreement)
+                .HasForeignKey(d => d.IdPlant)
+                .HasConstraintName("FK_CUSAGR_PLANT");
+        });
+
+        modelBuilder.Entity<Debitor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("DEBITOR");
+
+            entity.ToTable("DEBITOR");
+
+            entity.HasIndex(e => e.Code, "UK_DEBITOR_CODE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Housenumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("HOUSENUMBER");
+            entity.Property(e => e.IdCountry)
+                .HasPrecision(18)
+                .HasColumnName("ID_COUNTRY");
+            entity.Property(e => e.Language)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LANGUAGE");
+            entity.Property(e => e.Location)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION");
+            entity.Property(e => e.Name1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME1");
+            entity.Property(e => e.Name2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME2");
+            entity.Property(e => e.Name3)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME3");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PHONE");
+            entity.Property(e => e.Postcode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("POSTCODE");
+            entity.Property(e => e.Street)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("STREET");
+
+            entity.HasOne(d => d.IdCountryNavigation).WithMany(p => p.Debitor)
+                .HasForeignKey(d => d.IdCountry)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DEBITOR_COUNTRY");
+        });
+
+        modelBuilder.Entity<DeliveryDocument>(entity =>
+        {
+            entity.ToTable("DELIVERY_DOCUMENT");
+
+            entity.HasIndex(e => new { e.IdDeliveryHead, e.DocuType, e.DocuCode }, "UK_DELDOC_DOCU").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasColumnType("BLOB")
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DocuCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DOCU_CODE");
+            entity.Property(e => e.DocuType)
+                .HasPrecision(9)
+                .HasColumnName("DOCU_TYPE");
+            entity.Property(e => e.Extension)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("EXTENSION");
+            entity.Property(e => e.IdDeliveryHead)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_HEAD");
+            entity.Property(e => e.IdDeliveryMessage)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_MESSAGE");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Timestamp)
+                .HasColumnType("DATE")
+                .HasColumnName("TIMESTAMP");
+
+            entity.HasOne(d => d.IdDeliveryHeadNavigation).WithMany(p => p.DeliveryDocument)
+                .HasForeignKey(d => d.IdDeliveryHead)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DD_DELIVERY_HEAD");
+
+            entity.HasOne(d => d.IdDeliveryMessageNavigation).WithMany(p => p.DeliveryDocument)
+                .HasForeignKey(d => d.IdDeliveryMessage)
+                .HasConstraintName("FK_DD_DELIVERY_MESSAGE");
+        });
+
+        modelBuilder.Entity<DeliveryHead>(entity =>
+        {
+            entity.ToTable("DELIVERY_HEAD");
+
+            entity.HasIndex(e => e.DeliveryNumber, "UK_DELIVERY_NUMBER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.CancelDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CANCEL_DATE");
+            entity.Property(e => e.Carrier)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CARRIER");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ClosingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CLOSING_DATE");
+            entity.Property(e => e.ContainerNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CONTAINER_NUMBER");
+            entity.Property(e => e.CountDeliveryPrint)
+                .HasPrecision(9)
+                .HasColumnName("COUNT_DELIVERY_PRINT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.CumulativeFlag)
+                .HasPrecision(9)
+                .HasColumnName("CUMULATIVE_FLAG");
+            entity.Property(e => e.DeliveryDate)
+                .HasDefaultValueSql("trunc(sysdate) ")
+                .HasColumnType("DATE")
+                .HasColumnName("DELIVERY_DATE");
+            entity.Property(e => e.DeliveryNumber)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER");
+            entity.Property(e => e.DeliveryState)
+                .HasPrecision(9)
+                .HasColumnName("DELIVERY_STATE");
+            entity.Property(e => e.EndLoadingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("END_LOADING_DATE");
+            entity.Property(e => e.ExportFlagDateSap)
+                .HasColumnType("DATE")
+                .HasColumnName("EXPORT_FLAG_DATE_SAP");
+            entity.Property(e => e.FinalScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_SCALE_CODE");
+            entity.Property(e => e.FinalWeighingCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_WEIGHING_CALIB_NUMBER");
+            entity.Property(e => e.FinalWeighingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("FINAL_WEIGHING_DATE");
+            entity.Property(e => e.FinalWeighingMode)
+                .HasPrecision(9)
+                .HasColumnName("FINAL_WEIGHING_MODE");
+            entity.Property(e => e.FinalWeighingType)
+                .HasPrecision(9)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("FINAL_WEIGHING_TYPE");
+            entity.Property(e => e.FinalWeighingUnit)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("FINAL_WEIGHING_UNIT");
+            entity.Property(e => e.FinalWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("FINAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.GrossUnit)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("GROSS_UNIT");
+            entity.Property(e => e.GrossWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("GROSS_WEIGHT");
+            entity.Property(e => e.IdDeliveryCollect)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_COLLECT");
+            entity.Property(e => e.IdTransport)
+                .HasPrecision(18)
+                .HasColumnName("ID_TRANSPORT");
+            entity.Property(e => e.IdentificationCardCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("IDENTIFICATION_CARD_CODE");
+            entity.Property(e => e.InitialScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_SCALE_CODE");
+            entity.Property(e => e.InitialWeighingCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_WEIGHING_CALIB_NUMBER");
+            entity.Property(e => e.InitialWeighingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("INITIAL_WEIGHING_DATE");
+            entity.Property(e => e.InitialWeighingMode)
+                .HasPrecision(9)
+                .HasColumnName("INITIAL_WEIGHING_MODE");
+            entity.Property(e => e.InitialWeighingType)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("INITIAL_WEIGHING_TYPE");
+            entity.Property(e => e.InitialWeighingUnit)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("INITIAL_WEIGHING_UNIT");
+            entity.Property(e => e.InitialWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("INITIAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.LoadingScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOADING_SCALE_CODE");
+            entity.Property(e => e.LoadingSlip)
+                .HasPrecision(18)
+                .HasColumnName("LOADING_SLIP");
+            entity.Property(e => e.MoistPercentage)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MOIST_PERCENTAGE");
+            entity.Property(e => e.NetUnit)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("NET_UNIT");
+            entity.Property(e => e.NetWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("NET_WEIGHT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.RailTerminal)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("RAIL_TERMINAL");
+            entity.Property(e => e.RegistrationDate)
+                .HasColumnType("DATE")
+                .HasColumnName("REGISTRATION_DATE");
+            entity.Property(e => e.SapExportState)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("SAP_EXPORT_STATE");
+            entity.Property(e => e.StartLoadingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("START_LOADING_DATE");
+            entity.Property(e => e.TaraUnit)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("TARA_UNIT");
+            entity.Property(e => e.TaraWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("TARA_WEIGHT");
+            entity.Property(e => e.VehicleNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("VEHICLE_NUMBER");
+
+            entity.HasOne(d => d.IdDeliveryCollectNavigation).WithMany(p => p.InverseIdDeliveryCollectNavigation)
+                .HasForeignKey(d => d.IdDeliveryCollect)
+                .HasConstraintName("FK_DH_DELIVERY_COLLECT_ORDER");
+
+            entity.HasOne(d => d.IdTransportNavigation).WithMany(p => p.DeliveryHead)
+                .HasForeignKey(d => d.IdTransport)
+                .HasConstraintName("FK_TRANSPORT");
+        });
+
+        modelBuilder.Entity<DeliveryMessage>(entity =>
+        {
+            entity.ToTable("DELIVERY_MESSAGE");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdConfigMessage)
+                .HasPrecision(18)
+                .HasColumnName("ID_CONFIG_MESSAGE");
+            entity.Property(e => e.IdDeliveryHead)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_HEAD");
+            entity.Property(e => e.MessageType)
+                .HasPrecision(9)
+                .HasColumnName("MESSAGE_TYPE");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Recipient)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("RECIPIENT");
+            entity.Property(e => e.SendDate)
+                .HasColumnType("DATE")
+                .HasColumnName("SEND_DATE");
+            entity.Property(e => e.SendError)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("SEND_ERROR");
+            entity.Property(e => e.SenderEmail)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SENDER_EMAIL");
+            entity.Property(e => e.State)
+                .HasPrecision(9)
+                .HasColumnName("STATE");
+            entity.Property(e => e.Subject)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("SUBJECT");
+            entity.Property(e => e.ToSendDate)
+                .HasColumnType("DATE")
+                .HasColumnName("TO_SEND_DATE");
+
+            entity.HasOne(d => d.IdConfigMessageNavigation).WithMany(p => p.DeliveryMessage)
+                .HasForeignKey(d => d.IdConfigMessage)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DM_CONFIG_MESSAGE");
+
+            entity.HasOne(d => d.IdDeliveryHeadNavigation).WithMany(p => p.DeliveryMessage)
+                .HasForeignKey(d => d.IdDeliveryHead)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DM_DELIVERY_HEAD");
+        });
+
+        modelBuilder.Entity<DeliveryOrder>(entity =>
+        {
+            entity.ToTable("DELIVERY_ORDER");
+
+            entity.HasIndex(e => e.IdDeliveryHead, "UK_DO_DELIVERY_HEAD").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.Art)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("ART");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ChangedOrder)
+                .HasPrecision(1)
+                .HasColumnName("CHANGED_ORDER");
+            entity.Property(e => e.Clerk)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CLERK");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.CustomerOrderNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMER_ORDER_NUMBER");
+            entity.Property(e => e.DeliveryCondition)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DELIVERY_CONDITION");
+            entity.Property(e => e.DeliveryInfo)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("DELIVERY_INFO");
+            entity.Property(e => e.DeliveryLock)
+                .HasPrecision(1)
+                .HasColumnName("DELIVERY_LOCK");
+            entity.Property(e => e.DesiredDeliveryDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DESIRED_DELIVERY_DATE");
+            entity.Property(e => e.FieldService)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FIELD_SERVICE");
+            entity.Property(e => e.IdDeliveryHead)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_HEAD");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdSalesOrganization)
+                .HasPrecision(18)
+                .HasColumnName("ID_SALES_ORGANIZATION");
+            entity.Property(e => e.IdShippingMethod)
+                .HasPrecision(18)
+                .HasColumnName("ID_SHIPPING_METHOD");
+            entity.Property(e => e.Locked)
+                .HasPrecision(1)
+                .HasColumnName("LOCKED");
+            entity.Property(e => e.NewOrder)
+                .HasPrecision(1)
+                .HasColumnName("NEW_ORDER");
+            entity.Property(e => e.NonSapOrder)
+                .HasPrecision(1)
+                .HasColumnName("NON_SAP_ORDER");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("DATE")
+                .HasColumnName("ORDER_DATE");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.PrintLanguage)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("PRINT_LANGUAGE");
+            entity.Property(e => e.RetrievalCode)
+                .HasPrecision(9)
+                .HasColumnName("RETRIEVAL_CODE");
+            entity.Property(e => e.UnloadingPoint)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNLOADING_POINT");
+
+            entity.HasOne(d => d.IdDeliveryHeadNavigation).WithOne(p => p.DeliveryOrder)
+                .HasForeignKey<DeliveryOrder>(d => d.IdDeliveryHead)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DO_DELIVERY_HEAD");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.DeliveryOrder)
+                .HasForeignKey(d => d.IdPlant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DO_PLANT");
+
+            entity.HasOne(d => d.IdSalesOrganizationNavigation).WithMany(p => p.DeliveryOrder)
+                .HasForeignKey(d => d.IdSalesOrganization)
+                .HasConstraintName("FK_DO_SALES_ORGANIZATION");
+
+            entity.HasOne(d => d.IdShippingMethodNavigation).WithMany(p => p.DeliveryOrder)
+                .HasForeignKey(d => d.IdShippingMethod)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DO_SHIPPING_METHOD");
+        });
+
+        modelBuilder.Entity<DeliveryOrderDebitor>(entity =>
+        {
+            entity.ToTable("DELIVERY_ORDER_DEBITOR");
+
+            entity.HasIndex(e => new { e.IdDeliveryOrder, e.Role }, "UK_DEL_ORDER_DEBITOR_ROLE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("EMAIL");
+            entity.Property(e => e.Housenumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("HOUSENUMBER");
+            entity.Property(e => e.IdCountry)
+                .HasPrecision(18)
+                .HasColumnName("ID_COUNTRY");
+            entity.Property(e => e.IdDeliveryOrder)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_ORDER");
+            entity.Property(e => e.Language)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("LANGUAGE");
+            entity.Property(e => e.Location)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION");
+            entity.Property(e => e.Name1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME1");
+            entity.Property(e => e.Name2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME2");
+            entity.Property(e => e.Name3)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME3");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PHONE");
+            entity.Property(e => e.Postcode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("POSTCODE");
+            entity.Property(e => e.Role)
+                .HasPrecision(9)
+                .HasColumnName("ROLE");
+            entity.Property(e => e.Street)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("STREET");
+
+            entity.HasOne(d => d.IdCountryNavigation).WithMany(p => p.DeliveryOrderDebitor)
+                .HasForeignKey(d => d.IdCountry)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOD_COUNTRY");
+
+            entity.HasOne(d => d.IdDeliveryOrderNavigation).WithMany(p => p.DeliveryOrderDebitor)
+                .HasForeignKey(d => d.IdDeliveryOrder)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOD_DELIVERY_ORDER");
+        });
+
+        modelBuilder.Entity<DeliveryOrderPosition>(entity =>
+        {
+            entity.ToTable("DELIVERY_ORDER_POSITION");
+
+            entity.HasIndex(e => new { e.IdDeliveryOrder, e.PositionNumber }, "UK_DEL_ORDER_POSITION_NUMBER").IsUnique();
+
+            entity.HasIndex(e => e.IdDeliveryPosition, "UK_DOP_DELIVERY_POSITION").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.CustomerProductName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMER_PRODUCT_NAME");
+            entity.Property(e => e.DeliveredQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("DELIVERED_QUANTITY");
+            entity.Property(e => e.IdDeliveryOrder)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_ORDER");
+            entity.Property(e => e.IdDeliveryPosition)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_POSITION");
+            entity.Property(e => e.IdProductgroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_PRODUCTGROUP");
+            entity.Property(e => e.IdUnit)
+                .HasPrecision(18)
+                .HasColumnName("ID_UNIT");
+            entity.Property(e => e.MainPosition)
+                .HasPrecision(1)
+                .HasColumnName("MAIN_POSITION");
+            entity.Property(e => e.MaterialLongName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_LONG_NAME");
+            entity.Property(e => e.MaterialName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_NAME");
+            entity.Property(e => e.MaterialShortName)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_SHORT_NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OrderQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("ORDER_QUANTITY");
+            entity.Property(e => e.PlantCertificate)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PLANT_CERTIFICATE");
+            entity.Property(e => e.PositionNumber)
+                .HasPrecision(9)
+                .HasColumnName("POSITION_NUMBER");
+            entity.Property(e => e.ProductgroupName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PRODUCTGROUP_NAME");
+            entity.Property(e => e.ReservedQuantity)
+                .HasDefaultValueSql("0 ")
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("RESERVED_QUANTITY");
+            entity.Property(e => e.ShippingPoint)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHIPPING_POINT");
+            entity.Property(e => e.TopPosition)
+                .HasPrecision(9)
+                .HasColumnName("TOP_POSITION");
+
+            entity.HasOne(d => d.IdDeliveryOrderNavigation).WithMany(p => p.DeliveryOrderPosition)
+                .HasForeignKey(d => d.IdDeliveryOrder)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOP_DELIVERY_ORDER");
+
+            entity.HasOne(d => d.IdDeliveryPositionNavigation).WithOne(p => p.DeliveryOrderPosition)
+                .HasForeignKey<DeliveryOrderPosition>(d => d.IdDeliveryPosition)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOP_DELIVERY_POSITION");
+
+            entity.HasOne(d => d.IdProductgroupNavigation).WithMany(p => p.DeliveryOrderPosition)
+                .HasForeignKey(d => d.IdProductgroup)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOP_PRODUCTGROUP");
+
+            entity.HasOne(d => d.IdUnitNavigation).WithMany(p => p.DeliveryOrderPosition)
+                .HasForeignKey(d => d.IdUnit)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOP_UNIT");
+        });
+
+        modelBuilder.Entity<DeliveryOrderPositionClass>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_DOPC");
+
+            entity.ToTable("DELIVERY_ORDER_POSITION_CLASS");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Classe)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CLASSE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdDeliveryOrderPosition)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_ORDER_POSITION");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Position)
+                .HasPrecision(9)
+                .HasColumnName("POSITION");
+            entity.Property(e => e.Value)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("VALUE");
+
+            entity.HasOne(d => d.IdDeliveryOrderPositionNavigation).WithMany(p => p.DeliveryOrderPositionClass)
+                .HasForeignKey(d => d.IdDeliveryOrderPosition)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOPC_DOP");
+        });
+
+        modelBuilder.Entity<DeliveryOrderPositionText>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_DOPT");
+
+            entity.ToTable("DELIVERY_ORDER_POSITION_TEXT");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdDeliveryOrderPosition)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_ORDER_POSITION");
+            entity.Property(e => e.IdTypeOrderPositionText)
+                .HasPrecision(18)
+                .HasColumnName("ID_TYPE_ORDER_POSITION_TEXT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdDeliveryOrderPositionNavigation).WithMany(p => p.DeliveryOrderPositionText)
+                .HasForeignKey(d => d.IdDeliveryOrderPosition)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOPT_DOP");
+
+            entity.HasOne(d => d.IdTypeOrderPositionTextNavigation).WithMany(p => p.DeliveryOrderPositionText)
+                .HasForeignKey(d => d.IdTypeOrderPositionText)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DELORDPOSTXT_TYPORDPOSTXT");
+        });
+
+        modelBuilder.Entity<DeliveryOrderText>(entity =>
+        {
+            entity.ToTable("DELIVERY_ORDER_TEXT");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdDeliveryOrder)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_ORDER");
+            entity.Property(e => e.IdTypeOrderText)
+                .HasPrecision(18)
+                .HasColumnName("ID_TYPE_ORDER_TEXT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdDeliveryOrderNavigation).WithMany(p => p.DeliveryOrderText)
+                .HasForeignKey(d => d.IdDeliveryOrder)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DOT_DELIVERY_ORDER");
+
+            entity.HasOne(d => d.IdTypeOrderTextNavigation).WithMany(p => p.DeliveryOrderText)
+                .HasForeignKey(d => d.IdTypeOrderText)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DELORDTXT_TYPORDTXT");
+        });
+
+        modelBuilder.Entity<DeliveryPosition>(entity =>
+        {
+            entity.ToTable("DELIVERY_POSITION");
+
+            entity.HasIndex(e => new { e.IdDeliveryHead, e.PositionNumber }, "UK_DELIVERY_POSITION_NUMBER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdDeliveryHead)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_HEAD");
+            entity.Property(e => e.LoadedQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("LOADED_QUANTITY");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.PositionNumber)
+                .HasPrecision(9)
+                .HasColumnName("POSITION_NUMBER");
+
+            entity.HasOne(d => d.IdDeliveryHeadNavigation).WithMany(p => p.DeliveryPosition)
+                .HasForeignKey(d => d.IdDeliveryHead)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DP_DELIVERY_HEAD");
+        });
+
+        modelBuilder.Entity<DeliveryTransfer>(entity =>
+        {
+            entity.ToTable("DELIVERY_TRANSFER");
+
+            entity.HasIndex(e => e.IdocNumber, "I_DELIVERY_TRANSFER_IDOC");
+
+            entity.HasIndex(e => new { e.IdDelivery, e.TransferType }, "UK_DELIVERY_TRANSFER_TYPE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.ErrorState)
+                .HasPrecision(1)
+                .HasColumnName("ERROR_STATE");
+            entity.Property(e => e.ErrorText)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("ERROR_TEXT");
+            entity.Property(e => e.IdDelivery)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY");
+            entity.Property(e => e.IdocNumber)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("IDOC_NUMBER");
+            entity.Property(e => e.IdocType)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("IDOC_TYPE");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.TransferDate)
+                .HasColumnType("DATE")
+                .HasColumnName("TRANSFER_DATE");
+            entity.Property(e => e.TransferType)
+                .HasPrecision(9)
+                .HasColumnName("TRANSFER_TYPE");
+
+            entity.HasOne(d => d.IdDeliveryNavigation).WithMany(p => p.DeliveryTransfer)
+                .HasForeignKey(d => d.IdDelivery)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DELTRA_DELHDR");
+        });
+
+        modelBuilder.Entity<Deliveryheadview>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("DELIVERYHEADVIEW");
+
+            entity.Property(e => e.CancelDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CANCEL_DATE");
+            entity.Property(e => e.Carrier)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CARRIER");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ClosingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CLOSING_DATE");
+            entity.Property(e => e.Code)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.ContainerNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CONTAINER_NUMBER");
+            entity.Property(e => e.CountDeliveryPrint)
+                .HasPrecision(9)
+                .HasColumnName("COUNT_DELIVERY_PRINT");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.CumulativeFlag)
+                .HasPrecision(9)
+                .HasColumnName("CUMULATIVE_FLAG");
+            entity.Property(e => e.Customerhousenumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERHOUSENUMBER");
+            entity.Property(e => e.Customerlocation)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERLOCATION");
+            entity.Property(e => e.Customername1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERNAME1");
+            entity.Property(e => e.Customername2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERNAME2");
+            entity.Property(e => e.Customername3)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERNAME3");
+            entity.Property(e => e.Customernumber)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERNUMBER");
+            entity.Property(e => e.Customerpostcode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERPOSTCODE");
+            entity.Property(e => e.Customerstreet)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMERSTREET");
+            entity.Property(e => e.DeliveryDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DELIVERY_DATE");
+            entity.Property(e => e.DeliveryNumber)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER");
+            entity.Property(e => e.DeliveryState)
+                .HasPrecision(9)
+                .HasColumnName("DELIVERY_STATE");
+            entity.Property(e => e.EndLoadingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("END_LOADING_DATE");
+            entity.Property(e => e.Entrancetime)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("ENTRANCETIME");
+            entity.Property(e => e.ExportFlagDateSap)
+                .HasColumnType("DATE")
+                .HasColumnName("EXPORT_FLAG_DATE_SAP");
+            entity.Property(e => e.FinalScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_SCALE_CODE");
+            entity.Property(e => e.FinalWeighingCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_WEIGHING_CALIB_NUMBER");
+            entity.Property(e => e.FinalWeighingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("FINAL_WEIGHING_DATE");
+            entity.Property(e => e.FinalWeighingMode)
+                .HasPrecision(9)
+                .HasColumnName("FINAL_WEIGHING_MODE");
+            entity.Property(e => e.FinalWeighingType)
+                .HasPrecision(9)
+                .HasColumnName("FINAL_WEIGHING_TYPE");
+            entity.Property(e => e.FinalWeighingUnit)
+                .HasPrecision(9)
+                .HasColumnName("FINAL_WEIGHING_UNIT");
+            entity.Property(e => e.FinalWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("FINAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.GrossUnit)
+                .HasPrecision(9)
+                .HasColumnName("GROSS_UNIT");
+            entity.Property(e => e.GrossWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("GROSS_WEIGHT");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdDeliveryCollect)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_COLLECT");
+            entity.Property(e => e.IdDeliveryOrder)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY_ORDER");
+            entity.Property(e => e.IdentificationCardCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("IDENTIFICATION_CARD_CODE");
+            entity.Property(e => e.InitialScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_SCALE_CODE");
+            entity.Property(e => e.InitialWeighingCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_WEIGHING_CALIB_NUMBER");
+            entity.Property(e => e.InitialWeighingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("INITIAL_WEIGHING_DATE");
+            entity.Property(e => e.InitialWeighingMode)
+                .HasPrecision(9)
+                .HasColumnName("INITIAL_WEIGHING_MODE");
+            entity.Property(e => e.InitialWeighingType)
+                .HasPrecision(9)
+                .HasColumnName("INITIAL_WEIGHING_TYPE");
+            entity.Property(e => e.InitialWeighingUnit)
+                .HasPrecision(9)
+                .HasColumnName("INITIAL_WEIGHING_UNIT");
+            entity.Property(e => e.InitialWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("INITIAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.Leavetime)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("LEAVETIME");
+            entity.Property(e => e.LoadingScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOADING_SCALE_CODE");
+            entity.Property(e => e.LoadingSlip)
+                .HasPrecision(18)
+                .HasColumnName("LOADING_SLIP");
+            entity.Property(e => e.MoistPercentage)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MOIST_PERCENTAGE");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.NetUnit)
+                .HasPrecision(9)
+                .HasColumnName("NET_UNIT");
+            entity.Property(e => e.NetWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("NET_WEIGHT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.RailTerminal)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("RAIL_TERMINAL");
+            entity.Property(e => e.RegistrationDate)
+                .HasColumnType("DATE")
+                .HasColumnName("REGISTRATION_DATE");
+            entity.Property(e => e.SapExportState)
+                .HasPrecision(9)
+                .HasColumnName("SAP_EXPORT_STATE");
+            entity.Property(e => e.Shippingcode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHIPPINGCODE");
+            entity.Property(e => e.Shippingname)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHIPPINGNAME");
+            entity.Property(e => e.Shippingpackagingtype)
+                .HasPrecision(9)
+                .HasColumnName("SHIPPINGPACKAGINGTYPE");
+            entity.Property(e => e.Shippingtransporttype)
+                .HasPrecision(9)
+                .HasColumnName("SHIPPINGTRANSPORTTYPE");
+            entity.Property(e => e.StartLoadingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("START_LOADING_DATE");
+            entity.Property(e => e.TaraUnit)
+                .HasPrecision(9)
+                .HasColumnName("TARA_UNIT");
+            entity.Property(e => e.TaraWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("TARA_WEIGHT");
+            entity.Property(e => e.UnloadingPoint)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNLOADING_POINT");
+            entity.Property(e => e.VehicleNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("VEHICLE_NUMBER");
+        });
 
         modelBuilder.Entity<Device>(entity =>
         {
-            entity.ToTable("DEVICE", "QUVA_API");
+            entity.ToTable("DEVICE");
 
             entity.HasIndex(e => new { e.Code, e.IdLocation }, "UK_DEVICE_CODE").IsUnique();
 
@@ -35,7 +2404,6 @@ public partial class QuvaContext : DbContext
 
             entity.Property(e => e.Id)
                 .HasPrecision(18)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.ChangeDate)
                 .HasColumnType("DATE")
@@ -103,13 +2471,12 @@ public partial class QuvaContext : DbContext
 
         modelBuilder.Entity<DeviceParameter>(entity =>
         {
-            entity.ToTable("DEVICE_PARAMETER", "QUVA_API");
+            entity.ToTable("DEVICE_PARAMETER");
 
             entity.HasIndex(e => new { e.Key, e.IdDevice }, "UK_DEVICE_PARAMETER_KEY").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasPrecision(18)
-                .ValueGeneratedNever()
                 .HasColumnName("ID");
             entity.Property(e => e.ChangeDate)
                 .HasColumnType("DATE")
@@ -130,10 +2497,6 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CREATE_USER");
-            entity.Property(e => e.Description)
-                .HasMaxLength(1000)
-                .IsUnicode(false)
-                .HasColumnName("DESCRIPTION");
             entity.Property(e => e.IdDevice)
                 .HasPrecision(18)
                 .HasColumnName("ID_DEVICE");
@@ -155,17 +2518,1036 @@ public partial class QuvaContext : DbContext
                 .HasConstraintName("FK_DEVICE_PARAMETER_DEVICE");
         });
 
-        modelBuilder.Entity<Location>(entity =>
+        modelBuilder.Entity<IdentificationCard>(entity =>
         {
-            entity.ToTable("LOCATION", "QUVA_API");
+            entity.ToTable("IDENTIFICATION_CARD");
 
-            entity.HasIndex(e => e.Shortname, "LOCATION_SHORTNAME").IsUnique();
-
-            entity.HasIndex(e => e.Name, "UK_LOCATION_SHORTNAME").IsUnique();
+            entity.HasIndex(e => new { e.Code, e.IdDebitor, e.IdVehicles }, "UK_IDENTIFICATION_CARD_CODE").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasPrecision(18)
-                .ValueGeneratedNever()
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.FlagDispencer)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_DISPENCER");
+            entity.Property(e => e.IdDebitor)
+                .HasPrecision(18)
+                .HasColumnName("ID_DEBITOR");
+            entity.Property(e => e.IdVehicles)
+                .HasPrecision(18)
+                .HasColumnName("ID_VEHICLES");
+            entity.Property(e => e.Locked)
+                .HasPrecision(1)
+                .HasColumnName("LOCKED");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdDebitorNavigation).WithMany(p => p.IdentificationCard)
+                .HasForeignKey(d => d.IdDebitor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IC_DEBITOR");
+
+            entity.HasOne(d => d.IdVehiclesNavigation).WithMany(p => p.IdentificationCard)
+                .HasForeignKey(d => d.IdVehicles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_IC_VEHICLES");
+        });
+
+        modelBuilder.Entity<LoadingOrders>(entity =>
+        {
+            entity.HasKey(e => e.BelaId);
+
+            entity.ToTable("LOADING_ORDERS");
+
+            entity.Property(e => e.BelaId)
+                .HasPrecision(18)
+                .HasColumnName("BELA_ID");
+            entity.Property(e => e.Akz1Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ1_NR");
+            entity.Property(e => e.Akz2Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ2_NR");
+            entity.Property(e => e.Akz3Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ3_NR");
+            entity.Property(e => e.Akz4Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ4_NR");
+            entity.Property(e => e.Akz5Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ5_NR");
+            entity.Property(e => e.Akz6Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ6_NR");
+            entity.Property(e => e.Akz7Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ7_NR");
+            entity.Property(e => e.Akz8Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AKZ8_NR");
+            entity.Property(e => e.Analyse)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("ANALYSE");
+            entity.Property(e => e.AnlageNr)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("ANLAGE_NR");
+            entity.Property(e => e.Anteil1)
+                .HasColumnType("NUMBER(6,2)")
+                .HasColumnName("ANTEIL1");
+            entity.Property(e => e.Anteil2)
+                .HasColumnType("NUMBER(6,2)")
+                .HasColumnName("ANTEIL2");
+            entity.Property(e => e.Anteil3)
+                .HasColumnType("NUMBER(6,2)")
+                .HasColumnName("ANTEIL3");
+            entity.Property(e => e.Anteil4)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("ANTEIL4");
+            entity.Property(e => e.Anteil5)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("ANTEIL5");
+            entity.Property(e => e.Anteil6)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("ANTEIL6");
+            entity.Property(e => e.Anteil7)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("ANTEIL7");
+            entity.Property(e => e.Anteil8)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("ANTEIL8");
+            entity.Property(e => e.AnzSw)
+                .HasPrecision(1)
+                .HasColumnName("ANZ_SW");
+            entity.Property(e => e.AufkNr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AUFK_NR");
+            entity.Property(e => e.AufpNr)
+                .HasPrecision(6)
+                .HasColumnName("AUFP_NR");
+            entity.Property(e => e.AuftWdhlg)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("AUFT_WDHLG");
+            entity.Property(e => e.BeinNr)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("BEIN_NR");
+            entity.Property(e => e.BelaErgebnis)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("BELA_ERGEBNIS");
+            entity.Property(e => e.BelaFehler)
+                .HasColumnType("NUMBER")
+                .HasColumnName("BELA_FEHLER");
+            entity.Property(e => e.BelaMaxabw)
+                .HasColumnType("NUMBER")
+                .HasColumnName("BELA_MAXABW");
+            entity.Property(e => e.BelaProbId)
+                .HasColumnType("NUMBER")
+                .HasColumnName("BELA_PROB_ID");
+            entity.Property(e => e.BelaProbNr)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .HasColumnName("BELA_PROB_NR");
+            entity.Property(e => e.BelaSektion)
+                .HasMaxLength(80)
+                .IsUnicode(false)
+                .HasColumnName("BELA_SEKTION");
+            entity.Property(e => e.BelaSgabw)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'0'")
+                .HasColumnName("BELA_SGABW");
+            entity.Property(e => e.BruttoGewicht)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("BRUTTO_GEWICHT");
+            entity.Property(e => e.BruttoGewichtId)
+                .HasPrecision(9)
+                .HasColumnName("BRUTTO_GEWICHT_ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ChargeNr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CHARGE_NR");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Datum)
+                .HasColumnType("DATE")
+                .HasColumnName("DATUM");
+            entity.Property(e => e.Feuchte)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("FEUCHTE");
+            entity.Property(e => e.GewichtEinheit)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .HasColumnName("GEWICHT_EINHEIT");
+            entity.Property(e => e.Grundsorte1)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE1");
+            entity.Property(e => e.Grundsorte2)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE2");
+            entity.Property(e => e.Grundsorte3)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE3");
+            entity.Property(e => e.Grundsorte4)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE4");
+            entity.Property(e => e.Grundsorte5)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE5");
+            entity.Property(e => e.Grundsorte6)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE6");
+            entity.Property(e => e.Grundsorte7)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE7");
+            entity.Property(e => e.Grundsorte8)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("GRUNDSORTE8");
+            entity.Property(e => e.IdentNr)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("IDENT_NR");
+            entity.Property(e => e.IstErgebnis)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("IST_ERGEBNIS");
+            entity.Property(e => e.IstFehler)
+                .HasColumnType("NUMBER")
+                .HasColumnName("IST_FEHLER");
+            entity.Property(e => e.IstMaxabw)
+                .HasColumnType("NUMBER")
+                .HasColumnName("IST_MAXABW");
+            entity.Property(e => e.IstSgabw)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("IST_SGABW");
+            entity.Property(e => e.Istmenge)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("ISTMENGE");
+            entity.Property(e => e.KombiKnz)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("KOMBI_KNZ");
+            entity.Property(e => e.KunwNr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("KUNW_NR");
+            entity.Property(e => e.Leist1)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST1");
+            entity.Property(e => e.Leist2)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST2");
+            entity.Property(e => e.Leist3)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST3");
+            entity.Property(e => e.Leist4)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST4");
+            entity.Property(e => e.Leist5)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST5");
+            entity.Property(e => e.Leist6)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST6");
+            entity.Property(e => e.Leist7)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST7");
+            entity.Property(e => e.Leist8)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST8");
+            entity.Property(e => e.LeistIstGesamt)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST_IST_GESAMT");
+            entity.Property(e => e.LeistIstSieb)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("LEIST_IST_SIEB");
+            entity.Property(e => e.LfsDruck)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("LFS_DRUCK");
+            entity.Property(e => e.LfskNr)
+                .HasPrecision(10)
+                .HasColumnName("LFSK_NR");
+            entity.Property(e => e.Manuell)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("MANUELL");
+            entity.Property(e => e.MaraName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MARA_NAME");
+            entity.Property(e => e.MaraNr)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("MARA_NR");
+            entity.Property(e => e.Maxbrutto)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("MAXBRUTTO");
+            entity.Property(e => e.MischErgebnis)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MISCH_ERGEBNIS");
+            entity.Property(e => e.MischFehler)
+                .HasColumnType("NUMBER")
+                .HasColumnName("MISCH_FEHLER");
+            entity.Property(e => e.MischMaxabw)
+                .HasColumnType("NUMBER")
+                .HasColumnName("MISCH_MAXABW");
+            entity.Property(e => e.MischSgabw)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("MISCH_SGABW");
+            entity.Property(e => e.Mr3Knz)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'N'")
+                .HasColumnName("MR3_KNZ");
+            entity.Property(e => e.Muster)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'0'")
+                .IsFixedLength()
+                .HasColumnName("MUSTER");
+            entity.Property(e => e.MusterNr)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MUSTER_NR");
+            entity.Property(e => e.Nachlauf)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("NACHLAUF");
+            entity.Property(e => e.NettoGewicht)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("NETTO_GEWICHT");
+            entity.Property(e => e.NettoGewichtId)
+                .HasPrecision(9)
+                .HasColumnName("NETTO_GEWICHT_ID");
+            entity.Property(e => e.NettoGewichtKies)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("NETTO_GEWICHT_KIES");
+            entity.Property(e => e.NettoGewichtKiesId)
+                .HasPrecision(9)
+                .HasColumnName("NETTO_GEWICHT_KIES_ID");
+            entity.Property(e => e.NettoGewichtSand)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("NETTO_GEWICHT_SAND");
+            entity.Property(e => e.NettoGewichtSandId)
+                .HasPrecision(9)
+                .HasColumnName("NETTO_GEWICHT_SAND_ID");
+            entity.Property(e => e.Notbetrieb)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'N'")
+                .IsFixedLength()
+                .HasColumnName("NOTBETRIEB");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OffeneBel)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("OFFENE_BEL");
+            entity.Property(e => e.Probe1Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE1_NR");
+            entity.Property(e => e.Probe2Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE2_NR");
+            entity.Property(e => e.Probe3Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE3_NR");
+            entity.Property(e => e.Probe4Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE4_NR");
+            entity.Property(e => e.Probe5Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE5_NR");
+            entity.Property(e => e.Probe6Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE6_NR");
+            entity.Property(e => e.Probe7Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE7_NR");
+            entity.Property(e => e.Probe8Nr)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PROBE8_NR");
+            entity.Property(e => e.Probenahme)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'0'")
+                .IsFixedLength()
+                .HasColumnName("PROBENAHME");
+            entity.Property(e => e.QualKuveId)
+                .HasPrecision(9)
+                .HasColumnName("QUAL_KUVE_ID");
+            entity.Property(e => e.Quittieren)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'0'")
+                .IsFixedLength()
+                .HasColumnName("QUITTIEREN");
+            entity.Property(e => e.SiebSgo)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("SIEB_SGO");
+            entity.Property(e => e.SiebSgu)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("SIEB_SGU");
+            entity.Property(e => e.SiebVorgabe)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("SIEB_VORGABE");
+            entity.Property(e => e.SiloNr)
+                .HasPrecision(5)
+                .HasColumnName("SILO_NR");
+            entity.Property(e => e.Silostand1)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND1");
+            entity.Property(e => e.Silostand2)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND2");
+            entity.Property(e => e.Silostand3)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND3");
+            entity.Property(e => e.Silostand4)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND4");
+            entity.Property(e => e.Silostand5)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND5");
+            entity.Property(e => e.Silostand6)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND6");
+            entity.Property(e => e.Silostand7)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND7");
+            entity.Property(e => e.Silostand8)
+                .HasColumnType("NUMBER(12,3)")
+                .HasColumnName("SILOSTAND8");
+            entity.Property(e => e.Silp1Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP1_IST");
+            entity.Property(e => e.Silp1Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP1_NR");
+            entity.Property(e => e.Silp2Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP2_IST");
+            entity.Property(e => e.Silp2Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP2_NR");
+            entity.Property(e => e.Silp3Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP3_IST");
+            entity.Property(e => e.Silp3Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP3_NR");
+            entity.Property(e => e.Silp4Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP4_IST");
+            entity.Property(e => e.Silp4Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP4_NR");
+            entity.Property(e => e.Silp5Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP5_IST");
+            entity.Property(e => e.Silp5Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP5_NR");
+            entity.Property(e => e.Silp6Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP6_IST");
+            entity.Property(e => e.Silp6Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP6_NR");
+            entity.Property(e => e.Silp7Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP7_IST");
+            entity.Property(e => e.Silp7Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP7_NR");
+            entity.Property(e => e.Silp8Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SILP8_IST");
+            entity.Property(e => e.Silp8Nr)
+                .HasPrecision(9)
+                .HasColumnName("SILP8_NR");
+            entity.Property(e => e.Sollmenge)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SOLLMENGE");
+            entity.Property(e => e.SperrFeuchte)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SPERR_FEUCHTE");
+            entity.Property(e => e.Sprache)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("SPRACHE");
+            entity.Property(e => e.SpsBel)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("SPS_BEL");
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("STATUS");
+            entity.Property(e => e.StatusText)
+                .HasMaxLength(131)
+                .IsUnicode(false)
+                .HasColumnName("STATUS_TEXT");
+            entity.Property(e => e.Stillstand)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("STILLSTAND");
+            entity.Property(e => e.Stoerungen)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("STOERUNGEN");
+            entity.Property(e => e.Sw1Akz1Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ1_NR");
+            entity.Property(e => e.Sw1Akz2Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ2_NR");
+            entity.Property(e => e.Sw1Akz3Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ3_NR");
+            entity.Property(e => e.Sw1Akz4Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ4_NR");
+            entity.Property(e => e.Sw1Akz5Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ5_NR");
+            entity.Property(e => e.Sw1Akz6Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ6_NR");
+            entity.Property(e => e.Sw1Akz7Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ7_NR");
+            entity.Property(e => e.Sw1Akz8Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW1_AKZ8_NR");
+            entity.Property(e => e.Sw1Anteil1)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL1");
+            entity.Property(e => e.Sw1Anteil2)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL2");
+            entity.Property(e => e.Sw1Anteil3)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL3");
+            entity.Property(e => e.Sw1Anteil4)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL4");
+            entity.Property(e => e.Sw1Anteil5)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL5");
+            entity.Property(e => e.Sw1Anteil6)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL6");
+            entity.Property(e => e.Sw1Anteil7)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL7");
+            entity.Property(e => e.Sw1Anteil8)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_ANTEIL8");
+            entity.Property(e => e.Sw1Grundsorte1)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE1");
+            entity.Property(e => e.Sw1Grundsorte2)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE2");
+            entity.Property(e => e.Sw1Grundsorte3)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE3");
+            entity.Property(e => e.Sw1Grundsorte4)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE4");
+            entity.Property(e => e.Sw1Grundsorte5)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE5");
+            entity.Property(e => e.Sw1Grundsorte6)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE6");
+            entity.Property(e => e.Sw1Grundsorte7)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE7");
+            entity.Property(e => e.Sw1Grundsorte8)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW1_GRUNDSORTE8");
+            entity.Property(e => e.Sw1Leist1)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST1");
+            entity.Property(e => e.Sw1Leist2)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST2");
+            entity.Property(e => e.Sw1Leist3)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST3");
+            entity.Property(e => e.Sw1Leist4)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST4");
+            entity.Property(e => e.Sw1Leist5)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST5");
+            entity.Property(e => e.Sw1Leist6)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST6");
+            entity.Property(e => e.Sw1Leist7)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST7");
+            entity.Property(e => e.Sw1Leist8)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW1_LEIST8");
+            entity.Property(e => e.Sw1Nachlauf)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SW1_NACHLAUF");
+            entity.Property(e => e.Sw1Silp1Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP1_NR");
+            entity.Property(e => e.Sw1Silp2Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP2_NR");
+            entity.Property(e => e.Sw1Silp3Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP3_NR");
+            entity.Property(e => e.Sw1Silp4Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP4_NR");
+            entity.Property(e => e.Sw1Silp5Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP5_NR");
+            entity.Property(e => e.Sw1Silp6Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP6_NR");
+            entity.Property(e => e.Sw1Silp7Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP7_NR");
+            entity.Property(e => e.Sw1Silp8Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW1_SILP8_NR");
+            entity.Property(e => e.Sw1Stillstand)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SW1_STILLSTAND");
+            entity.Property(e => e.Sw2Akz1Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ1_NR");
+            entity.Property(e => e.Sw2Akz2Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ2_NR");
+            entity.Property(e => e.Sw2Akz3Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ3_NR");
+            entity.Property(e => e.Sw2Akz4Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ4_NR");
+            entity.Property(e => e.Sw2Akz5Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ5_NR");
+            entity.Property(e => e.Sw2Akz6Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ6_NR");
+            entity.Property(e => e.Sw2Akz7Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ7_NR");
+            entity.Property(e => e.Sw2Akz8Nr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SW2_AKZ8_NR");
+            entity.Property(e => e.Sw2Anteil1)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL1");
+            entity.Property(e => e.Sw2Anteil2)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL2");
+            entity.Property(e => e.Sw2Anteil3)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL3");
+            entity.Property(e => e.Sw2Anteil4)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL4");
+            entity.Property(e => e.Sw2Anteil5)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL5");
+            entity.Property(e => e.Sw2Anteil6)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL6");
+            entity.Property(e => e.Sw2Anteil7)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL7");
+            entity.Property(e => e.Sw2Anteil8)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_ANTEIL8");
+            entity.Property(e => e.Sw2Grundsorte1)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE1");
+            entity.Property(e => e.Sw2Grundsorte2)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE2");
+            entity.Property(e => e.Sw2Grundsorte3)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE3");
+            entity.Property(e => e.Sw2Grundsorte4)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE4");
+            entity.Property(e => e.Sw2Grundsorte5)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE5");
+            entity.Property(e => e.Sw2Grundsorte6)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE6");
+            entity.Property(e => e.Sw2Grundsorte7)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE7");
+            entity.Property(e => e.Sw2Grundsorte8)
+                .HasMaxLength(18)
+                .IsUnicode(false)
+                .HasColumnName("SW2_GRUNDSORTE8");
+            entity.Property(e => e.Sw2Leist1)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST1");
+            entity.Property(e => e.Sw2Leist2)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST2");
+            entity.Property(e => e.Sw2Leist3)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST3");
+            entity.Property(e => e.Sw2Leist4)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST4");
+            entity.Property(e => e.Sw2Leist5)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST5");
+            entity.Property(e => e.Sw2Leist6)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST6");
+            entity.Property(e => e.Sw2Leist7)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST7");
+            entity.Property(e => e.Sw2Leist8)
+                .HasColumnType("NUMBER(5,2)")
+                .HasColumnName("SW2_LEIST8");
+            entity.Property(e => e.Sw2Nachlauf)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SW2_NACHLAUF");
+            entity.Property(e => e.Sw2Silp1Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP1_NR");
+            entity.Property(e => e.Sw2Silp2Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP2_NR");
+            entity.Property(e => e.Sw2Silp3Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP3_NR");
+            entity.Property(e => e.Sw2Silp4Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP4_NR");
+            entity.Property(e => e.Sw2Silp5Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP5_NR");
+            entity.Property(e => e.Sw2Silp6Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP6_NR");
+            entity.Property(e => e.Sw2Silp7Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP7_NR");
+            entity.Property(e => e.Sw2Silp8Nr)
+                .HasPrecision(9)
+                .HasColumnName("SW2_SILP8_NR");
+            entity.Property(e => e.Sw2Stillstand)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SW2_STILLSTAND");
+            entity.Property(e => e.TaraGewicht)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TARA_GEWICHT");
+            entity.Property(e => e.TaraGewichtId)
+                .HasPrecision(9)
+                .HasColumnName("TARA_GEWICHT_ID");
+            entity.Property(e => e.Teilmenge1)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE1");
+            entity.Property(e => e.Teilmenge10Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE10_IST");
+            entity.Property(e => e.Teilmenge11Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE11_IST");
+            entity.Property(e => e.Teilmenge12Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE12_IST");
+            entity.Property(e => e.Teilmenge13Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE13_IST");
+            entity.Property(e => e.Teilmenge14Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE14_IST");
+            entity.Property(e => e.Teilmenge15Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE15_IST");
+            entity.Property(e => e.Teilmenge16Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE16_IST");
+            entity.Property(e => e.Teilmenge17Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE17_IST");
+            entity.Property(e => e.Teilmenge18Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE18_IST");
+            entity.Property(e => e.Teilmenge19Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE19_IST");
+            entity.Property(e => e.Teilmenge1Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE1_IST");
+            entity.Property(e => e.Teilmenge2)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE2");
+            entity.Property(e => e.Teilmenge20Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE20_IST");
+            entity.Property(e => e.Teilmenge21Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE21_IST");
+            entity.Property(e => e.Teilmenge22Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE22_IST");
+            entity.Property(e => e.Teilmenge23Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE23_IST");
+            entity.Property(e => e.Teilmenge24Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE24_IST");
+            entity.Property(e => e.Teilmenge2Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE2_IST");
+            entity.Property(e => e.Teilmenge3)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE3");
+            entity.Property(e => e.Teilmenge3Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE3_IST");
+            entity.Property(e => e.Teilmenge4)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE4");
+            entity.Property(e => e.Teilmenge4Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE4_IST");
+            entity.Property(e => e.Teilmenge5)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE5");
+            entity.Property(e => e.Teilmenge5Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE5_IST");
+            entity.Property(e => e.Teilmenge6Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE6_IST");
+            entity.Property(e => e.Teilmenge7Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE7_IST");
+            entity.Property(e => e.Teilmenge8Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE8_IST");
+            entity.Property(e => e.Teilmenge9Ist)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TEILMENGE9_IST");
+            entity.Property(e => e.TeilmengeNr)
+                .HasPrecision(3)
+                .HasColumnName("TEILMENGE_NR");
+            entity.Property(e => e.Transportmittel)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("TRANSPORTMITTEL");
+            entity.Property(e => e.Verladesperre)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'0'")
+                .HasColumnName("VERLADESPERRE");
+            entity.Property(e => e.Verpackart)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("VERPACKART");
+            entity.Property(e => e.WerkNr)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("WERK_NR");
+            entity.Property(e => e.Zeit)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("ZEIT");
+        });
+
+        modelBuilder.Entity<LoadingPoint>(entity =>
+        {
+            entity.ToTable("LOADING_POINT");
+
+            entity.HasIndex(e => e.LoadingNumber, "UK_LOADING_NUMBER").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.LoadingNumber)
+                .HasPrecision(9)
+                .HasColumnName("LOADING_NUMBER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.PackagingType)
+                .HasPrecision(9)
+                .HasColumnName("PACKAGING_TYPE");
+            entity.Property(e => e.TransportType)
+                .HasPrecision(9)
+                .HasColumnName("TRANSPORT_TYPE");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.LoadingPoint)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LOADING_POINT_LOCATION");
+        });
+
+        modelBuilder.Entity<Location>(entity =>
+        {
+            entity.ToTable("LOCATION");
+
+            entity.HasIndex(e => e.Name, "UK_LOCATION_NAME").IsUnique();
+
+            entity.HasIndex(e => e.Shortname, "UK_LOCATION_SHORTNAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
                 .HasColumnName("ID");
             entity.Property(e => e.ChangeDate)
                 .HasColumnType("DATE")
@@ -231,13 +3613,366 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("STREET");
         });
 
-        modelBuilder.Entity<MappingWorkplaceDevice>(entity =>
+        modelBuilder.Entity<LocationParameter>(entity =>
         {
-            entity.ToTable("MAPPING_WORKPLACE_DEVICE", "QUVA_API");
+            entity.ToTable("LOCATION_PARAMETER");
+
+            entity.HasIndex(e => new { e.IdLocation, e.IdOptionKey, e.IdPlant }, "UK_LOCATION_PARAMETER").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasPrecision(18)
-                .ValueGeneratedNever()
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdOptionKey)
+                .HasPrecision(18)
+                .HasColumnName("ID_OPTION_KEY");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Value)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("VALUE");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.LocationParameter)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LOCPAR_LOCATION");
+
+            entity.HasOne(d => d.IdOptionKeyNavigation).WithMany(p => p.LocationParameter)
+                .HasForeignKey(d => d.IdOptionKey)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LOCPAR_OPTION_KEY");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.LocationParameter)
+                .HasForeignKey(d => d.IdPlant)
+                .HasConstraintName("FK_LOCPAR_PLANT");
+        });
+
+        modelBuilder.Entity<Logo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("LOGO");
+
+            entity.ToTable("LOGO");
+
+            entity.HasIndex(e => e.Name, "UK_LOGO_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasColumnType("BLOB")
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Extension)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("EXTENSION");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<MappingAgrCategoryOption>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_MAP_AGR_CATEGORY_OPTION");
+
+            entity.ToTable("MAPPING_AGR_CATEGORY_OPTION");
+
+            entity.HasIndex(e => new { e.IdCategory, e.IdOption }, "UK_MAPAGRCATOPT_CAT_OPT").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0                     ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate               ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdCategory)
+                .HasPrecision(18)
+                .HasColumnName("ID_CATEGORY");
+            entity.Property(e => e.IdOption)
+                .HasPrecision(18)
+                .HasColumnName("ID_OPTION");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.MappingAgrCategoryOption)
+                .HasForeignKey(d => d.IdCategory)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MAPAGRCATOPT_CATEGORY");
+
+            entity.HasOne(d => d.IdOptionNavigation).WithMany(p => p.MappingAgrCategoryOption)
+                .HasForeignKey(d => d.IdOption)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MAPAGRCATOPT_OPTION");
+        });
+
+        modelBuilder.Entity<MappingMaterialTypcla>(entity =>
+        {
+            entity.ToTable("MAPPING_MATERIAL_TYPCLA");
+
+            entity.HasIndex(e => new { e.IdMaterial, e.IdTypeClassification }, "UK_MAPPING_MATERIAL_TYPCLA").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.IdTypeClassification)
+                .HasPrecision(18)
+                .HasColumnName("ID_TYPE_CLASSIFICATION");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdMaterialNavigation).WithMany(p => p.MappingMaterialTypcla)
+                .HasForeignKey(d => d.IdMaterial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MAPMATTYPCLA_MATERIAL");
+
+            entity.HasOne(d => d.IdTypeClassificationNavigation).WithMany(p => p.MappingMaterialTypcla)
+                .HasForeignKey(d => d.IdTypeClassification)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MAPMATTYPCLA_TYPCLA");
+        });
+
+        modelBuilder.Entity<MappingSiloLoadingPoint>(entity =>
+        {
+            entity.ToTable("MAPPING_SILO_LOADING_POINT");
+
+            entity.HasIndex(e => new { e.IdSilo, e.IdLoadingPoint }, "UK_MSLP").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLoadingPoint)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOADING_POINT");
+            entity.Property(e => e.IdSilo)
+                .HasPrecision(18)
+                .HasColumnName("ID_SILO");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdLoadingPointNavigation).WithMany(p => p.MappingSiloLoadingPoint)
+                .HasForeignKey(d => d.IdLoadingPoint)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MSLP_ID_LOADING_POINT");
+
+            entity.HasOne(d => d.IdSiloNavigation).WithMany(p => p.MappingSiloLoadingPoint)
+                .HasForeignKey(d => d.IdSilo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MSLP_ID_SILO");
+        });
+
+        modelBuilder.Entity<MappingSoDebitor>(entity =>
+        {
+            entity.ToTable("MAPPING_SO_DEBITOR");
+
+            entity.HasIndex(e => new { e.IdDebitor, e.IdSalesOrganization }, "UK_MAPPING_SO_DEBITOR").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CountDeliveryPrint)
+                .HasPrecision(9)
+                .HasColumnName("COUNT_DELIVERY_PRINT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdDebitor)
+                .HasPrecision(18)
+                .HasColumnName("ID_DEBITOR");
+            entity.Property(e => e.IdSalesOrganization)
+                .HasPrecision(18)
+                .HasColumnName("ID_SALES_ORGANIZATION");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdDebitorNavigation).WithMany(p => p.MappingSoDebitor)
+                .HasForeignKey(d => d.IdDebitor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MSD_DEBITOR");
+
+            entity.HasOne(d => d.IdSalesOrganizationNavigation).WithMany(p => p.MappingSoDebitor)
+                .HasForeignKey(d => d.IdSalesOrganization)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MSD_SALES_ORGANISATION");
+        });
+
+        modelBuilder.Entity<MappingUserWorkplace>(entity =>
+        {
+            entity.ToTable("MAPPING_USER_WORKPLACE");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdUser)
+                .HasPrecision(18)
+                .HasColumnName("ID_USER");
+            entity.Property(e => e.IdWorkplace)
+                .HasPrecision(18)
+                .HasColumnName("ID_WORKPLACE");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.MappingUserWorkplace)
+                .HasForeignKey(d => d.IdUser)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MUW_USERS");
+
+            entity.HasOne(d => d.IdWorkplaceNavigation).WithMany(p => p.MappingUserWorkplace)
+                .HasForeignKey(d => d.IdWorkplace)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MUW_WORKPLACE");
+        });
+
+        modelBuilder.Entity<MappingWorkplaceDevice>(entity =>
+        {
+            entity.ToTable("MAPPING_WORKPLACE_DEVICE");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
                 .HasColumnName("ID");
             entity.Property(e => e.ChangeDate)
                 .HasColumnType("DATE")
@@ -268,8 +4003,2832 @@ public partial class QuvaContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("NOTE");
 
+            entity.HasOne(d => d.IdDeviceNavigation).WithMany(p => p.MappingWorkplaceDevice)
+                .HasForeignKey(d => d.IdDevice)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MWD_DEVICE");
+
+            entity.HasOne(d => d.IdWorkplaceNavigation).WithMany(p => p.MappingWorkplaceDevice)
+                .HasForeignKey(d => d.IdWorkplace)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MWD_WORKPLACE");
         });
 
+        modelBuilder.Entity<Material>(entity =>
+        {
+            entity.ToTable("MATERIAL");
+
+            entity.HasIndex(e => e.Code, "UK_MATERIAL_CODE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.GroupKey)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_KEY");
+            entity.Property(e => e.IdUnit)
+                .HasPrecision(18)
+                .HasColumnName("ID_UNIT");
+            entity.Property(e => e.Language)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("LANGUAGE");
+            entity.Property(e => e.MaterialKind)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_KIND");
+            entity.Property(e => e.Name)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.PrintMark)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("PRINT_MARK");
+            entity.Property(e => e.TradeName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("TRADE_NAME");
+
+            entity.HasOne(d => d.IdUnitNavigation).WithMany(p => p.Material)
+                .HasForeignKey(d => d.IdUnit)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MATERIAL_UNIT");
+        });
+
+        modelBuilder.Entity<MessageDispatcher>(entity =>
+        {
+            entity.ToTable("MESSAGE_DISPATCHER");
+
+            entity.HasIndex(e => e.Name, "UK_MESSAGE_DISPATCHER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<MessageMember>(entity =>
+        {
+            entity.ToTable("MESSAGE_MEMBER");
+
+            entity.HasIndex(e => e.Name, "UK_MESSAGE_MEMBER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Adress)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("ADRESS");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdMessageDispatcher)
+                .HasPrecision(18)
+                .HasColumnName("ID_MESSAGE_DISPATCHER");
+            entity.Property(e => e.MemberType)
+                .HasPrecision(9)
+                .HasColumnName("MEMBER_TYPE");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdMessageDispatcherNavigation).WithMany(p => p.MessageMember)
+                .HasForeignKey(d => d.IdMessageDispatcher)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MM_MESSAGE_DISPATCHER");
+        });
+
+        modelBuilder.Entity<OdcAdjustmentDay>(entity =>
+        {
+            entity.ToTable("ODC_ADJUSTMENT_DAY");
+
+            entity.HasIndex(e => new { e.IdPlant, e.LoadingDay }, "UK_ODC_ADJUSTMENT_DAY").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.LoadingDay)
+                .HasColumnType("DATE")
+                .HasColumnName("LOADING_DAY");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.State)
+                .HasPrecision(9)
+                .HasColumnName("STATE");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.OdcAdjustmentDay)
+                .HasForeignKey(d => d.IdPlant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OAD_PLANT");
+        });
+
+        modelBuilder.Entity<OdcAdjustmentQuantity>(entity =>
+        {
+            entity.ToTable("ODC_ADJUSTMENT_QUANTITY");
+
+            entity.HasIndex(e => new { e.IdOdcAdjustmentDay, e.IdConfigPlantMaterial, e.SpMark }, "UK_ODC_ADJUSTMENT_QUANTITY").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DelFlag)
+                .HasPrecision(1)
+                .HasColumnName("DEL_FLAG");
+            entity.Property(e => e.IdConfigPlantMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_CONFIG_PLANT_MATERIAL");
+            entity.Property(e => e.IdOdcAdjustmentDay)
+                .HasPrecision(18)
+                .HasColumnName("ID_ODC_ADJUSTMENT_DAY");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Packagingtype)
+                .HasPrecision(9)
+                .HasColumnName("PACKAGINGTYPE");
+            entity.Property(e => e.Quantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("QUANTITY");
+            entity.Property(e => e.SpMark)
+                .HasPrecision(9)
+                .HasColumnName("SP_MARK");
+            entity.Property(e => e.Transporttype)
+                .HasPrecision(9)
+                .HasColumnName("TRANSPORTTYPE");
+
+            entity.HasOne(d => d.IdConfigPlantMaterialNavigation).WithMany(p => p.OdcAdjustmentQuantity)
+                .HasForeignKey(d => d.IdConfigPlantMaterial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OAU_CONFIG_PLANT_MATERIAL");
+
+            entity.HasOne(d => d.IdOdcAdjustmentDayNavigation).WithMany(p => p.OdcAdjustmentQuantity)
+                .HasForeignKey(d => d.IdOdcAdjustmentDay)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OAU_ODC_ADJUSTMENT_DAY");
+        });
+
+        modelBuilder.Entity<OrderDebitor>(entity =>
+        {
+            entity.ToTable("ORDER_DEBITOR");
+
+            entity.HasIndex(e => new { e.IdOrder, e.Role }, "UK_ORDER_DEBITOR_ROLE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("EMAIL");
+            entity.Property(e => e.Housenumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("HOUSENUMBER");
+            entity.Property(e => e.IdCountry)
+                .HasPrecision(18)
+                .HasColumnName("ID_COUNTRY");
+            entity.Property(e => e.IdOrder)
+                .HasPrecision(18)
+                .HasColumnName("ID_ORDER");
+            entity.Property(e => e.Language)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("LANGUAGE");
+            entity.Property(e => e.Location)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION");
+            entity.Property(e => e.Name1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME1");
+            entity.Property(e => e.Name2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME2");
+            entity.Property(e => e.Name3)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME3");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PHONE");
+            entity.Property(e => e.Postcode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("POSTCODE");
+            entity.Property(e => e.Role)
+                .HasPrecision(9)
+                .HasColumnName("ROLE");
+            entity.Property(e => e.Street)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("STREET");
+
+            entity.HasOne(d => d.IdCountryNavigation).WithMany(p => p.OrderDebitor)
+                .HasForeignKey(d => d.IdCountry)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDER_DEBITOR_COUNTRY");
+
+            entity.HasOne(d => d.IdOrderNavigation).WithMany(p => p.OrderDebitor)
+                .HasForeignKey(d => d.IdOrder)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDER_DEBITOR_ORDER");
+        });
+
+        modelBuilder.Entity<OrderHead>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ORDERS");
+
+            entity.ToTable("ORDER_HEAD");
+
+            entity.HasIndex(e => e.OrderNumber, "I_ORDER_HEAD_NUMBER");
+
+            entity.HasIndex(e => new { e.OrderNumber, e.IdPlant }, "UK_ORDER_HEAD_NUMBER_PLANT").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.Art)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("ART");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ChangedOrder)
+                .HasPrecision(1)
+                .HasColumnName("CHANGED_ORDER");
+            entity.Property(e => e.Clerk)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CLERK");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.CustomerOrderNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMER_ORDER_NUMBER");
+            entity.Property(e => e.DeliveryCondition)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DELIVERY_CONDITION");
+            entity.Property(e => e.DeliveryInfo)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("DELIVERY_INFO");
+            entity.Property(e => e.DeliveryLock)
+                .HasPrecision(1)
+                .HasColumnName("DELIVERY_LOCK");
+            entity.Property(e => e.DesiredDeliveryDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DESIRED_DELIVERY_DATE");
+            entity.Property(e => e.FieldService)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FIELD_SERVICE");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdSalesOrganization)
+                .HasPrecision(18)
+                .HasColumnName("ID_SALES_ORGANIZATION");
+            entity.Property(e => e.IdShippingMethod)
+                .HasPrecision(18)
+                .HasColumnName("ID_SHIPPING_METHOD");
+            entity.Property(e => e.Locked)
+                .HasPrecision(1)
+                .HasColumnName("LOCKED");
+            entity.Property(e => e.NewOrder)
+                .HasPrecision(1)
+                .HasColumnName("NEW_ORDER");
+            entity.Property(e => e.NonSapOrder)
+                .HasPrecision(1)
+                .HasColumnName("NON_SAP_ORDER");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("DATE")
+                .HasColumnName("ORDER_DATE");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.PrintLanguage)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("PRINT_LANGUAGE");
+            entity.Property(e => e.RetrievalCode)
+                .HasPrecision(9)
+                .HasColumnName("RETRIEVAL_CODE");
+            entity.Property(e => e.UnloadingPoint)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNLOADING_POINT");
+
+            entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.OrderHead)
+                .HasForeignKey(d => d.IdPlant)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDERS_PLANT");
+
+            entity.HasOne(d => d.IdSalesOrganizationNavigation).WithMany(p => p.OrderHead)
+                .HasForeignKey(d => d.IdSalesOrganization)
+                .HasConstraintName("FK_SALES_ORGANIZATION");
+
+            entity.HasOne(d => d.IdShippingMethodNavigation).WithMany(p => p.OrderHead)
+                .HasForeignKey(d => d.IdShippingMethod)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDERS_SHIPPING_METHOD");
+        });
+
+        modelBuilder.Entity<OrderPosition>(entity =>
+        {
+            entity.ToTable("ORDER_POSITION");
+
+            entity.HasIndex(e => new { e.IdOrderHead, e.PositionNumber }, "UK_ORDER_POSITION_NUMBER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.CustomerProductName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMER_PRODUCT_NAME");
+            entity.Property(e => e.DeliveredQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("DELIVERED_QUANTITY");
+            entity.Property(e => e.IdOrderHead)
+                .HasPrecision(18)
+                .HasColumnName("ID_ORDER_HEAD");
+            entity.Property(e => e.IdProductgroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_PRODUCTGROUP");
+            entity.Property(e => e.IdUnit)
+                .HasPrecision(18)
+                .HasColumnName("ID_UNIT");
+            entity.Property(e => e.MainPosition)
+                .HasPrecision(1)
+                .HasColumnName("MAIN_POSITION");
+            entity.Property(e => e.MaterialLongName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_LONG_NAME");
+            entity.Property(e => e.MaterialName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_NAME");
+            entity.Property(e => e.MaterialShortName)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_SHORT_NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OrderQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("ORDER_QUANTITY");
+            entity.Property(e => e.PlantCertificate)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PLANT_CERTIFICATE");
+            entity.Property(e => e.PositionNumber)
+                .HasPrecision(9)
+                .HasColumnName("POSITION_NUMBER");
+            entity.Property(e => e.ProductgroupName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PRODUCTGROUP_NAME");
+            entity.Property(e => e.ReservedQuantity)
+                .HasDefaultValueSql("0 ")
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("RESERVED_QUANTITY");
+            entity.Property(e => e.ShippingPoint)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHIPPING_POINT");
+            entity.Property(e => e.TopPosition)
+                .HasPrecision(9)
+                .HasColumnName("TOP_POSITION");
+
+            entity.HasOne(d => d.IdOrderHeadNavigation).WithMany(p => p.OrderPosition)
+                .HasForeignKey(d => d.IdOrderHead)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDER_POSITION_ORDER");
+
+            entity.HasOne(d => d.IdProductgroupNavigation).WithMany(p => p.OrderPosition)
+                .HasForeignKey(d => d.IdProductgroup)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDER_POSITION_PRODUCTGROUP");
+
+            entity.HasOne(d => d.IdUnitNavigation).WithMany(p => p.OrderPosition)
+                .HasForeignKey(d => d.IdUnit)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDER_POSITION_UNIT");
+        });
+
+        modelBuilder.Entity<OrderPositionText>(entity =>
+        {
+            entity.ToTable("ORDER_POSITION_TEXT");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdOrderPosition)
+                .HasPrecision(18)
+                .HasColumnName("ID_ORDER_POSITION");
+            entity.Property(e => e.IdTypeOrderPositionText)
+                .HasPrecision(18)
+                .HasColumnName("ID_TYPE_ORDER_POSITION_TEXT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdTypeOrderPositionTextNavigation).WithMany(p => p.OrderPositionText)
+                .HasForeignKey(d => d.IdTypeOrderPositionText)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDPOSTXT_TYPORDPOSTXT");
+        });
+
+        modelBuilder.Entity<OrderText>(entity =>
+        {
+            entity.ToTable("ORDER_TEXT");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdOrder)
+                .HasPrecision(18)
+                .HasColumnName("ID_ORDER");
+            entity.Property(e => e.IdTypeOrderText)
+                .HasPrecision(18)
+                .HasColumnName("ID_TYPE_ORDER_TEXT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdOrderNavigation).WithMany(p => p.OrderText)
+                .HasForeignKey(d => d.IdOrder)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDER_TEXT_ORDER");
+
+            entity.HasOne(d => d.IdTypeOrderTextNavigation).WithMany(p => p.OrderText)
+                .HasForeignKey(d => d.IdTypeOrderText)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ORDTXT_TYPORDTXT");
+        });
+
+        modelBuilder.Entity<Orderheadview>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("ORDERHEADVIEW");
+
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.Art)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("ART");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ChangedOrder)
+                .HasPrecision(1)
+                .HasColumnName("CHANGED_ORDER");
+            entity.Property(e => e.Clerk)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CLERK");
+            entity.Property(e => e.CodeForwardingAgent)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CODE_FORWARDING_AGENT");
+            entity.Property(e => e.CodeGoodRecipient)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CODE_GOOD_RECIPIENT");
+            entity.Property(e => e.CodeInvoiceRecipient)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CODE_INVOICE_RECIPIENT");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.CustomerOrderNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMER_ORDER_NUMBER");
+            entity.Property(e => e.DeliveryCondition)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DELIVERY_CONDITION");
+            entity.Property(e => e.DeliveryInfo)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("DELIVERY_INFO");
+            entity.Property(e => e.DeliveryLock)
+                .HasPrecision(1)
+                .HasColumnName("DELIVERY_LOCK");
+            entity.Property(e => e.DesiredDeliveryDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DESIRED_DELIVERY_DATE");
+            entity.Property(e => e.FieldService)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FIELD_SERVICE");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdSalesOrganization)
+                .HasPrecision(18)
+                .HasColumnName("ID_SALES_ORGANIZATION");
+            entity.Property(e => e.IdShippingMethod)
+                .HasPrecision(18)
+                .HasColumnName("ID_SHIPPING_METHOD");
+            entity.Property(e => e.LocationForwardingAgent)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_FORWARDING_AGENT");
+            entity.Property(e => e.LocationGoodRecipient)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_GOOD_RECIPIENT");
+            entity.Property(e => e.LocationInvoiceRecipient)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_INVOICE_RECIPIENT");
+            entity.Property(e => e.Locked)
+                .HasPrecision(1)
+                .HasColumnName("LOCKED");
+            entity.Property(e => e.Name1ForwardingAgent)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME1_FORWARDING_AGENT");
+            entity.Property(e => e.Name1GoodRecipient)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME1_GOOD_RECIPIENT");
+            entity.Property(e => e.Name1InvoiceRecipient)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME1_INVOICE_RECIPIENT");
+            entity.Property(e => e.NewOrder)
+                .HasPrecision(1)
+                .HasColumnName("NEW_ORDER");
+            entity.Property(e => e.NonSapOrder)
+                .HasPrecision(1)
+                .HasColumnName("NON_SAP_ORDER");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("DATE")
+                .HasColumnName("ORDER_DATE");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.PackagingType)
+                .HasPrecision(9)
+                .HasColumnName("PACKAGING_TYPE");
+            entity.Property(e => e.PhoneForwardingAgent)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PHONE_FORWARDING_AGENT");
+            entity.Property(e => e.PhoneGoodRecipient)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PHONE_GOOD_RECIPIENT");
+            entity.Property(e => e.PhoneInvoiceRecipient)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PHONE_INVOICE_RECIPIENT");
+            entity.Property(e => e.PostcodeForwardingAgent)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("POSTCODE_FORWARDING_AGENT");
+            entity.Property(e => e.PostcodeGoodRecipient)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("POSTCODE_GOOD_RECIPIENT");
+            entity.Property(e => e.PostcodeInvoiceRecipient)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("POSTCODE_INVOICE_RECIPIENT");
+            entity.Property(e => e.PrintLanguage)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("PRINT_LANGUAGE");
+            entity.Property(e => e.RetrievalCode)
+                .HasPrecision(9)
+                .HasColumnName("RETRIEVAL_CODE");
+            entity.Property(e => e.StreetForwardingAgent)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("STREET_FORWARDING_AGENT");
+            entity.Property(e => e.StreetGoodRecipient)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("STREET_GOOD_RECIPIENT");
+            entity.Property(e => e.StreetInvoiceRecipient)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("STREET_INVOICE_RECIPIENT");
+            entity.Property(e => e.SumDeliveredQuantity)
+                .HasColumnType("NUMBER")
+                .HasColumnName("SUM_DELIVERED_QUANTITY");
+            entity.Property(e => e.TransportType)
+                .HasPrecision(9)
+                .HasColumnName("TRANSPORT_TYPE");
+            entity.Property(e => e.UnloadingPoint)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNLOADING_POINT");
+        });
+
+        modelBuilder.Entity<Plant>(entity =>
+        {
+            entity.ToTable("PLANT");
+
+            entity.HasIndex(e => e.Code, "UK_PLANT_CODE").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_PLANT_NAME").IsUnique();
+
+            entity.HasIndex(e => e.ShortName, "UK_PLANT_SHORT_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DeliveryNumberCurrent)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER_CURRENT");
+            entity.Property(e => e.DeliveryNumberMax)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER_MAX");
+            entity.Property(e => e.DeliveryNumberMin)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER_MIN");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.NonSapOrderCurrent)
+                .HasPrecision(18)
+                .HasColumnName("NON_SAP_ORDER_CURRENT");
+            entity.Property(e => e.NonSapOrderMax)
+                .HasPrecision(18)
+                .HasColumnName("NON_SAP_ORDER_MAX");
+            entity.Property(e => e.NonSapOrderMin)
+                .HasPrecision(18)
+                .HasColumnName("NON_SAP_ORDER_MIN");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.ShortName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHORT_NAME");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.Plant)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PLANT_LOCATION");
+        });
+
+        modelBuilder.Entity<Printer>(entity =>
+        {
+            entity.ToTable("PRINTER");
+
+            entity.HasIndex(e => e.Name, "UK_PRINTER_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdWorkplace)
+                .HasPrecision(18)
+                .HasColumnName("ID_WORKPLACE");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Role)
+                .HasPrecision(9)
+                .HasColumnName("ROLE");
+
+            entity.HasOne(d => d.IdWorkplaceNavigation).WithMany(p => p.Printer)
+                .HasForeignKey(d => d.IdWorkplace)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PRINTER_WORKPLACE");
+        });
+
+        modelBuilder.Entity<Productgroup>(entity =>
+        {
+            entity.ToTable("PRODUCTGROUP");
+
+            entity.HasIndex(e => e.Name, "UK_PRODUCTGROUP_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<QuantityUnit>(entity =>
+        {
+            entity.ToTable("QUANTITY_UNIT");
+
+            entity.HasIndex(e => new { e.IdAlternativeUnit, e.IdMaterial }, "UK_QU").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.EanNumber)
+                .HasPrecision(18)
+                .HasColumnName("EAN_NUMBER");
+            entity.Property(e => e.FactorAlternativeUnit)
+                .HasPrecision(9)
+                .HasColumnName("FACTOR_ALTERNATIVE_UNIT");
+            entity.Property(e => e.FactorBasicUnit)
+                .HasPrecision(9)
+                .HasColumnName("FACTOR_BASIC_UNIT");
+            entity.Property(e => e.IdAlternativeUnit)
+                .HasPrecision(18)
+                .HasColumnName("ID_ALTERNATIVE_UNIT");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdAlternativeUnitNavigation).WithMany(p => p.QuantityUnit)
+                .HasForeignKey(d => d.IdAlternativeUnit)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_QU_ALTERNATIVE_UNIT");
+
+            entity.HasOne(d => d.IdMaterialNavigation).WithMany(p => p.QuantityUnit)
+                .HasForeignKey(d => d.IdMaterial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_QU_MATERIAL");
+        });
+
+        modelBuilder.Entity<SalesOrganization>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_SALES_ORGANISATION");
+
+            entity.ToTable("SALES_ORGANIZATION");
+
+            entity.HasIndex(e => e.Name, "UK_SALES_ORGANISATION").IsUnique();
+
+            entity.HasIndex(e => e.Vkorg, "UK_SALES_ORGANISATION_VKORG").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Vkorg)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("VKORG");
+        });
+
+        modelBuilder.Entity<Seal>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("SEAL");
+
+            entity.ToTable("SEAL");
+
+            entity.HasIndex(e => e.Name, "UK_SEAL_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Content)
+                .HasColumnType("BLOB")
+                .HasColumnName("CONTENT");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Extension)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("EXTENSION");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<ShippingMethod>(entity =>
+        {
+            entity.ToTable("SHIPPING_METHOD");
+
+            entity.HasIndex(e => e.Code, "UK_SHIPPING_METHOD_CODE").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_SHIPPING_METHOD_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.PackagingType)
+                .HasPrecision(9)
+                .HasColumnName("PACKAGING_TYPE");
+            entity.Property(e => e.TransportType)
+                .HasPrecision(9)
+                .HasColumnName("TRANSPORT_TYPE");
+        });
+
+        modelBuilder.Entity<Silo>(entity =>
+        {
+            entity.ToTable("SILO");
+
+            entity.HasIndex(e => e.Name, "UK_SILO_NAME").IsUnique();
+
+            entity.HasIndex(e => e.SiloNumber, "UK_SILO_SILO_NUMBER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Akz)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("AKZ");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DrainageTime)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DRAINAGE_TIME");
+            entity.Property(e => e.Dry)
+                .HasPrecision(1)
+                .HasColumnName("DRY");
+            entity.Property(e => e.IdBasicType)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.LockBigbag)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_BIGBAG");
+            entity.Property(e => e.LockForProduction)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_FOR_PRODUCTION");
+            entity.Property(e => e.LockForSensitiveCustomer)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_FOR_SENSITIVE_CUSTOMER");
+            entity.Property(e => e.LockLaboratory)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_LABORATORY");
+            entity.Property(e => e.LockRail)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_RAIL");
+            entity.Property(e => e.LockTruck)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_TRUCK");
+            entity.Property(e => e.MaxPercentage)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MAX_PERCENTAGE");
+            entity.Property(e => e.MinSiloLevelVolume)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MIN_SILO_LEVEL_VOLUME");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Priority)
+                .HasPrecision(9)
+                .HasColumnName("PRIORITY");
+            entity.Property(e => e.SiloLevelPercentage)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_LEVEL_PERCENTAGE");
+            entity.Property(e => e.SiloLevelVolume)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_LEVEL_VOLUME");
+            entity.Property(e => e.SiloNumber)
+                .HasPrecision(9)
+                .HasColumnName("SILO_NUMBER");
+            entity.Property(e => e.SiloVolume)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_VOLUME");
+            entity.Property(e => e.SortNumber)
+                .HasPrecision(9)
+                .HasColumnName("SORT_NUMBER");
+            entity.Property(e => e.SpsBasicType)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SPS_BASIC_TYPE");
+            entity.Property(e => e.SpsCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SPS_CODE");
+
+            entity.HasOne(d => d.IdBasicTypeNavigation).WithMany(p => p.Silo)
+                .HasForeignKey(d => d.IdBasicType)
+                .HasConstraintName("FK_SILO_BASIC_TYPE");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.Silo)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SILO_LOCATION");
+        });
+
+        modelBuilder.Entity<Transport>(entity =>
+        {
+            entity.ToTable("TRANSPORT");
+
+            entity.HasIndex(e => e.TransportNumber, "UK_TRANSPORT_TN").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.TransportNumber)
+                .HasPrecision(18)
+                .HasColumnName("TRANSPORT_NUMBER");
+        });
+
+        modelBuilder.Entity<TypeAgreementCategory>(entity =>
+        {
+            entity.ToTable("TYPE_AGREEMENT_CATEGORY");
+
+            entity.HasIndex(e => e.Code, "UK_AGREEMENT_CATEGORY_CODE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0                     ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate               ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Display)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasColumnName("DISPLAY");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<TypeAgreementOption>(entity =>
+        {
+            entity.ToTable("TYPE_AGREEMENT_OPTION");
+
+            entity.HasIndex(e => e.Code, "UK_AGREEMENT_OPTION_CODE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0                     ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate               ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Datatype)
+                .HasPrecision(9)
+                .HasColumnName("DATATYPE");
+            entity.Property(e => e.DefaultValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("DEFAULT_VALUE");
+            entity.Property(e => e.Display)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("DISPLAY");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<TypeApplicationOptionGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_TYPE_APP_OPTION_GROUP");
+
+            entity.ToTable("TYPE_APPLICATION_OPTION_GROUP");
+
+            entity.HasIndex(e => e.GroupName, "UK_TYPAPPOPTGRO_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.GroupName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<TypeApplicationOptionKey>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_TYPE_APP_OPTION_KEY");
+
+            entity.ToTable("TYPE_APPLICATION_OPTION_KEY");
+
+            entity.HasIndex(e => new { e.IdGroup, e.KeyName }, "UK_TYPE_APP_OPTION_KEY_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdGroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_GROUP");
+            entity.Property(e => e.InitialValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_VALUE");
+            entity.Property(e => e.KeyName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("KEY_NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdGroupNavigation).WithMany(p => p.TypeApplicationOptionKey)
+                .HasForeignKey(d => d.IdGroup)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TYPAPPOPTKEY_TYPAPPOPTGROUP");
+        });
+
+        modelBuilder.Entity<TypeClassification>(entity =>
+        {
+            entity.ToTable("TYPE_CLASSIFICATION");
+
+            entity.HasIndex(e => new { e.ClassName, e.ValueShort }, "UK_TYPE_CLASSIFICATION").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ClassName)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("CLASS_NAME");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.ValueLong)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("VALUE_LONG");
+            entity.Property(e => e.ValueShort)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("VALUE_SHORT");
+        });
+
+        modelBuilder.Entity<TypeOrderPositionText>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_TYPE_ORDER_POSITION_TEXTS");
+
+            entity.ToTable("TYPE_ORDER_POSITION_TEXT");
+
+            entity.HasIndex(e => e.Code, "UK_TYPE_ORDPOSTXT_CODE").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_TYPE_ORDPOSTXT_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<TypeOrderText>(entity =>
+        {
+            entity.ToTable("TYPE_ORDER_TEXT");
+
+            entity.HasIndex(e => e.Code, "UK_TYPE_ORDER_TEXT_CODE").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_TYPE_ORDER_TEXT_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<Unit>(entity =>
+        {
+            entity.ToTable("UNIT");
+
+            entity.HasIndex(e => e.Code, "UK_UNIT_CODE").IsUnique();
+
+            entity.HasIndex(e => e.Name, "UK_UNIT_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Code)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Display)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DISPLAY");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<Users>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_USER");
+
+            entity.ToTable("USERS");
+
+            entity.HasIndex(e => e.AdAccount, "UK_USERS_AD_ACCOUNT").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.AdAccount)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("AD_ACCOUNT");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.LastLoginDate)
+                .HasColumnType("DATE")
+                .HasColumnName("LAST_LOGIN_DATE");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<VAgrCategoryOption>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_AGR_CATEGORY_OPTION");
+
+            entity.Property(e => e.CategoryCode)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("CATEGORY_CODE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdCategory)
+                .HasPrecision(18)
+                .HasColumnName("ID_CATEGORY");
+            entity.Property(e => e.IdOption)
+                .HasPrecision(18)
+                .HasColumnName("ID_OPTION");
+            entity.Property(e => e.OptionCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("OPTION_CODE");
+        });
+
+        modelBuilder.Entity<VApplicationOptionKey>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_APPLICATION_OPTION_KEY");
+
+            entity.Property(e => e.GroupName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_NAME");
+            entity.Property(e => e.IdGroup)
+                .HasPrecision(18)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("ID_GROUP");
+            entity.Property(e => e.IdKey)
+                .HasPrecision(18)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("ID_KEY");
+            entity.Property(e => e.InitialValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_VALUE");
+            entity.Property(e => e.KeyName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("KEY_NAME");
+        });
+
+        modelBuilder.Entity<VAuditChanges>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_AUDIT_CHANGES");
+
+            entity.Property(e => e.Changeuser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGEUSER");
+            entity.Property(e => e.Columns)
+                .IsUnicode(false)
+                .HasColumnName("COLUMNS");
+            entity.Property(e => e.Hostname)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("HOSTNAME");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdEntity)
+                .HasPrecision(18)
+                .HasColumnName("ID_ENTITY");
+            entity.Property(e => e.Op)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("OP");
+            entity.Property(e => e.Starttime)
+                .HasColumnType("DATE")
+                .HasColumnName("STARTTIME");
+            entity.Property(e => e.TableName)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("TABLE_NAME");
+        });
+
+        modelBuilder.Entity<VAuditEntity>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_AUDIT_ENTITY");
+
+            entity.Property(e => e.ChaId)
+                .HasPrecision(18)
+                .HasColumnName("CHA_ID");
+            entity.Property(e => e.Changeuser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGEUSER");
+            entity.Property(e => e.ColumnName)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("COLUMN_NAME");
+            entity.Property(e => e.Hostname)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("HOSTNAME");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdEntity)
+                .HasPrecision(18)
+                .HasColumnName("ID_ENTITY");
+            entity.Property(e => e.NewValue)
+                .IsUnicode(false)
+                .HasColumnName("NEW_VALUE");
+            entity.Property(e => e.OldValue)
+                .IsUnicode(false)
+                .HasColumnName("OLD_VALUE");
+            entity.Property(e => e.Op)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("OP");
+            entity.Property(e => e.Starttime)
+                .HasColumnType("DATE")
+                .HasColumnName("STARTTIME");
+            entity.Property(e => e.TableName)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("TABLE_NAME");
+        });
+
+        modelBuilder.Entity<VConfigProductgroup>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_CONFIG_PRODUCTGROUP");
+
+            entity.Property(e => e.GroupKey)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_KEY");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdProductgroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_PRODUCTGROUP");
+            entity.Property(e => e.MaterialKind)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_KIND");
+            entity.Property(e => e.PlaCode)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("PLA_CODE");
+            entity.Property(e => e.ProName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PRO_NAME");
+        });
+
+        modelBuilder.Entity<VCustomerAgrParameter>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_CUSTOMER_AGR_PARAMETER");
+
+            entity.Property(e => e.CategoryCode)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("CATEGORY_CODE");
+            entity.Property(e => e.Datatype)
+                .HasPrecision(9)
+                .HasColumnName("DATATYPE");
+            entity.Property(e => e.DefaultValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("DEFAULT_VALUE");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdAgreement)
+                .HasPrecision(18)
+                .HasColumnName("ID_AGREEMENT");
+            entity.Property(e => e.IdCategory)
+                .HasPrecision(18)
+                .HasColumnName("ID_CATEGORY");
+            entity.Property(e => e.IdOption)
+                .HasPrecision(18)
+                .HasColumnName("ID_OPTION");
+            entity.Property(e => e.OptionCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("OPTION_CODE");
+            entity.Property(e => e.ParameterValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("PARAMETER_VALUE");
+        });
+
+        modelBuilder.Entity<VDeliveryReport>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_DELIVERY_REPORT");
+
+            entity.Property(e => e.Carrier)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CARRIER");
+            entity.Property(e => e.ClosingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CLOSING_DATE");
+            entity.Property(e => e.DebitorGrCode)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("DEBITOR_GR_CODE");
+            entity.Property(e => e.DebitorGrName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEBITOR_GR_NAME1");
+            entity.Property(e => e.DebitorIrCode)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("DEBITOR_IR_CODE");
+            entity.Property(e => e.DebitorIrName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEBITOR_IR_NAME1");
+            entity.Property(e => e.DeliveryDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DELIVERY_DATE");
+            entity.Property(e => e.DeliveryNumber)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER");
+            entity.Property(e => e.DeliveryState)
+                .HasPrecision(9)
+                .HasColumnName("DELIVERY_STATE");
+            entity.Property(e => e.FinalWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("FINAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.InitialWeighingMode)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_WEIGHING_MODE");
+            entity.Property(e => e.InitialWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("INITIAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.LoadedQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("LOADED_QUANTITY");
+            entity.Property(e => e.MaterialLongName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_LONG_NAME");
+            entity.Property(e => e.MaterialShortName)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_SHORT_NAME");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.RegistrationDate)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("REGISTRATION_DATE");
+            entity.Property(e => e.SapExportState)
+                .HasPrecision(9)
+                .HasColumnName("SAP_EXPORT_STATE");
+            entity.Property(e => e.ShippingMethod)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHIPPING_METHOD");
+            entity.Property(e => e.Unit)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNIT");
+            entity.Property(e => e.VehicleNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("VEHICLE_NUMBER");
+        });
+
+        modelBuilder.Entity<VDeliveryTransfer>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_DELIVERY_TRANSFER");
+
+            entity.Property(e => e.DeliveryNumber)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER");
+            entity.Property(e => e.DelordId)
+                .HasPrecision(18)
+                .HasColumnName("DELORD_ID");
+            entity.Property(e => e.ErrorState)
+                .HasPrecision(1)
+                .HasColumnName("ERROR_STATE");
+            entity.Property(e => e.ErrorText)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("ERROR_TEXT");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdDelivery)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY");
+            entity.Property(e => e.IdocNumber)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("IDOC_NUMBER");
+            entity.Property(e => e.IdocType)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("IDOC_TYPE");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.SapExportState)
+                .HasPrecision(9)
+                .HasColumnName("SAP_EXPORT_STATE");
+            entity.Property(e => e.SapExportStateDisp)
+                .HasMaxLength(62)
+                .IsUnicode(false)
+                .HasColumnName("SAP_EXPORT_STATE_DISP");
+            entity.Property(e => e.TransferDate)
+                .HasColumnType("DATE")
+                .HasColumnName("TRANSFER_DATE");
+            entity.Property(e => e.TransferType)
+                .HasPrecision(9)
+                .HasColumnName("TRANSFER_TYPE");
+            entity.Property(e => e.TransferTypeDisp)
+                .HasMaxLength(59)
+                .IsUnicode(false)
+                .HasColumnName("TRANSFER_TYPE_DISP");
+        });
+
+        modelBuilder.Entity<VDeliveryhead>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_DELIVERYHEAD");
+
+            entity.Property(e => e.Carrier)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CARRIER");
+            entity.Property(e => e.ContainerNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CONTAINER_NUMBER");
+            entity.Property(e => e.CustomerOrderNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMER_ORDER_NUMBER");
+            entity.Property(e => e.DeliveryDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DELIVERY_DATE");
+            entity.Property(e => e.DeliveryNumber)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER");
+            entity.Property(e => e.FinalScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_SCALE_CODE");
+            entity.Property(e => e.FinalWeighingCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_WEIGHING_CALIB_NUMBER");
+            entity.Property(e => e.FinalWeighingDate)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_WEIGHING_DATE");
+            entity.Property(e => e.FinalWeighingMode)
+                .HasPrecision(9)
+                .HasColumnName("FINAL_WEIGHING_MODE");
+            entity.Property(e => e.FinalWeighingUnitText)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("FINAL_WEIGHING_UNIT_TEXT");
+            entity.Property(e => e.FinalWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("FINAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.GoodRecipienCode)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("GOOD_RECIPIEN_CODE");
+            entity.Property(e => e.GoodRecipienCountyCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GOOD_RECIPIEN_COUNTY_CODE");
+            entity.Property(e => e.GoodRecipienLocation)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("GOOD_RECIPIEN_LOCATION");
+            entity.Property(e => e.GoodRecipienName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GOOD_RECIPIEN_NAME1");
+            entity.Property(e => e.GoodRecipienName2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GOOD_RECIPIEN_NAME2");
+            entity.Property(e => e.GoodRecipienPostcode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GOOD_RECIPIEN_POSTCODE");
+            entity.Property(e => e.GoodRecipienStreet)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("GOOD_RECIPIEN_STREET");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.InitialScaleCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_SCALE_CODE");
+            entity.Property(e => e.InitialWeighingCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_WEIGHING_CALIB_NUMBER");
+            entity.Property(e => e.InitialWeighingMode)
+                .HasPrecision(9)
+                .HasColumnName("INITIAL_WEIGHING_MODE");
+            entity.Property(e => e.InitialWeighingUnitText)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_WEIGHING_UNIT_TEXT");
+            entity.Property(e => e.InitialWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("INITIAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.InvoiceRecipienCode)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("INVOICE_RECIPIEN_CODE");
+            entity.Property(e => e.InvoiceRecipienCountyCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INVOICE_RECIPIEN_COUNTY_CODE");
+            entity.Property(e => e.InvoiceRecipienLocation)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("INVOICE_RECIPIEN_LOCATION");
+            entity.Property(e => e.InvoiceRecipienName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INVOICE_RECIPIEN_NAME1");
+            entity.Property(e => e.InvoiceRecipienName2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INVOICE_RECIPIEN_NAME2");
+            entity.Property(e => e.InvoiceRecipienPostcode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("INVOICE_RECIPIEN_POSTCODE");
+            entity.Property(e => e.InvoiceRecipienStreet)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("INVOICE_RECIPIEN_STREET");
+            entity.Property(e => e.LocationHousenumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_HOUSENUMBER");
+            entity.Property(e => e.LocationLocation)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_LOCATION");
+            entity.Property(e => e.LocationName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_NAME1");
+            entity.Property(e => e.LocationName2)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_NAME2");
+            entity.Property(e => e.LocationPhone)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_PHONE");
+            entity.Property(e => e.LocationPostcode)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_POSTCODE");
+            entity.Property(e => e.LocationStreet)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("LOCATION_STREET");
+            entity.Property(e => e.MoistPercentage)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MOIST_PERCENTAGE");
+            entity.Property(e => e.NetUnitText)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("NET_UNIT_TEXT");
+            entity.Property(e => e.NetWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("NET_WEIGHT");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("DATE")
+                .HasColumnName("ORDER_DATE");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.PlantShortName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("PLANT_SHORT_NAME");
+            entity.Property(e => e.RegistrationDate)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("REGISTRATION_DATE");
+            entity.Property(e => e.ShippingMethod)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHIPPING_METHOD");
+            entity.Property(e => e.UnloadingPoint)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNLOADING_POINT");
+            entity.Property(e => e.VehicleNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("VEHICLE_NUMBER");
+        });
+
+        modelBuilder.Entity<VDeliveryposition>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_DELIVERYPOSITION");
+
+            entity.Property(e => e.CustomerProductName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CUSTOMER_PRODUCT_NAME");
+            entity.Property(e => e.DeliveryNumber)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER");
+            entity.Property(e => e.LoadedQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("LOADED_QUANTITY");
+            entity.Property(e => e.MaterialLongName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_LONG_NAME");
+            entity.Property(e => e.MaterialShortName)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_SHORT_NAME");
+            entity.Property(e => e.PositionNumber)
+                .HasPrecision(9)
+                .HasColumnName("POSITION_NUMBER");
+            entity.Property(e => e.Unit)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNIT");
+        });
+
+        modelBuilder.Entity<VLocationParameter>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_LOCATION_PARAMETER");
+
+            entity.Property(e => e.GroupDotKey)
+                .HasMaxLength(201)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_DOT_KEY");
+            entity.Property(e => e.GroupName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_NAME");
+            entity.Property(e => e.GroupNote)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_NOTE");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdGroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_GROUP");
+            entity.Property(e => e.IdKey)
+                .HasPrecision(18)
+                .HasColumnName("ID_KEY");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.InitialValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_VALUE");
+            entity.Property(e => e.KeyName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("KEY_NAME");
+            entity.Property(e => e.KeyNote)
+                .IsUnicode(false)
+                .HasColumnName("KEY_NOTE");
+            entity.Property(e => e.LocShortname)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("LOC_SHORTNAME");
+            entity.Property(e => e.PlaCode)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("PLA_CODE");
+            entity.Property(e => e.Value)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("VALUE");
+        });
+
+        modelBuilder.Entity<VMaterial>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_MATERIAL");
+
+            entity.Property(e => e.Code)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.GroupKey)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROUP_KEY");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdUnit)
+                .HasPrecision(18)
+                .HasColumnName("ID_UNIT");
+            entity.Property(e => e.Language)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("LANGUAGE");
+            entity.Property(e => e.MaterialKind)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_KIND");
+            entity.Property(e => e.Name)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.PrintMark)
+                .HasPrecision(1)
+                .HasColumnName("PRINT_MARK");
+            entity.Property(e => e.TradeName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("TRADE_NAME");
+            entity.Property(e => e.UniCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNI_CODE");
+            entity.Property(e => e.UniName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNI_NAME");
+        });
+
+        modelBuilder.Entity<VMaterialStatistic>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_MATERIAL_STATISTIC");
+        });
+
+        modelBuilder.Entity<VSiloMatrix>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_SILO_MATRIX");
+
+            entity.Property(e => e.DrainageTime)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DRAINAGE_TIME");
+            entity.Property(e => e.Dry)
+                .HasPrecision(1)
+                .HasColumnName("DRY");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Kind)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("KIND");
+            entity.Property(e => e.LockForProduction)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_FOR_PRODUCTION");
+            entity.Property(e => e.LockForSensitiveCustomer)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_FOR_SENSITIVE_CUSTOMER");
+            entity.Property(e => e.LockLaboratory)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_LABORATORY");
+            entity.Property(e => e.LockRail)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_RAIL");
+            entity.Property(e => e.LockTruck)
+                .HasPrecision(1)
+                .HasColumnName("LOCK_TRUCK");
+            entity.Property(e => e.MaterialCode)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_CODE");
+            entity.Property(e => e.MaterialName)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_NAME");
+            entity.Property(e => e.Priority)
+                .HasPrecision(9)
+                .HasColumnName("PRIORITY");
+            entity.Property(e => e.SiloLevelVolume)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_LEVEL_VOLUME");
+            entity.Property(e => e.SiloName)
+                .HasMaxLength(121)
+                .IsUnicode(false)
+                .HasColumnName("SILO_NAME");
+            entity.Property(e => e.SortNumber)
+                .HasPrecision(9)
+                .HasColumnName("SORT_NUMBER");
+            entity.Property(e => e.SpsBasicType)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("SPS_BASIC_TYPE");
+        });
+
+        modelBuilder.Entity<Vehicle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_VEHICLES");
+
+            entity.ToTable("VEHICLE");
+
+            entity.HasIndex(e => new { e.IdLocation, e.IdCarrier, e.LicensePlate }, "UK_VEHICLES_LICENSE_PLATE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.FixedTareFlag)
+                .HasPrecision(1)
+                .HasColumnName("FIXED_TARE_FLAG");
+            entity.Property(e => e.IdCarrier)
+                .HasPrecision(18)
+                .HasColumnName("ID_CARRIER");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.LicensePlate)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("LICENSE_PLATE");
+            entity.Property(e => e.MaxGross)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MAX_GROSS");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.OpenLoadingFlag)
+                .HasPrecision(1)
+                .HasColumnName("OPEN_LOADING_FLAG");
+            entity.Property(e => e.RawMaterialFlag)
+                .HasPrecision(1)
+                .HasColumnName("RAW_MATERIAL_FLAG");
+            entity.Property(e => e.Subset1)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SUBSET_1");
+            entity.Property(e => e.Subset2)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SUBSET_2");
+            entity.Property(e => e.Subset3)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SUBSET_3");
+            entity.Property(e => e.Subset4)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SUBSET_4");
+            entity.Property(e => e.Subset5)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SUBSET_5");
+            entity.Property(e => e.TareCounter)
+                .HasPrecision(9)
+                .HasColumnName("TARE_COUNTER");
+            entity.Property(e => e.TareDate)
+                .HasColumnType("DATE")
+                .HasColumnName("TARE_DATE");
+            entity.Property(e => e.TareWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("TARE_WEIGHT");
+
+            entity.HasOne(d => d.IdCarrierNavigation).WithMany(p => p.Vehicle)
+                .HasForeignKey(d => d.IdCarrier)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VEHICLES_CARRIER");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.Vehicle)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VEHICLES_LOCATION");
+        });
+
+        modelBuilder.Entity<Workplace>(entity =>
+        {
+            entity.ToTable("WORKPLACE");
+
+            entity.HasIndex(e => e.Name, "UK_WORKPLACE_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.Workplace)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WORKPLACE_LOCATION");
+        });
+
+        modelBuilder.Entity<WorkplaceParameter>(entity =>
+        {
+            entity.ToTable("WORKPLACE_PARAMETER");
+
+            entity.HasIndex(e => e.Name, "UK_WP_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdWorkplace)
+                .HasPrecision(18)
+                .HasColumnName("ID_WORKPLACE");
+            entity.Property(e => e.Key)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("KEY");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Value)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("VALUE");
+
+            entity.HasOne(d => d.IdWorkplaceNavigation).WithMany(p => p.WorkplaceParameter)
+                .HasForeignKey(d => d.IdWorkplace)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WP_WORKPLACE");
+        });
+        modelBuilder.HasSequence("ABT_ID_SEQ");
+        modelBuilder.HasSequence("AUDIT_CHANGES_ID_SEQ");
+        modelBuilder.HasSequence("AUDIT_ENTITY_ID_SEQ");
+        modelBuilder.HasSequence("BASIC_TYPE_ID_SEQ");
+        modelBuilder.HasSequence("BATCH_ID_SEQ");
+        modelBuilder.HasSequence("CARRIER_ID_SEQ");
+        modelBuilder.HasSequence("CMD_ID_SEQ");
+        modelBuilder.HasSequence("CONFIG_MESSAGES_ID_SEQ");
+        modelBuilder.HasSequence("CONFIG_PLANT_MATERIAL_ID_SEQ");
+        modelBuilder.HasSequence("CONFIG_PRODUCTGROUP_ID_SEQ");
+        modelBuilder.HasSequence("CONFIG_SEAL_ID_SEQ");
+        modelBuilder.HasSequence("CONTINGENT_ID_SEQ");
+        modelBuilder.HasSequence("COUNTRY_ID_SEQ");
+        modelBuilder.HasSequence("CPSO_ID_SEQ");
+        modelBuilder.HasSequence("CUSTOMER_AGR_PARAMETER_ID_SEQ");
+        modelBuilder.HasSequence("CUSTOMER_AGREEMENT_ID_SEQ");
+        modelBuilder.HasSequence("CUSTOMER_AGREEMENTS_ID_SEQ");
+        modelBuilder.HasSequence("DEBITOR_ID_SEQ");
+        modelBuilder.HasSequence("DELIVERY_DOCUMENT_ID_SEQ");
+        modelBuilder.HasSequence("DELIVERY_HEAD_ID_SEQ");
+        modelBuilder.HasSequence("DELIVERY_MESSAGE_ID_SEQ");
+        modelBuilder.HasSequence("DELIVERY_NUMBER_SEQ");
+        modelBuilder.HasSequence("DELIVERY_NUMBER_SEQ_TEST");
+        modelBuilder.HasSequence("DELIVERY_ORDER_ID_SEQ");
+        modelBuilder.HasSequence("DELIVERY_POSITION_ID_SEQ");
+        modelBuilder.HasSequence("DELIVERY_TRANSFER_ID_SEQ");
+        modelBuilder.HasSequence("DELVRY07_DOCNUM_SEQ");
+        modelBuilder.HasSequence("DEVICE_ID_SEQ");
+        modelBuilder.HasSequence("DEVICE_PARAMETER_ID_SEQ");
+        modelBuilder.HasSequence("DOD_ID_SEQ");
+        modelBuilder.HasSequence("DOP_ID_SEQ");
+        modelBuilder.HasSequence("DOPC_ID_SEQ");
+        modelBuilder.HasSequence("DOPT_ID_SEQ");
+        modelBuilder.HasSequence("DOT_ID_SEQ");
+        modelBuilder.HasSequence("IDENTIFICATION_CARD_ID_SEQ");
+        modelBuilder.HasSequence("LOADING_ORDERS_ID_SEQ");
+        modelBuilder.HasSequence("LOADING_POINT_ID_SEQ");
+        modelBuilder.HasSequence("LOCATION_ID_SEQ");
+        modelBuilder.HasSequence("LOCATION_PARAMETER_ID_SEQ");
+        modelBuilder.HasSequence("LOGO_ID_SEQ");
+        modelBuilder.HasSequence("MAPPING_AGR_CAT_OPT_ID_SEQ");
+        modelBuilder.HasSequence("MAPPING_MAT_TYPCLA_ID_SEQ");
+        modelBuilder.HasSequence("MATERIAL_ID_SEQ");
+        modelBuilder.HasSequence("MESSAGE_DISPATCHER_ID_SEQ");
+        modelBuilder.HasSequence("MESSAGE_MEMBER_ID_SEQ");
+        modelBuilder.HasSequence("MSD_ID_SEQ");
+        modelBuilder.HasSequence("MSLP_ID_SEQ");
+        modelBuilder.HasSequence("MUW_ID_SEQ");
+        modelBuilder.HasSequence("MWD_PARAMETER_ID_SEQ");
+        modelBuilder.HasSequence("ODC_ADJUSTMENT_DAY_ID_SEQ");
+        modelBuilder.HasSequence("ODC_ADJUSTMENT_QUANTITY_ID_SEQ");
+        modelBuilder.HasSequence("ORDER_DEBITOR_ID_SEQ");
+        modelBuilder.HasSequence("ORDER_NONSAP_SEQ");
+        modelBuilder.HasSequence("ORDER_POSITION_ID_SEQ");
+        modelBuilder.HasSequence("ORDER_POSITION_TEXT_ID_SEQ");
+        modelBuilder.HasSequence("ORDER_TEXT_ID_SEQ");
+        modelBuilder.HasSequence("ORDERS_ID_SEQ");
+        modelBuilder.HasSequence("PLANT_ID_SEQ");
+        modelBuilder.HasSequence("PRINTER_ID_SEQ");
+        modelBuilder.HasSequence("PRODUCTGROUP_ID_SEQ");
+        modelBuilder.HasSequence("QUANTITY_UNIT_ID_SEQ");
+        modelBuilder.HasSequence("REPORT_TEMPLATE_ID_SEQ");
+        modelBuilder.HasSequence("SALES_ORGANISATION_ID_SEQ");
+        modelBuilder.HasSequence("SEAL_ID_SEQ");
+        modelBuilder.HasSequence("SHIPPING_METHOD_ID_SEQ");
+        modelBuilder.HasSequence("SILO_ID_SEQ");
+        modelBuilder.HasSequence("TRANSPORT_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_AGREEMENT_CATEGORY_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_AGREEMENT_OPTION_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_APP_OPTION_GROUP_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_APP_OPTION_KEY_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_CLASSIFICATION_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_ORDER_TEXT_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_ORDPOSTXT_ID_SEQ");
+        modelBuilder.HasSequence("UNIT_ID_SEQ");
+        modelBuilder.HasSequence("USERS_ID_SEQ");
+        modelBuilder.HasSequence("VEHICLES_ID_SEQ");
+        modelBuilder.HasSequence("WORKPLACE_ID_SEQ");
+        modelBuilder.HasSequence("WORKPLACE_PARAMETER_ID_SEQ");
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -25,4 +25,7 @@ public partial class MappingWorkplaceDevice
 
     public string? Note { get; set; }
 
+    public virtual Device IdDeviceNavigation { get; set; } = null!;
+
+    public virtual Workplace IdWorkplaceNavigation { get; set; } = null!;
 }

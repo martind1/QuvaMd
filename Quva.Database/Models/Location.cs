@@ -41,6 +41,27 @@ public partial class Location
 
     public string? Note { get; set; }
 
-    public virtual ICollection<Device> Device { get; } = new List<Device>();
+    public virtual ICollection<BasicType> BasicType { get; set; } = new List<BasicType>();
 
+    public virtual ICollection<Carrier> Carrier { get; set; } = new List<Carrier>();
+
+    public virtual ICollection<ConfigMessage> ConfigMessage { get; set; } = new List<ConfigMessage>();
+
+    public virtual ICollection<Contingent> Contingent { get; set; } = new List<Contingent>();
+
+    public virtual ICollection<CustomerAgreement> CustomerAgreement { get; set; } = new List<CustomerAgreement>();
+
+    public virtual ICollection<Device> Device { get; set; } = new List<Device>();
+
+    public virtual ICollection<LoadingPoint> LoadingPoint { get; set; } = new List<LoadingPoint>();
+
+    public virtual ICollection<LocationParameter> LocationParameter { get; set; } = new List<LocationParameter>();
+
+    public virtual ICollection<Plant> Plant { get; set; } = new List<Plant>();
+
+    public virtual ICollection<Silo> Silo { get; set; } = new List<Silo>();
+
+    public virtual ICollection<Vehicle> Vehicle { get; set; } = new List<Vehicle>();
+
+    public virtual ICollection<Workplace> Workplace { get; set; } = new List<Workplace>();
 }

@@ -27,7 +27,5 @@ public partial class DeviceParameter
 
     public string? Note { get; set; }
 
-    public string? Description { get; set; }
-
     public virtual Device IdDeviceNavigation { get; set; } = null!;
 }

@@ -24,4 +24,5 @@ public partial class MappingWorkplaceDeviceDto : BaseDto<MappingWorkplaceDeviceD
 
     public virtual DeviceDto? IdDeviceNavigation { get; set; } = null!;
 
+    public virtual WorkplaceDto? IdWorkplaceNavigation { get; set; } = null!;
 }

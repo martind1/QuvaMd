@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Quva.Database": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53133;http://localhost:53134"
+    }
+  }
+}

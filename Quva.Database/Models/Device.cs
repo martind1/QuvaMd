@@ -41,9 +41,9 @@ public partial class Device
 
     public int Roles { get; set; }
 
-    public virtual ICollection<DeviceParameter> DeviceParameter { get; } = new List<DeviceParameter>();
+    public virtual ICollection<DeviceParameter> DeviceParameter { get; set; } = new List<DeviceParameter>();
 
     public virtual Location IdLocationNavigation { get; set; } = null!;
 
-    public virtual ICollection<MappingWorkplaceDevice> MappingWorkplaceDevice { get; } = new List<MappingWorkplaceDevice>();
+    public virtual ICollection<MappingWorkplaceDevice> MappingWorkplaceDevice { get; set; } = new List<MappingWorkplaceDevice>();
 }

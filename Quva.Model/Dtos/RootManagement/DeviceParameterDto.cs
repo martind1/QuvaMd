@@ -22,9 +22,7 @@ public partial class DeviceParameterDto : BaseDto<DeviceParameterDto, DevicePara
 
     public int ChangeNumber { get; set; }
 
-    public string? Note { get; set; }
-
-    public string? Description { get; set; }
+    public string? Note { get; set; }    
 
     public virtual DeviceDto? IdDeviceNavigation { get; set; } = null!;
 }
