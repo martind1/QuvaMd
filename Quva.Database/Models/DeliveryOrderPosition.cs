@@ -19,7 +19,7 @@ public partial class DeliveryOrderPosition
 
     public string MaterialShortName { get; set; } = null!;
 
-    public string MaterialLongName { get; set; } = null!;
+    public string? MaterialLongName { get; set; }
 
     public string MaterialName { get; set; } = null!;
 

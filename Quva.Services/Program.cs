@@ -11,6 +11,8 @@ using Quva.Services.Devices.Scale;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Mapping;
 using Quva.Services.Services.Shared;
+using Quva.Services.Tests;
+using SapTransfer.Services.Shared;
 using Serilog;
 using Serilog.Debugging;
 using System.Diagnostics.CodeAnalysis;
@@ -38,6 +40,10 @@ internal class Program
             .CreateLogger();
         Log.Error("\r\n");
         Log.Error("Initializing Serilog....");
+        if (args.Length > 0)
+        {
+            Log.Debug("args: " + string.Join(',', args));
+        }
         //var cs = Crypt.EncryptString("b14ca5898a4e4133bbce2ea2315a1916", "QUVATESTNEU");
         //Log.Error($"cs:{cs}");
 
@@ -68,6 +74,12 @@ internal class Program
         builder.Services.AddMapster();
 
         builder.Host.UseSerilog();  //log sql
+
+        //My Services:
+        builder.Services.AddSingleton<ILocationParameterService, LocationParameterService>();
+        builder.Services.AddSingleton<ICustomerAgreementService, CustomerAgreementService>();
+
+
         var app = builder.Build();
         Log.Information("added Service");
 
@@ -75,18 +87,34 @@ internal class Program
         while (true) 
         {
             Console.WriteLine("### Startmenü ###");
-            Console.WriteLine("1 = TestDeviceService");
-            Console.WriteLine("2 = TestLoadorder");
+            Console.WriteLine("1 = Test DeviceService");
+            Console.WriteLine("2 = Test Loadorder");
+            Console.WriteLine("3 = Test Werkparameter");
+            Console.WriteLine("4 = Test Kundenvereinbarungen");
             Console.WriteLine("sonst = Ende");
             ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
+            Console.WriteLine("");
             if (key.KeyChar == '1')
             {
-                var testsvc = new TestDeviceService(app.Services);
+                var svc = app.Services.GetRequiredService<IDeviceService>();
+                var testsvc = new TestDeviceService(svc);
                 testsvc.Menu();
             }
             else if (key.KeyChar == '2')
             {
                 Console.WriteLine("TestLoadorder coming soon ..");
+            }
+            else if (key.KeyChar == '3')
+            {
+                var svc = app.Services.GetRequiredService<ILocationParameterService>();
+                var testobj = new TestLocationParameter(svc);
+                testobj.Menu().GetAwaiter().GetResult(); 
+            }
+            else if (key.KeyChar == '4')
+            {
+                var svc = app.Services.GetRequiredService<ICustomerAgreementService>();
+                var testobj = new TestCustomerAgreement(svc);
+                testobj.Menu().GetAwaiter().GetResult();
             }
             else
             {

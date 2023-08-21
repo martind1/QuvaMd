@@ -13,6 +13,8 @@ public partial class VLocationParameter
 
     public string? PlaCode { get; set; }
 
+    public string? TypeDisplay { get; set; }
+
     public string Value { get; set; } = null!;
 
     public string InitialValue { get; set; } = null!;
@@ -21,7 +23,7 @@ public partial class VLocationParameter
 
     public string KeyName { get; set; } = null!;
 
-    public string? KeyNote { get; set; }
+    public int Datatype { get; set; }
 
     public long Id { get; set; }
 
@@ -32,6 +34,4 @@ public partial class VLocationParameter
     public long IdKey { get; set; }
 
     public long IdGroup { get; set; }
-
-    public string? GroupNote { get; set; }
 }

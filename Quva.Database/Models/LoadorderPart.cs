@@ -5,13 +5,17 @@ using System.Collections.Generic;
 
 namespace Quva.Database.Models;
 
-public partial class WorkplaceParameter
+public partial class LoadorderPart
 {
     public long Id { get; set; }
 
-    public long IdWorkplace { get; set; }
+    public long IdLoadorderHead { get; set; }
 
-    public string? Value { get; set; }
+    public int PartNumber { get; set; }
+
+    public decimal? TargetQuantity { get; set; }
+
+    public decimal? ActualQuantity { get; set; }
 
     public string CreateUser { get; set; } = null!;
 
@@ -25,9 +29,5 @@ public partial class WorkplaceParameter
 
     public string? Note { get; set; }
 
-    public long IdTypeWpOptionKey { get; set; }
-
-    public virtual TypeWpOptionKey IdTypeWpOptionKeyNavigation { get; set; } = null!;
-
-    public virtual Workplace IdWorkplaceNavigation { get; set; } = null!;
+    public virtual LoadorderHead IdLoadorderHeadNavigation { get; set; } = null!;
 }

@@ -12,8 +12,8 @@
       "Default": "Debug",
       "Override": {
         "Microsoft": "Warning",
-        "Microsoft.EntityFrameworkCore.Database.Command": "Information",
-        "Quva": "Error"
+        "Microsoft.EntityFrameworkCore.Database.Command": "Debug",
+        "Quva": "Debug"
       }
     },
     "Enrich": [

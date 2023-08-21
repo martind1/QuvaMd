@@ -35,5 +35,7 @@ public partial class LoadingPoint
 
     public virtual Location IdLocationNavigation { get; set; } = null!;
 
+    public virtual ICollection<LoadorderHead> LoadorderHead { get; set; } = new List<LoadorderHead>();
+
     public virtual ICollection<MappingSiloLoadingPoint> MappingSiloLoadingPoint { get; set; } = new List<MappingSiloLoadingPoint>();
 }

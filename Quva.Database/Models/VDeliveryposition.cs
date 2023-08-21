@@ -15,7 +15,7 @@ public partial class VDeliveryposition
 
     public string MaterialShortName { get; set; } = null!;
 
-    public string MaterialLongName { get; set; } = null!;
+    public string? MaterialLongName { get; set; }
 
     public string? CustomerProductName { get; set; }
 

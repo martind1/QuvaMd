@@ -77,5 +77,7 @@ public partial class Silo
 
     public virtual Location IdLocationNavigation { get; set; } = null!;
 
+    public virtual ICollection<LoadorderSilo> LoadorderSilo { get; set; } = new List<LoadorderSilo>();
+
     public virtual ICollection<MappingSiloLoadingPoint> MappingSiloLoadingPoint { get; set; } = new List<MappingSiloLoadingPoint>();
 }

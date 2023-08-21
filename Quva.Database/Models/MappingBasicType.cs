@@ -5,13 +5,17 @@ using System.Collections.Generic;
 
 namespace Quva.Database.Models;
 
-public partial class WorkplaceParameter
+public partial class MappingBasicType
 {
     public long Id { get; set; }
 
-    public long IdWorkplace { get; set; }
+    public long IdBasicType { get; set; }
 
-    public string? Value { get; set; }
+    public int Position { get; set; }
+
+    public long IdOtherType { get; set; }
+
+    public decimal Percentage { get; set; }
 
     public string CreateUser { get; set; } = null!;
 
@@ -25,9 +29,7 @@ public partial class WorkplaceParameter
 
     public string? Note { get; set; }
 
-    public long IdTypeWpOptionKey { get; set; }
+    public virtual BasicType IdBasicTypeNavigation { get; set; } = null!;
 
-    public virtual TypeWpOptionKey IdTypeWpOptionKeyNavigation { get; set; } = null!;
-
-    public virtual Workplace IdWorkplaceNavigation { get; set; } = null!;
+    public virtual BasicType IdOtherTypeNavigation { get; set; } = null!;
 }

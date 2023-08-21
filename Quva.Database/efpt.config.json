@@ -136,11 +136,19 @@
          "ObjectType": 0
       },
       {
-         "Name": "QUVA_API.LOADING_ORDERS",
+         "Name": "QUVA_API.LOADING_POINT",
          "ObjectType": 0
       },
       {
-         "Name": "QUVA_API.LOADING_POINT",
+         "Name": "QUVA_API.LOADORDER_HEAD",
+         "ObjectType": 0
+      },
+      {
+         "Name": "QUVA_API.LOADORDER_PART",
+         "ObjectType": 0
+      },
+      {
+         "Name": "QUVA_API.LOADORDER_SILO",
          "ObjectType": 0
       },
       {
@@ -157,6 +165,10 @@
       },
       {
          "Name": "QUVA_API.MAPPING_AGR_CATEGORY_OPTION",
+         "ObjectType": 0
+      },
+      {
+         "Name": "QUVA_API.MAPPING_BASIC_TYPE",
          "ObjectType": 0
       },
       {
@@ -244,6 +256,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "QUVA_API.SERVER_PRINTER",
+         "ObjectType": 0
+      },
+      {
          "Name": "QUVA_API.SHIPPING_METHOD",
          "ObjectType": 0
       },
@@ -281,6 +297,10 @@
       },
       {
          "Name": "QUVA_API.TYPE_ORDER_TEXT",
+         "ObjectType": 0
+      },
+      {
+         "Name": "QUVA_API.TYPE_WP_OPTION_KEY",
          "ObjectType": 0
       },
       {
@@ -328,6 +348,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "QUVA_API.V_BASIC_TYPE",
+         "ObjectType": 3
+      },
+      {
          "Name": "QUVA_API.V_CONFIG_PRODUCTGROUP",
          "ObjectType": 3
       },
@@ -349,6 +373,10 @@
       },
       {
          "Name": "QUVA_API.V_DELIVERYPOSITION",
+         "ObjectType": 3
+      },
+      {
+         "Name": "QUVA_API.V_DEVICE_PARAMETER",
          "ObjectType": 3
       },
       {

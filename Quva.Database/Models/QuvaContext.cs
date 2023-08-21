@@ -73,9 +73,13 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<IdentificationCard> IdentificationCard { get; set; }
 
-    public virtual DbSet<LoadingOrders> LoadingOrders { get; set; }
-
     public virtual DbSet<LoadingPoint> LoadingPoint { get; set; }
+
+    public virtual DbSet<LoadorderHead> LoadorderHead { get; set; }
+
+    public virtual DbSet<LoadorderPart> LoadorderPart { get; set; }
+
+    public virtual DbSet<LoadorderSilo> LoadorderSilo { get; set; }
 
     public virtual DbSet<Location> Location { get; set; }
 
@@ -84,6 +88,8 @@ public partial class QuvaContext : DbContext
     public virtual DbSet<Logo> Logo { get; set; }
 
     public virtual DbSet<MappingAgrCategoryOption> MappingAgrCategoryOption { get; set; }
+
+    public virtual DbSet<MappingBasicType> MappingBasicType { get; set; }
 
     public virtual DbSet<MappingMaterialTypcla> MappingMaterialTypcla { get; set; }
 
@@ -129,6 +135,8 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<Seal> Seal { get; set; }
 
+    public virtual DbSet<ServerPrinter> ServerPrinter { get; set; }
+
     public virtual DbSet<ShippingMethod> ShippingMethod { get; set; }
 
     public virtual DbSet<Silo> Silo { get; set; }
@@ -149,6 +157,8 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<TypeOrderText> TypeOrderText { get; set; }
 
+    public virtual DbSet<TypeWpOptionKey> TypeWpOptionKey { get; set; }
+
     public virtual DbSet<Unit> Unit { get; set; }
 
     public virtual DbSet<Users> Users { get; set; }
@@ -161,6 +171,8 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<VAuditEntity> VAuditEntity { get; set; }
 
+    public virtual DbSet<VBasicType> VBasicType { get; set; }
+
     public virtual DbSet<VConfigProductgroup> VConfigProductgroup { get; set; }
 
     public virtual DbSet<VCustomerAgrParameter> VCustomerAgrParameter { get; set; }
@@ -172,6 +184,8 @@ public partial class QuvaContext : DbContext
     public virtual DbSet<VDeliveryhead> VDeliveryhead { get; set; }
 
     public virtual DbSet<VDeliveryposition> VDeliveryposition { get; set; }
+
+    public virtual DbSet<VDeviceParameter> VDeviceParameter { get; set; }
 
     public virtual DbSet<VLocationParameter> VLocationParameter { get; set; }
 
@@ -245,7 +259,7 @@ public partial class QuvaContext : DbContext
         {
             entity.ToTable("BASIC_TYPE");
 
-            entity.HasIndex(e => new { e.IdLocation, e.IdMaterial }, "UK_ID_BASIC_TYPE_1").IsUnique();
+            entity.HasIndex(e => new { e.IdLocation, e.IdMaterial }, "I_BASETYPE_MATERIAL");
 
             entity.Property(e => e.Id)
                 .HasPrecision(18)
@@ -269,42 +283,15 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CREATE_USER");
-            entity.Property(e => e.IdBasicType1)
-                .HasPrecision(18)
-                .HasColumnName("ID_BASIC_TYPE_1");
-            entity.Property(e => e.IdBasicType1Percentage)
-                .HasPrecision(9)
-                .HasColumnName("ID_BASIC_TYPE_1_PERCENTAGE");
-            entity.Property(e => e.IdBasicType2)
-                .HasPrecision(18)
-                .HasColumnName("ID_BASIC_TYPE_2");
-            entity.Property(e => e.IdBasicType2Percentage)
-                .HasPrecision(9)
-                .HasColumnName("ID_BASIC_TYPE_2_PERCENTAGE");
-            entity.Property(e => e.IdBasicType3)
-                .HasPrecision(18)
-                .HasColumnName("ID_BASIC_TYPE_3");
-            entity.Property(e => e.IdBasicType3Percentage)
-                .HasPrecision(9)
-                .HasColumnName("ID_BASIC_TYPE_3_PERCENTAGE");
-            entity.Property(e => e.IdBasicType4)
-                .HasPrecision(18)
-                .HasColumnName("ID_BASIC_TYPE_4");
-            entity.Property(e => e.IdBasicType4Percentage)
-                .HasPrecision(9)
-                .HasColumnName("ID_BASIC_TYPE_4_PERCENTAGE");
-            entity.Property(e => e.IdBasicType5)
-                .HasPrecision(18)
-                .HasColumnName("ID_BASIC_TYPE_5");
-            entity.Property(e => e.IdBasicType5Percentage)
-                .HasPrecision(9)
-                .HasColumnName("ID_BASIC_TYPE_5_PERCENTAGE");
             entity.Property(e => e.IdLocation)
                 .HasPrecision(18)
                 .HasColumnName("ID_LOCATION");
             entity.Property(e => e.IdMaterial)
                 .HasPrecision(18)
                 .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.MixedFlag)
+                .HasPrecision(1)
+                .HasColumnName("MIXED_FLAG");
             entity.Property(e => e.Note)
                 .IsUnicode(false)
                 .HasColumnName("NOTE");
@@ -312,26 +299,6 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("SPS_CODE");
-
-            entity.HasOne(d => d.IdBasicType1Navigation).WithMany(p => p.InverseIdBasicType1Navigation)
-                .HasForeignKey(d => d.IdBasicType1)
-                .HasConstraintName("FK_ID_BASIC_TYPE_1");
-
-            entity.HasOne(d => d.IdBasicType2Navigation).WithMany(p => p.InverseIdBasicType2Navigation)
-                .HasForeignKey(d => d.IdBasicType2)
-                .HasConstraintName("FK_ID_BASIC_TYPE_2");
-
-            entity.HasOne(d => d.IdBasicType3Navigation).WithMany(p => p.InverseIdBasicType3Navigation)
-                .HasForeignKey(d => d.IdBasicType3)
-                .HasConstraintName("FK_ID_BASIC_TYPE_3");
-
-            entity.HasOne(d => d.IdBasicType4Navigation).WithMany(p => p.InverseIdBasicType4Navigation)
-                .HasForeignKey(d => d.IdBasicType4)
-                .HasConstraintName("FK_ID_BASIC_TYPE_4");
-
-            entity.HasOne(d => d.IdBasicType5Navigation).WithMany(p => p.InverseIdBasicType5Navigation)
-                .HasForeignKey(d => d.IdBasicType5)
-                .HasConstraintName("FK_ID_BASIC_TYPE_5");
 
             entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.BasicType)
                 .HasForeignKey(d => d.IdLocation)
@@ -1368,14 +1335,14 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("FINAL_WEIGHING_TYPE");
             entity.Property(e => e.FinalWeighingUnit)
                 .HasPrecision(9)
-                .HasDefaultValueSql("0 ")
+                .HasDefaultValueSql("1  ")
                 .HasColumnName("FINAL_WEIGHING_UNIT");
             entity.Property(e => e.FinalWeighingWeight)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("FINAL_WEIGHING_WEIGHT");
             entity.Property(e => e.GrossUnit)
                 .HasPrecision(9)
-                .HasDefaultValueSql("0 ")
+                .HasDefaultValueSql("1  ")
                 .HasColumnName("GROSS_UNIT");
             entity.Property(e => e.GrossWeight)
                 .HasColumnType("NUMBER(18,3)")
@@ -1410,7 +1377,7 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("INITIAL_WEIGHING_TYPE");
             entity.Property(e => e.InitialWeighingUnit)
                 .HasPrecision(9)
-                .HasDefaultValueSql("0 ")
+                .HasDefaultValueSql("1  ")
                 .HasColumnName("INITIAL_WEIGHING_UNIT");
             entity.Property(e => e.InitialWeighingWeight)
                 .HasColumnType("NUMBER(18,3)")
@@ -1422,12 +1389,18 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.LoadingSlip)
                 .HasPrecision(18)
                 .HasColumnName("LOADING_SLIP");
+            entity.Property(e => e.MaxGross)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MAX_GROSS");
+            entity.Property(e => e.MaxNet)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MAX_NET");
             entity.Property(e => e.MoistPercentage)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("MOIST_PERCENTAGE");
             entity.Property(e => e.NetUnit)
                 .HasPrecision(9)
-                .HasDefaultValueSql("0 ")
+                .HasDefaultValueSql("1  ")
                 .HasColumnName("NET_UNIT");
             entity.Property(e => e.NetWeight)
                 .HasColumnType("NUMBER(18,3)")
@@ -1451,7 +1424,7 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("START_LOADING_DATE");
             entity.Property(e => e.TaraUnit)
                 .HasPrecision(9)
-                .HasDefaultValueSql("0 ")
+                .HasDefaultValueSql("1  ")
                 .HasColumnName("TARA_UNIT");
             entity.Property(e => e.TaraWeight)
                 .HasColumnType("NUMBER(18,3)")
@@ -2577,911 +2550,6 @@ public partial class QuvaContext : DbContext
                 .HasConstraintName("FK_IC_VEHICLES");
         });
 
-        modelBuilder.Entity<LoadingOrders>(entity =>
-        {
-            entity.HasKey(e => e.BelaId);
-
-            entity.ToTable("LOADING_ORDERS");
-
-            entity.Property(e => e.BelaId)
-                .HasPrecision(18)
-                .HasColumnName("BELA_ID");
-            entity.Property(e => e.Akz1Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ1_NR");
-            entity.Property(e => e.Akz2Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ2_NR");
-            entity.Property(e => e.Akz3Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ3_NR");
-            entity.Property(e => e.Akz4Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ4_NR");
-            entity.Property(e => e.Akz5Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ5_NR");
-            entity.Property(e => e.Akz6Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ6_NR");
-            entity.Property(e => e.Akz7Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ7_NR");
-            entity.Property(e => e.Akz8Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AKZ8_NR");
-            entity.Property(e => e.Analyse)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("ANALYSE");
-            entity.Property(e => e.AnlageNr)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .HasColumnName("ANLAGE_NR");
-            entity.Property(e => e.Anteil1)
-                .HasColumnType("NUMBER(6,2)")
-                .HasColumnName("ANTEIL1");
-            entity.Property(e => e.Anteil2)
-                .HasColumnType("NUMBER(6,2)")
-                .HasColumnName("ANTEIL2");
-            entity.Property(e => e.Anteil3)
-                .HasColumnType("NUMBER(6,2)")
-                .HasColumnName("ANTEIL3");
-            entity.Property(e => e.Anteil4)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("ANTEIL4");
-            entity.Property(e => e.Anteil5)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("ANTEIL5");
-            entity.Property(e => e.Anteil6)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("ANTEIL6");
-            entity.Property(e => e.Anteil7)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("ANTEIL7");
-            entity.Property(e => e.Anteil8)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("ANTEIL8");
-            entity.Property(e => e.AnzSw)
-                .HasPrecision(1)
-                .HasColumnName("ANZ_SW");
-            entity.Property(e => e.AufkNr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("AUFK_NR");
-            entity.Property(e => e.AufpNr)
-                .HasPrecision(6)
-                .HasColumnName("AUFP_NR");
-            entity.Property(e => e.AuftWdhlg)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("AUFT_WDHLG");
-            entity.Property(e => e.BeinNr)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .HasColumnName("BEIN_NR");
-            entity.Property(e => e.BelaErgebnis)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("BELA_ERGEBNIS");
-            entity.Property(e => e.BelaFehler)
-                .HasColumnType("NUMBER")
-                .HasColumnName("BELA_FEHLER");
-            entity.Property(e => e.BelaMaxabw)
-                .HasColumnType("NUMBER")
-                .HasColumnName("BELA_MAXABW");
-            entity.Property(e => e.BelaProbId)
-                .HasColumnType("NUMBER")
-                .HasColumnName("BELA_PROB_ID");
-            entity.Property(e => e.BelaProbNr)
-                .HasMaxLength(80)
-                .IsUnicode(false)
-                .HasColumnName("BELA_PROB_NR");
-            entity.Property(e => e.BelaSektion)
-                .HasMaxLength(80)
-                .IsUnicode(false)
-                .HasColumnName("BELA_SEKTION");
-            entity.Property(e => e.BelaSgabw)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'0'")
-                .HasColumnName("BELA_SGABW");
-            entity.Property(e => e.BruttoGewicht)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("BRUTTO_GEWICHT");
-            entity.Property(e => e.BruttoGewichtId)
-                .HasPrecision(9)
-                .HasColumnName("BRUTTO_GEWICHT_ID");
-            entity.Property(e => e.ChangeDate)
-                .HasColumnType("DATE")
-                .HasColumnName("CHANGE_DATE");
-            entity.Property(e => e.ChangeNumber)
-                .HasPrecision(9)
-                .HasDefaultValueSql("0 ")
-                .HasColumnName("CHANGE_NUMBER");
-            entity.Property(e => e.ChangeUser)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("CHANGE_USER");
-            entity.Property(e => e.ChargeNr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("CHARGE_NR");
-            entity.Property(e => e.CreateDate)
-                .HasDefaultValueSql("sysdate ")
-                .HasColumnType("DATE")
-                .HasColumnName("CREATE_DATE");
-            entity.Property(e => e.CreateUser)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("CREATE_USER");
-            entity.Property(e => e.Datum)
-                .HasColumnType("DATE")
-                .HasColumnName("DATUM");
-            entity.Property(e => e.Feuchte)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("FEUCHTE");
-            entity.Property(e => e.GewichtEinheit)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .HasColumnName("GEWICHT_EINHEIT");
-            entity.Property(e => e.Grundsorte1)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE1");
-            entity.Property(e => e.Grundsorte2)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE2");
-            entity.Property(e => e.Grundsorte3)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE3");
-            entity.Property(e => e.Grundsorte4)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE4");
-            entity.Property(e => e.Grundsorte5)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE5");
-            entity.Property(e => e.Grundsorte6)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE6");
-            entity.Property(e => e.Grundsorte7)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE7");
-            entity.Property(e => e.Grundsorte8)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("GRUNDSORTE8");
-            entity.Property(e => e.IdentNr)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("IDENT_NR");
-            entity.Property(e => e.IstErgebnis)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("IST_ERGEBNIS");
-            entity.Property(e => e.IstFehler)
-                .HasColumnType("NUMBER")
-                .HasColumnName("IST_FEHLER");
-            entity.Property(e => e.IstMaxabw)
-                .HasColumnType("NUMBER")
-                .HasColumnName("IST_MAXABW");
-            entity.Property(e => e.IstSgabw)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("IST_SGABW");
-            entity.Property(e => e.Istmenge)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("ISTMENGE");
-            entity.Property(e => e.KombiKnz)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("KOMBI_KNZ");
-            entity.Property(e => e.KunwNr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("KUNW_NR");
-            entity.Property(e => e.Leist1)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST1");
-            entity.Property(e => e.Leist2)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST2");
-            entity.Property(e => e.Leist3)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST3");
-            entity.Property(e => e.Leist4)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST4");
-            entity.Property(e => e.Leist5)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST5");
-            entity.Property(e => e.Leist6)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST6");
-            entity.Property(e => e.Leist7)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST7");
-            entity.Property(e => e.Leist8)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST8");
-            entity.Property(e => e.LeistIstGesamt)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST_IST_GESAMT");
-            entity.Property(e => e.LeistIstSieb)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("LEIST_IST_SIEB");
-            entity.Property(e => e.LfsDruck)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("LFS_DRUCK");
-            entity.Property(e => e.LfskNr)
-                .HasPrecision(10)
-                .HasColumnName("LFSK_NR");
-            entity.Property(e => e.Manuell)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("MANUELL");
-            entity.Property(e => e.MaraName)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("MARA_NAME");
-            entity.Property(e => e.MaraNr)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("MARA_NR");
-            entity.Property(e => e.Maxbrutto)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("MAXBRUTTO");
-            entity.Property(e => e.MischErgebnis)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("MISCH_ERGEBNIS");
-            entity.Property(e => e.MischFehler)
-                .HasColumnType("NUMBER")
-                .HasColumnName("MISCH_FEHLER");
-            entity.Property(e => e.MischMaxabw)
-                .HasColumnType("NUMBER")
-                .HasColumnName("MISCH_MAXABW");
-            entity.Property(e => e.MischSgabw)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("MISCH_SGABW");
-            entity.Property(e => e.Mr3Knz)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'N'")
-                .HasColumnName("MR3_KNZ");
-            entity.Property(e => e.Muster)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'0'")
-                .IsFixedLength()
-                .HasColumnName("MUSTER");
-            entity.Property(e => e.MusterNr)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("MUSTER_NR");
-            entity.Property(e => e.Nachlauf)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("NACHLAUF");
-            entity.Property(e => e.NettoGewicht)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("NETTO_GEWICHT");
-            entity.Property(e => e.NettoGewichtId)
-                .HasPrecision(9)
-                .HasColumnName("NETTO_GEWICHT_ID");
-            entity.Property(e => e.NettoGewichtKies)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("NETTO_GEWICHT_KIES");
-            entity.Property(e => e.NettoGewichtKiesId)
-                .HasPrecision(9)
-                .HasColumnName("NETTO_GEWICHT_KIES_ID");
-            entity.Property(e => e.NettoGewichtSand)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("NETTO_GEWICHT_SAND");
-            entity.Property(e => e.NettoGewichtSandId)
-                .HasPrecision(9)
-                .HasColumnName("NETTO_GEWICHT_SAND_ID");
-            entity.Property(e => e.Notbetrieb)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'N'")
-                .IsFixedLength()
-                .HasColumnName("NOTBETRIEB");
-            entity.Property(e => e.Note)
-                .IsUnicode(false)
-                .HasColumnName("NOTE");
-            entity.Property(e => e.OffeneBel)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("OFFENE_BEL");
-            entity.Property(e => e.Probe1Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE1_NR");
-            entity.Property(e => e.Probe2Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE2_NR");
-            entity.Property(e => e.Probe3Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE3_NR");
-            entity.Property(e => e.Probe4Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE4_NR");
-            entity.Property(e => e.Probe5Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE5_NR");
-            entity.Property(e => e.Probe6Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE6_NR");
-            entity.Property(e => e.Probe7Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE7_NR");
-            entity.Property(e => e.Probe8Nr)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("PROBE8_NR");
-            entity.Property(e => e.Probenahme)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'0'")
-                .IsFixedLength()
-                .HasColumnName("PROBENAHME");
-            entity.Property(e => e.QualKuveId)
-                .HasPrecision(9)
-                .HasColumnName("QUAL_KUVE_ID");
-            entity.Property(e => e.Quittieren)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'0'")
-                .IsFixedLength()
-                .HasColumnName("QUITTIEREN");
-            entity.Property(e => e.SiebSgo)
-                .HasMaxLength(40)
-                .IsUnicode(false)
-                .HasColumnName("SIEB_SGO");
-            entity.Property(e => e.SiebSgu)
-                .HasMaxLength(40)
-                .IsUnicode(false)
-                .HasColumnName("SIEB_SGU");
-            entity.Property(e => e.SiebVorgabe)
-                .HasMaxLength(40)
-                .IsUnicode(false)
-                .HasColumnName("SIEB_VORGABE");
-            entity.Property(e => e.SiloNr)
-                .HasPrecision(5)
-                .HasColumnName("SILO_NR");
-            entity.Property(e => e.Silostand1)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND1");
-            entity.Property(e => e.Silostand2)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND2");
-            entity.Property(e => e.Silostand3)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND3");
-            entity.Property(e => e.Silostand4)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND4");
-            entity.Property(e => e.Silostand5)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND5");
-            entity.Property(e => e.Silostand6)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND6");
-            entity.Property(e => e.Silostand7)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND7");
-            entity.Property(e => e.Silostand8)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("SILOSTAND8");
-            entity.Property(e => e.Silp1Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP1_IST");
-            entity.Property(e => e.Silp1Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP1_NR");
-            entity.Property(e => e.Silp2Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP2_IST");
-            entity.Property(e => e.Silp2Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP2_NR");
-            entity.Property(e => e.Silp3Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP3_IST");
-            entity.Property(e => e.Silp3Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP3_NR");
-            entity.Property(e => e.Silp4Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP4_IST");
-            entity.Property(e => e.Silp4Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP4_NR");
-            entity.Property(e => e.Silp5Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP5_IST");
-            entity.Property(e => e.Silp5Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP5_NR");
-            entity.Property(e => e.Silp6Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP6_IST");
-            entity.Property(e => e.Silp6Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP6_NR");
-            entity.Property(e => e.Silp7Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP7_IST");
-            entity.Property(e => e.Silp7Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP7_NR");
-            entity.Property(e => e.Silp8Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SILP8_IST");
-            entity.Property(e => e.Silp8Nr)
-                .HasPrecision(9)
-                .HasColumnName("SILP8_NR");
-            entity.Property(e => e.Sollmenge)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SOLLMENGE");
-            entity.Property(e => e.SperrFeuchte)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SPERR_FEUCHTE");
-            entity.Property(e => e.Sprache)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("SPRACHE");
-            entity.Property(e => e.SpsBel)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("SPS_BEL");
-            entity.Property(e => e.Status)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("STATUS");
-            entity.Property(e => e.StatusText)
-                .HasMaxLength(131)
-                .IsUnicode(false)
-                .HasColumnName("STATUS_TEXT");
-            entity.Property(e => e.Stillstand)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("STILLSTAND");
-            entity.Property(e => e.Stoerungen)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("STOERUNGEN");
-            entity.Property(e => e.Sw1Akz1Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ1_NR");
-            entity.Property(e => e.Sw1Akz2Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ2_NR");
-            entity.Property(e => e.Sw1Akz3Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ3_NR");
-            entity.Property(e => e.Sw1Akz4Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ4_NR");
-            entity.Property(e => e.Sw1Akz5Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ5_NR");
-            entity.Property(e => e.Sw1Akz6Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ6_NR");
-            entity.Property(e => e.Sw1Akz7Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ7_NR");
-            entity.Property(e => e.Sw1Akz8Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW1_AKZ8_NR");
-            entity.Property(e => e.Sw1Anteil1)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL1");
-            entity.Property(e => e.Sw1Anteil2)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL2");
-            entity.Property(e => e.Sw1Anteil3)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL3");
-            entity.Property(e => e.Sw1Anteil4)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL4");
-            entity.Property(e => e.Sw1Anteil5)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL5");
-            entity.Property(e => e.Sw1Anteil6)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL6");
-            entity.Property(e => e.Sw1Anteil7)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL7");
-            entity.Property(e => e.Sw1Anteil8)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_ANTEIL8");
-            entity.Property(e => e.Sw1Grundsorte1)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE1");
-            entity.Property(e => e.Sw1Grundsorte2)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE2");
-            entity.Property(e => e.Sw1Grundsorte3)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE3");
-            entity.Property(e => e.Sw1Grundsorte4)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE4");
-            entity.Property(e => e.Sw1Grundsorte5)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE5");
-            entity.Property(e => e.Sw1Grundsorte6)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE6");
-            entity.Property(e => e.Sw1Grundsorte7)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE7");
-            entity.Property(e => e.Sw1Grundsorte8)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW1_GRUNDSORTE8");
-            entity.Property(e => e.Sw1Leist1)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST1");
-            entity.Property(e => e.Sw1Leist2)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST2");
-            entity.Property(e => e.Sw1Leist3)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST3");
-            entity.Property(e => e.Sw1Leist4)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST4");
-            entity.Property(e => e.Sw1Leist5)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST5");
-            entity.Property(e => e.Sw1Leist6)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST6");
-            entity.Property(e => e.Sw1Leist7)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST7");
-            entity.Property(e => e.Sw1Leist8)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW1_LEIST8");
-            entity.Property(e => e.Sw1Nachlauf)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SW1_NACHLAUF");
-            entity.Property(e => e.Sw1Silp1Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP1_NR");
-            entity.Property(e => e.Sw1Silp2Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP2_NR");
-            entity.Property(e => e.Sw1Silp3Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP3_NR");
-            entity.Property(e => e.Sw1Silp4Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP4_NR");
-            entity.Property(e => e.Sw1Silp5Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP5_NR");
-            entity.Property(e => e.Sw1Silp6Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP6_NR");
-            entity.Property(e => e.Sw1Silp7Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP7_NR");
-            entity.Property(e => e.Sw1Silp8Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW1_SILP8_NR");
-            entity.Property(e => e.Sw1Stillstand)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SW1_STILLSTAND");
-            entity.Property(e => e.Sw2Akz1Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ1_NR");
-            entity.Property(e => e.Sw2Akz2Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ2_NR");
-            entity.Property(e => e.Sw2Akz3Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ3_NR");
-            entity.Property(e => e.Sw2Akz4Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ4_NR");
-            entity.Property(e => e.Sw2Akz5Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ5_NR");
-            entity.Property(e => e.Sw2Akz6Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ6_NR");
-            entity.Property(e => e.Sw2Akz7Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ7_NR");
-            entity.Property(e => e.Sw2Akz8Nr)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("SW2_AKZ8_NR");
-            entity.Property(e => e.Sw2Anteil1)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL1");
-            entity.Property(e => e.Sw2Anteil2)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL2");
-            entity.Property(e => e.Sw2Anteil3)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL3");
-            entity.Property(e => e.Sw2Anteil4)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL4");
-            entity.Property(e => e.Sw2Anteil5)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL5");
-            entity.Property(e => e.Sw2Anteil6)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL6");
-            entity.Property(e => e.Sw2Anteil7)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL7");
-            entity.Property(e => e.Sw2Anteil8)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_ANTEIL8");
-            entity.Property(e => e.Sw2Grundsorte1)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE1");
-            entity.Property(e => e.Sw2Grundsorte2)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE2");
-            entity.Property(e => e.Sw2Grundsorte3)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE3");
-            entity.Property(e => e.Sw2Grundsorte4)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE4");
-            entity.Property(e => e.Sw2Grundsorte5)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE5");
-            entity.Property(e => e.Sw2Grundsorte6)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE6");
-            entity.Property(e => e.Sw2Grundsorte7)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE7");
-            entity.Property(e => e.Sw2Grundsorte8)
-                .HasMaxLength(18)
-                .IsUnicode(false)
-                .HasColumnName("SW2_GRUNDSORTE8");
-            entity.Property(e => e.Sw2Leist1)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST1");
-            entity.Property(e => e.Sw2Leist2)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST2");
-            entity.Property(e => e.Sw2Leist3)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST3");
-            entity.Property(e => e.Sw2Leist4)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST4");
-            entity.Property(e => e.Sw2Leist5)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST5");
-            entity.Property(e => e.Sw2Leist6)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST6");
-            entity.Property(e => e.Sw2Leist7)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST7");
-            entity.Property(e => e.Sw2Leist8)
-                .HasColumnType("NUMBER(5,2)")
-                .HasColumnName("SW2_LEIST8");
-            entity.Property(e => e.Sw2Nachlauf)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SW2_NACHLAUF");
-            entity.Property(e => e.Sw2Silp1Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP1_NR");
-            entity.Property(e => e.Sw2Silp2Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP2_NR");
-            entity.Property(e => e.Sw2Silp3Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP3_NR");
-            entity.Property(e => e.Sw2Silp4Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP4_NR");
-            entity.Property(e => e.Sw2Silp5Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP5_NR");
-            entity.Property(e => e.Sw2Silp6Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP6_NR");
-            entity.Property(e => e.Sw2Silp7Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP7_NR");
-            entity.Property(e => e.Sw2Silp8Nr)
-                .HasPrecision(9)
-                .HasColumnName("SW2_SILP8_NR");
-            entity.Property(e => e.Sw2Stillstand)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SW2_STILLSTAND");
-            entity.Property(e => e.TaraGewicht)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TARA_GEWICHT");
-            entity.Property(e => e.TaraGewichtId)
-                .HasPrecision(9)
-                .HasColumnName("TARA_GEWICHT_ID");
-            entity.Property(e => e.Teilmenge1)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE1");
-            entity.Property(e => e.Teilmenge10Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE10_IST");
-            entity.Property(e => e.Teilmenge11Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE11_IST");
-            entity.Property(e => e.Teilmenge12Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE12_IST");
-            entity.Property(e => e.Teilmenge13Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE13_IST");
-            entity.Property(e => e.Teilmenge14Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE14_IST");
-            entity.Property(e => e.Teilmenge15Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE15_IST");
-            entity.Property(e => e.Teilmenge16Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE16_IST");
-            entity.Property(e => e.Teilmenge17Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE17_IST");
-            entity.Property(e => e.Teilmenge18Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE18_IST");
-            entity.Property(e => e.Teilmenge19Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE19_IST");
-            entity.Property(e => e.Teilmenge1Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE1_IST");
-            entity.Property(e => e.Teilmenge2)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE2");
-            entity.Property(e => e.Teilmenge20Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE20_IST");
-            entity.Property(e => e.Teilmenge21Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE21_IST");
-            entity.Property(e => e.Teilmenge22Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE22_IST");
-            entity.Property(e => e.Teilmenge23Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE23_IST");
-            entity.Property(e => e.Teilmenge24Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE24_IST");
-            entity.Property(e => e.Teilmenge2Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE2_IST");
-            entity.Property(e => e.Teilmenge3)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE3");
-            entity.Property(e => e.Teilmenge3Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE3_IST");
-            entity.Property(e => e.Teilmenge4)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE4");
-            entity.Property(e => e.Teilmenge4Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE4_IST");
-            entity.Property(e => e.Teilmenge5)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE5");
-            entity.Property(e => e.Teilmenge5Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE5_IST");
-            entity.Property(e => e.Teilmenge6Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE6_IST");
-            entity.Property(e => e.Teilmenge7Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE7_IST");
-            entity.Property(e => e.Teilmenge8Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE8_IST");
-            entity.Property(e => e.Teilmenge9Ist)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TEILMENGE9_IST");
-            entity.Property(e => e.TeilmengeNr)
-                .HasPrecision(3)
-                .HasColumnName("TEILMENGE_NR");
-            entity.Property(e => e.Transportmittel)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("TRANSPORTMITTEL");
-            entity.Property(e => e.Verladesperre)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'0'")
-                .HasColumnName("VERLADESPERRE");
-            entity.Property(e => e.Verpackart)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("VERPACKART");
-            entity.Property(e => e.WerkNr)
-                .HasMaxLength(4)
-                .IsUnicode(false)
-                .HasColumnName("WERK_NR");
-            entity.Property(e => e.Zeit)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .HasColumnName("ZEIT");
-        });
-
         modelBuilder.Entity<LoadingPoint>(entity =>
         {
             entity.ToTable("LOADING_POINT");
@@ -3536,6 +2604,320 @@ public partial class QuvaContext : DbContext
                 .HasForeignKey(d => d.IdLocation)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LOADING_POINT_LOCATION");
+        });
+
+        modelBuilder.Entity<LoadorderHead>(entity =>
+        {
+            entity.ToTable("LOADORDER_HEAD");
+
+            entity.HasIndex(e => e.FlagQuittieren, "I_LOADHEAD_QUITTIEREN");
+
+            entity.HasIndex(e => e.LoadorderState, "I_LOADHEAD_STATUS");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ActivePartNumber)
+                .HasPrecision(9)
+                .HasColumnName("ACTIVE_PART_NUMBER");
+            entity.Property(e => e.ActualQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("ACTUAL_QUANTITY");
+            entity.Property(e => e.BeginDate)
+                .HasColumnType("DATE")
+                .HasColumnName("BEGIN_DATE");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.ChargeNumber)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("CHARGE_NUMBER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DialogLanguage)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("DIALOG_LANGUAGE");
+            entity.Property(e => e.EndDate)
+                .HasColumnType("DATE")
+                .HasColumnName("END_DATE");
+            entity.Property(e => e.ErrorMessages)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("ERROR_MESSAGES");
+            entity.Property(e => e.FlagAnalyse)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_ANALYSE");
+            entity.Property(e => e.FlagAuftWdhlg)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_AUFT_WDHLG");
+            entity.Property(e => e.FlagKombiKnz)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_KOMBI_KNZ");
+            entity.Property(e => e.FlagManuell)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_MANUELL");
+            entity.Property(e => e.FlagNotbetrieb)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_NOTBETRIEB");
+            entity.Property(e => e.FlagOffeneBel)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_OFFENE_BEL");
+            entity.Property(e => e.FlagPattern)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_PATTERN");
+            entity.Property(e => e.FlagProbenahme)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_PROBENAHME");
+            entity.Property(e => e.FlagQuittieren)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_QUITTIEREN");
+            entity.Property(e => e.FlagSpsBel)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_SPS_BEL");
+            entity.Property(e => e.FlagVerladesperre)
+                .HasPrecision(1)
+                .HasColumnName("FLAG_VERLADESPERRE");
+            entity.Property(e => e.GravelCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GRAVEL_CALIB_NUMBER");
+            entity.Property(e => e.GravelWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("GRAVEL_WEIGHT");
+            entity.Property(e => e.GrossCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("GROSS_CALIB_NUMBER");
+            entity.Property(e => e.GrossDate)
+                .HasColumnType("DATE")
+                .HasColumnName("GROSS_DATE");
+            entity.Property(e => e.GrossWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("GROSS_WEIGHT");
+            entity.Property(e => e.IdDelivery)
+                .HasPrecision(18)
+                .HasColumnName("ID_DELIVERY");
+            entity.Property(e => e.IdLoadingPoint)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOADING_POINT");
+            entity.Property(e => e.LoadorderState)
+                .HasPrecision(9)
+                .HasColumnName("LOADORDER_STATE");
+            entity.Property(e => e.MaxGross)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MAX_GROSS");
+            entity.Property(e => e.MoistLock)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MOIST_LOCK");
+            entity.Property(e => e.MoistPercentage)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MOIST_PERCENTAGE");
+            entity.Property(e => e.NetCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NET_CALIB_NUMBER");
+            entity.Property(e => e.NetDate)
+                .HasColumnType("DATE")
+                .HasColumnName("NET_DATE");
+            entity.Property(e => e.NetWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("NET_WEIGHT");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.PatternNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("PATTERN_NUMBER");
+            entity.Property(e => e.SandCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SAND_CALIB_NUMBER");
+            entity.Property(e => e.SandWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SAND_WEIGHT");
+            entity.Property(e => e.SilochangesCount)
+                .HasPrecision(9)
+                .HasColumnName("SILOCHANGES_COUNT");
+            entity.Property(e => e.StateText)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("STATE_TEXT");
+            entity.Property(e => e.TaraCalibNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("TARA_CALIB_NUMBER");
+            entity.Property(e => e.TaraDate)
+                .HasColumnType("DATE")
+                .HasColumnName("TARA_DATE");
+            entity.Property(e => e.TaraWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("TARA_WEIGHT");
+            entity.Property(e => e.TargetQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("TARGET_QUANTITY");
+            entity.Property(e => e.WeighingUnit)
+                .HasPrecision(9)
+                .HasDefaultValueSql("1")
+                .HasColumnName("WEIGHING_UNIT");
+
+            entity.HasOne(d => d.IdDeliveryNavigation).WithMany(p => p.LoadorderHead)
+                .HasForeignKey(d => d.IdDelivery)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LOADHEAD_DELIVERY");
+
+            entity.HasOne(d => d.IdLoadingPointNavigation).WithMany(p => p.LoadorderHead)
+                .HasForeignKey(d => d.IdLoadingPoint)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LOADHEAD_POINT");
+        });
+
+        modelBuilder.Entity<LoadorderPart>(entity =>
+        {
+            entity.ToTable("LOADORDER_PART");
+
+            entity.HasIndex(e => new { e.IdLoadorderHead, e.PartNumber }, "UK_LOADPART_PART_NUMBER").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ActualQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("ACTUAL_QUANTITY");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLoadorderHead)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOADORDER_HEAD");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.PartNumber)
+                .HasPrecision(9)
+                .HasColumnName("PART_NUMBER");
+            entity.Property(e => e.TargetQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("TARGET_QUANTITY");
+
+            entity.HasOne(d => d.IdLoadorderHeadNavigation).WithMany(p => p.LoadorderPart)
+                .HasForeignKey(d => d.IdLoadorderHead)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LOADPART_HEAD");
+        });
+
+        modelBuilder.Entity<LoadorderSilo>(entity =>
+        {
+            entity.ToTable("LOADORDER_SILO");
+
+            entity.HasIndex(e => new { e.IdLoadorderHead, e.SiloSet, e.Position }, "UK_LOADSILO_SET_POSITION").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Akz)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("AKZ");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdBasicType)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE");
+            entity.Property(e => e.IdLoadorderHead)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOADORDER_HEAD");
+            entity.Property(e => e.IdSilo)
+                .HasPrecision(18)
+                .HasColumnName("ID_SILO");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Percentage)
+                .HasColumnType("NUMBER(18,2)")
+                .HasColumnName("PERCENTAGE");
+            entity.Property(e => e.Position)
+                .HasPrecision(9)
+                .HasColumnName("POSITION");
+            entity.Property(e => e.PowerTh)
+                .HasColumnType("NUMBER(18,2)")
+                .HasColumnName("POWER_TH");
+            entity.Property(e => e.SiloLevelVolume)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("SILO_LEVEL_VOLUME");
+            entity.Property(e => e.SiloNumber)
+                .HasPrecision(9)
+                .HasColumnName("SILO_NUMBER");
+            entity.Property(e => e.SiloSet)
+                .HasPrecision(9)
+                .HasColumnName("SILO_SET");
+            entity.Property(e => e.SpsCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SPS_CODE");
+
+            entity.HasOne(d => d.IdBasicTypeNavigation).WithMany(p => p.LoadorderSilo)
+                .HasForeignKey(d => d.IdBasicType)
+                .HasConstraintName("FK_LOADSILO_BASIC_TYPE");
+
+            entity.HasOne(d => d.IdLoadorderHeadNavigation).WithMany(p => p.LoadorderSilo)
+                .HasForeignKey(d => d.IdLoadorderHead)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LOADSILO_HEAD");
+
+            entity.HasOne(d => d.IdSiloNavigation).WithMany(p => p.LoadorderSilo)
+                .HasForeignKey(d => d.IdSilo)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_LOADSILO_SILO");
         });
 
         modelBuilder.Entity<Location>(entity =>
@@ -3768,6 +3150,63 @@ public partial class QuvaContext : DbContext
                 .HasForeignKey(d => d.IdOption)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MAPAGRCATOPT_OPTION");
+        });
+
+        modelBuilder.Entity<MappingBasicType>(entity =>
+        {
+            entity.ToTable("MAPPING_BASIC_TYPE");
+
+            entity.HasIndex(e => new { e.IdBasicType, e.IdOtherType }, "UK_MAPBASETYPE_OTHER").IsUnique();
+
+            entity.HasIndex(e => new { e.IdBasicType, e.Position }, "UK_MAPBASETYPE_POSITION").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdBasicType)
+                .HasPrecision(18)
+                .HasColumnName("ID_BASIC_TYPE");
+            entity.Property(e => e.IdOtherType)
+                .HasPrecision(18)
+                .HasColumnName("ID_OTHER_TYPE");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Percentage)
+                .HasColumnType("NUMBER(18,2)")
+                .HasColumnName("PERCENTAGE");
+            entity.Property(e => e.Position)
+                .HasPrecision(9)
+                .HasColumnName("POSITION");
+
+            entity.HasOne(d => d.IdBasicTypeNavigation).WithMany(p => p.MappingBasicTypeIdBasicTypeNavigation)
+                .HasForeignKey(d => d.IdBasicType)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MAPBASETYPE_BASIC_TYPE");
+
+            entity.HasOne(d => d.IdOtherTypeNavigation).WithMany(p => p.MappingBasicTypeIdOtherTypeNavigation)
+                .HasForeignKey(d => d.IdOtherType)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MAPBASETYPE_OTHER_TYPE");
         });
 
         modelBuilder.Entity<MappingMaterialTypcla>(entity =>
@@ -4074,7 +3513,6 @@ public partial class QuvaContext : DbContext
                 .HasDefaultValueSql("1 ")
                 .HasColumnName("PRINT_MARK");
             entity.Property(e => e.TradeName)
-                .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("TRADE_NAME");
 
@@ -4971,8 +4409,6 @@ public partial class QuvaContext : DbContext
         {
             entity.ToTable("PRINTER");
 
-            entity.HasIndex(e => e.Name, "UK_PRINTER_NAME").IsUnique();
-
             entity.Property(e => e.Id)
                 .HasPrecision(18)
                 .HasColumnName("ID");
@@ -5192,6 +4628,43 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("EXTENSION");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
+        modelBuilder.Entity<ServerPrinter>(entity =>
+        {
+            entity.ToTable("SERVER_PRINTER");
+
+            entity.HasIndex(e => e.Name, "UK_SERVER_PRINTER_NAME").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -5559,6 +5032,9 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Datatype)
+                .HasPrecision(9)
+                .HasColumnName("DATATYPE");
             entity.Property(e => e.IdGroup)
                 .HasPrecision(18)
                 .HasColumnName("ID_GROUP");
@@ -5713,6 +5189,50 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("NOTE");
         });
 
+        modelBuilder.Entity<TypeWpOptionKey>(entity =>
+        {
+            entity.ToTable("TYPE_WP_OPTION_KEY");
+
+            entity.HasIndex(e => e.KeyName, "UK_TYPE_WP_OPTION_KEY").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0                     ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate               ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.Datatype)
+                .HasPrecision(9)
+                .HasColumnName("DATATYPE");
+            entity.Property(e => e.InitialValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_VALUE");
+            entity.Property(e => e.KeyName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("KEY_NAME");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+        });
+
         modelBuilder.Entity<Unit>(entity =>
         {
             entity.ToTable("UNIT");
@@ -5847,6 +5367,9 @@ public partial class QuvaContext : DbContext
                 .HasNoKey()
                 .ToView("V_APPLICATION_OPTION_KEY");
 
+            entity.Property(e => e.Datatype)
+                .HasPrecision(9)
+                .HasColumnName("DATATYPE");
             entity.Property(e => e.GroupName)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -5867,6 +5390,10 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("KEY_NAME");
+            entity.Property(e => e.TypeDisplay)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .HasColumnName("TYPE_DISPLAY");
         });
 
         modelBuilder.Entity<VAuditChanges>(entity =>
@@ -5949,6 +5476,38 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(200)
                 .IsUnicode(false)
                 .HasColumnName("TABLE_NAME");
+        });
+
+        modelBuilder.Entity<VBasicType>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_BASIC_TYPE");
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.LocShortname)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("LOC_SHORTNAME");
+            entity.Property(e => e.MatCode)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MAT_CODE");
+            entity.Property(e => e.MixedFlag)
+                .HasPrecision(1)
+                .HasColumnName("MIXED_FLAG");
+            entity.Property(e => e.SpsCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SPS_CODE");
         });
 
         modelBuilder.Entity<VConfigProductgroup>(entity =>
@@ -6386,12 +5945,45 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("UNIT");
         });
 
+        modelBuilder.Entity<VDeviceParameter>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_DEVICE_PARAMETER");
+
+            entity.Property(e => e.DevCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEV_CODE");
+            entity.Property(e => e.DeviceTypeDisp)
+                .HasMaxLength(48)
+                .IsUnicode(false)
+                .HasColumnName("DEVICE_TYPE_DISP");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdDevice)
+                .HasPrecision(18)
+                .HasColumnName("ID_DEVICE");
+            entity.Property(e => e.Key)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("KEY");
+            entity.Property(e => e.Value)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("VALUE");
+        });
+
         modelBuilder.Entity<VLocationParameter>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToView("V_LOCATION_PARAMETER");
 
+            entity.Property(e => e.Datatype)
+                .HasPrecision(9)
+                .HasColumnName("DATATYPE");
             entity.Property(e => e.GroupDotKey)
                 .HasMaxLength(201)
                 .IsUnicode(false)
@@ -6400,11 +5992,9 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("GROUP_NAME");
-            entity.Property(e => e.GroupNote)
-                .IsUnicode(false)
-                .HasColumnName("GROUP_NOTE");
             entity.Property(e => e.Id)
                 .HasPrecision(18)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ID");
             entity.Property(e => e.IdGroup)
                 .HasPrecision(18)
@@ -6426,9 +6016,6 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("KEY_NAME");
-            entity.Property(e => e.KeyNote)
-                .IsUnicode(false)
-                .HasColumnName("KEY_NOTE");
             entity.Property(e => e.LocShortname)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -6437,9 +6024,14 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(4)
                 .IsUnicode(false)
                 .HasColumnName("PLA_CODE");
+            entity.Property(e => e.TypeDisplay)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .HasColumnName("TYPE_DISPLAY");
             entity.Property(e => e.Value)
                 .HasMaxLength(1000)
                 .IsUnicode(false)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("VALUE");
         });
 
@@ -6479,7 +6071,6 @@ public partial class QuvaContext : DbContext
                 .HasPrecision(1)
                 .HasColumnName("PRINT_MARK");
             entity.Property(e => e.TradeName)
-                .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("TRADE_NAME");
             entity.Property(e => e.UniCode)
@@ -6702,8 +6293,6 @@ public partial class QuvaContext : DbContext
         {
             entity.ToTable("WORKPLACE_PARAMETER");
 
-            entity.HasIndex(e => e.Name, "UK_WP_NAME").IsUnique();
-
             entity.Property(e => e.Id)
                 .HasPrecision(18)
                 .HasColumnName("ID");
@@ -6726,17 +6315,12 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdTypeWpOptionKey)
+                .HasPrecision(18)
+                .HasColumnName("ID_TYPE_WP_OPTION_KEY");
             entity.Property(e => e.IdWorkplace)
                 .HasPrecision(18)
                 .HasColumnName("ID_WORKPLACE");
-            entity.Property(e => e.Key)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("KEY");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("NAME");
             entity.Property(e => e.Note)
                 .IsUnicode(false)
                 .HasColumnName("NOTE");
@@ -6744,6 +6328,11 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("VALUE");
+
+            entity.HasOne(d => d.IdTypeWpOptionKeyNavigation).WithMany(p => p.WorkplaceParameter)
+                .HasForeignKey(d => d.IdTypeWpOptionKey)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TYPE_WP_OPTION_KEY");
 
             entity.HasOne(d => d.IdWorkplaceNavigation).WithMany(p => p.WorkplaceParameter)
                 .HasForeignKey(d => d.IdWorkplace)
@@ -6787,10 +6376,14 @@ public partial class QuvaContext : DbContext
         modelBuilder.HasSequence("IDENTIFICATION_CARD_ID_SEQ");
         modelBuilder.HasSequence("LOADING_ORDERS_ID_SEQ");
         modelBuilder.HasSequence("LOADING_POINT_ID_SEQ");
+        modelBuilder.HasSequence("LOADORDER_HEAD_ID_SEQ");
+        modelBuilder.HasSequence("LOADORDER_PART_ID_SEQ");
+        modelBuilder.HasSequence("LOADORDER_SILO_ID_SEQ");
         modelBuilder.HasSequence("LOCATION_ID_SEQ");
         modelBuilder.HasSequence("LOCATION_PARAMETER_ID_SEQ");
         modelBuilder.HasSequence("LOGO_ID_SEQ");
         modelBuilder.HasSequence("MAPPING_AGR_CAT_OPT_ID_SEQ");
+        modelBuilder.HasSequence("MAPPING_BASIC_TYPE_ID_SEQ");
         modelBuilder.HasSequence("MAPPING_MAT_TYPCLA_ID_SEQ");
         modelBuilder.HasSequence("MATERIAL_ID_SEQ");
         modelBuilder.HasSequence("MESSAGE_DISPATCHER_ID_SEQ");
@@ -6814,6 +6407,7 @@ public partial class QuvaContext : DbContext
         modelBuilder.HasSequence("REPORT_TEMPLATE_ID_SEQ");
         modelBuilder.HasSequence("SALES_ORGANISATION_ID_SEQ");
         modelBuilder.HasSequence("SEAL_ID_SEQ");
+        modelBuilder.HasSequence("SERVER_PRINTER_ID_SEQ");
         modelBuilder.HasSequence("SHIPPING_METHOD_ID_SEQ");
         modelBuilder.HasSequence("SILO_ID_SEQ");
         modelBuilder.HasSequence("TRANSPORT_ID_SEQ");
@@ -6824,6 +6418,7 @@ public partial class QuvaContext : DbContext
         modelBuilder.HasSequence("TYPE_CLASSIFICATION_ID_SEQ");
         modelBuilder.HasSequence("TYPE_ORDER_TEXT_ID_SEQ");
         modelBuilder.HasSequence("TYPE_ORDPOSTXT_ID_SEQ");
+        modelBuilder.HasSequence("TYPE_WP_OPTION_KEY_ID_SEQ");
         modelBuilder.HasSequence("UNIT_ID_SEQ");
         modelBuilder.HasSequence("USERS_ID_SEQ");
         modelBuilder.HasSequence("VEHICLES_ID_SEQ");

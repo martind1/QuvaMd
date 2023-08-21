@@ -105,6 +105,10 @@ public partial class DeliveryHead
 
     public long? IdTransport { get; set; }
 
+    public decimal? MaxGross { get; set; }
+
+    public decimal? MaxNet { get; set; }
+
     public virtual ICollection<DeliveryDocument> DeliveryDocument { get; set; } = new List<DeliveryDocument>();
 
     public virtual ICollection<DeliveryMessage> DeliveryMessage { get; set; } = new List<DeliveryMessage>();
@@ -120,4 +124,6 @@ public partial class DeliveryHead
     public virtual Transport? IdTransportNavigation { get; set; }
 
     public virtual ICollection<DeliveryHead> InverseIdDeliveryCollectNavigation { get; set; } = new List<DeliveryHead>();
+
+    public virtual ICollection<LoadorderHead> LoadorderHead { get; set; } = new List<LoadorderHead>();
 }

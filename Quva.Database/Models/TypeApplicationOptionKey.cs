@@ -27,6 +27,8 @@ public partial class TypeApplicationOptionKey
 
     public string InitialValue { get; set; } = null!;
 
+    public int Datatype { get; set; }
+
     public virtual TypeApplicationOptionGroup IdGroupNavigation { get; set; } = null!;
 
     public virtual ICollection<LocationParameter> LocationParameter { get; set; } = new List<LocationParameter>();
