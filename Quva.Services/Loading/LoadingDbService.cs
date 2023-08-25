@@ -43,16 +43,19 @@ public static class LoadingDbService
         return result;
     }
 
-    public static async Task<List<MappingSiloLoadingPoint>> GetLoadingpointSilosFromBasictype(BtsContext btsc, long idBasicType)
+    public static async Task<List<MappingSiloLoadingPoint>> GetLoadingpointSilosFromBasictype(BtsContext btsc, long idBasicType,
+        long? idLoadingPoint)
     {
         //Loadingpoint + Silo
+        btsc.log.Debug($"GetLoadingpointSilosFromBasictype {idBasicType}");
         var silos = await GetSilosFromBasictype(btsc, idBasicType);
         var idSilos = (from s in silos select s.Id).ToList();
-        btsc.log.Debug($"GetLoadingpointSilosFromBasictype {idBasicType}");
+
         var query = from lp in btsc.context.MappingSiloLoadingPoint
                     .Include(lp => lp.IdSiloNavigation)
                     .Include(lp => lp.IdLoadingPointNavigation)
                     where idSilos.Contains(lp.IdSiloNavigation.Id)
+                       && (idLoadingPoint == null || lp.IdLoadingPointNavigation.Id == idLoadingPoint)
                     select lp;
         var result = await query.ToListAsync();
         return result;
@@ -66,6 +69,16 @@ public static class LoadingDbService
                     .Include(mlp => mlp.IdLoadingPointNavigation)
                     where mlp.IdSilo == idSilo
                     select mlp.IdLoadingPointNavigation;
+        var result = await query.ToListAsync();
+        return result;
+    }
+    
+    public static async Task<List<LoadingPoint>> GetLoadingPoints(BtsContext btsc)
+    {
+        btsc.log.Debug($"GetLoadingPoints {btsc.idLocation}");
+        var query = from lp in btsc.context.LoadingPoint
+                    where lp.IdLocation == btsc.idLocation
+                    select lp;
         var result = await query.ToListAsync();
         return result;
     }

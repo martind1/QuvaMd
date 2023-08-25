@@ -5,5 +5,7 @@ namespace Quva.Services.Interfaces
     public interface ILoadingService
     {
         Task<BasetypeSilos> GetBasetypeSilosAll(long idLocation);
+
+        Task<BasetypeSilosView> GetBasetypeSilosAllView(long idLocation);
     }
 }

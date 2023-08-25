@@ -17,9 +17,10 @@
       "Override": {
         "Microsoft": "Warning",
         "Microsoft.EntityFrameworkCore.Database.Command": "Error",
-        "Devices": "Debug",
         "SapTransfer.Services.Services.FtpsService": "Information",
-        "FTP": "Error"
+        "FTP": "Error",
+        "Devices": "Debug",
+        "Quva.Services.Loading.LoadingService": "Information"
       }
     },
     "Enrich": [

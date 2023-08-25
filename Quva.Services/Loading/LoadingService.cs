@@ -25,4 +25,11 @@ public class LoadingService : ILoadingService
         return await BasetypeSilos.CreateAll(new BtsContext(context, _log, idLocation));
 
     }
+
+    public async Task<BasetypeSilosView> GetBasetypeSilosAllView(long idLocation)
+    {
+        var baseTypeSilos = await GetBasetypeSilosAll(idLocation);
+
+        return BasetypeSilosView.FromBasetypeSilos(baseTypeSilos);
+    }
 }

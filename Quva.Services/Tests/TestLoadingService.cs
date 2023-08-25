@@ -45,8 +45,11 @@ public class TestLoadingService
                 }
                 else if (key.KeyChar == '2')
                 {
-                    var agr = await _loadingService.GetBasetypeSilosAll(IdLocation);
-
+                    var agr = await _loadingService.GetBasetypeSilosAllView(IdLocation);
+                    foreach (var siloset in agr.SiloSets)
+                    {
+                        _log.Information(siloset.ToString());
+                    }
                     Console.WriteLine($"OK");
                 }
                 else
