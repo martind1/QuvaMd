@@ -5,15 +5,21 @@ using System.Collections.Generic;
 
 namespace Quva.Database.Models;
 
-public partial class AdditionalBasicType
+public partial class ContingentSilo
 {
     public long Id { get; set; }
 
-    public long IdBasicType { get; set; }
+    public long IdContingent { get; set; }
 
-    public long IdSilo { get; set; }
+    public int SiloSet { get; set; }
 
-    public int Priority { get; set; }
+    public int Position { get; set; }
+
+    public long? IdSilo { get; set; }
+
+    public decimal? Percentage { get; set; }
+
+    public decimal? PowerTh { get; set; }
 
     public string CreateUser { get; set; } = null!;
 
@@ -27,7 +33,7 @@ public partial class AdditionalBasicType
 
     public string? Note { get; set; }
 
-    public virtual BasicType IdBasicTypeNavigation { get; set; } = null!;
+    public virtual Contingent IdContingentNavigation { get; set; } = null!;
 
-    public virtual Silo IdSiloNavigation { get; set; } = null!;
+    public virtual Silo? IdSiloNavigation { get; set; }
 }

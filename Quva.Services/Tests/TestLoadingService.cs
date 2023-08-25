@@ -1,18 +1,25 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Quva.Database.Models;
+using Quva.Services.Interfaces;
 using Quva.Services.Interfaces.Shared;
+using SapTransfer.Services.Shared;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Quva.Services.Tests;
 
-public class TestLocationParameter
+public class TestLoadingService
 {
-    private readonly ILocationParameterService _locationParameterService;
+    private readonly ILoadingService _loadingService;
     private readonly ILogger _log;
 
-    public TestLocationParameter(ILocationParameterService locationParameterService)
+    public TestLoadingService(ILoadingService loadingService)
     {
         _log = Log.ForContext(GetType());
-        _locationParameterService = locationParameterService;
+        _loadingService = loadingService;
     }
 
     public long IdLocation = 100000009;  //HOH
@@ -23,9 +30,9 @@ public class TestLocationParameter
         {
             try
             {
-                Console.WriteLine("### Test LocationParameter ###");
+                Console.WriteLine("### Test LoadingService ###");
                 Console.WriteLine($"1 = set idLocation (default = HOH = {IdLocation})");
-                Console.WriteLine("2 = GetParameter");
+                Console.WriteLine($"2 = GetBasetypeSilosAll");
                 Console.WriteLine("sonst = Ende");
                 ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
                 Console.WriteLine("");
@@ -38,15 +45,9 @@ public class TestLocationParameter
                 }
                 else if (key.KeyChar == '2')
                 {
-                    Console.WriteLine("Gruppe.Key:");
-                    var s1 = Console.ReadLine();
-                    Console.WriteLine("IdPlant:");
-                    var s2 = Console.ReadLine();
-                    long? plant = s2.IsNullOrEmpty() ? null : long.Parse(s2!);
-                    string s2Disp = s2.IsNullOrEmpty() ? "*" : s2!;
-                    // für Controller:
-                    var val = await _locationParameterService.GetParameter(IdLocation, s1!, plant);
-                    Console.WriteLine($"{s1}.{s2Disp}={val}");
+                    var agr = await _loadingService.GetBasetypeSilosAll(IdLocation);
+
+                    Console.WriteLine($"OK");
                 }
                 else
                 {
@@ -59,8 +60,6 @@ public class TestLocationParameter
                 _log.Error(ex, "");
             }
         }
+
     }
-
-
-
 }

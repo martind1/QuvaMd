@@ -9,8 +9,6 @@ public partial class Debitor
 {
     public long Id { get; set; }
 
-    public string Code { get; set; } = null!;
-
     public string Name1 { get; set; } = null!;
 
     public string? Name2 { get; set; }
@@ -44,6 +42,8 @@ public partial class Debitor
     public bool? Active { get; set; }
 
     public long IdCountry { get; set; }
+
+    public long DebitorNumber { get; set; }
 
     public virtual ICollection<Contingent> Contingent { get; set; } = new List<Contingent>();
 

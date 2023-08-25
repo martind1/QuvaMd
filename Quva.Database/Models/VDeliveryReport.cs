@@ -25,7 +25,7 @@ public partial class VDeliveryReport
 
     public string MaterialShortName { get; set; } = null!;
 
-    public string MaterialLongName { get; set; } = null!;
+    public string? MaterialLongName { get; set; }
 
     public string? VehicleNumber { get; set; }
 
@@ -50,4 +50,6 @@ public partial class VDeliveryReport
     public long IdPlant { get; set; }
 
     public int SapExportState { get; set; }
+
+    public string? SapErrorText { get; set; }
 }

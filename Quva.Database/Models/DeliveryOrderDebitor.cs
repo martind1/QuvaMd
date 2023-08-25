@@ -49,6 +49,8 @@ public partial class DeliveryOrderDebitor
 
     public string? Note { get; set; }
 
+    public long DebitorNumber { get; set; }
+
     public virtual Country IdCountryNavigation { get; set; } = null!;
 
     public virtual DeliveryOrder IdDeliveryOrderNavigation { get; set; } = null!;

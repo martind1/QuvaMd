@@ -8,7 +8,9 @@ using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
+using Quva.Services.Interfaces;
 using Quva.Services.Interfaces.Shared;
+using Quva.Services.Loading;
 using Quva.Services.Mapping;
 using Quva.Services.Services.Shared;
 using Quva.Services.Tests;
@@ -78,6 +80,7 @@ internal class Program
         //My Services:
         builder.Services.AddSingleton<ILocationParameterService, LocationParameterService>();
         builder.Services.AddSingleton<ICustomerAgreementService, CustomerAgreementService>();
+        builder.Services.AddSingleton<ILoadingService, LoadingService>();
 
 
         var app = builder.Build();
@@ -91,6 +94,7 @@ internal class Program
             Console.WriteLine("2 = Test Loadorder");
             Console.WriteLine("3 = Test Werkparameter");
             Console.WriteLine("4 = Test Kundenvereinbarungen");
+            Console.WriteLine("5 = Test LoadingService");
             Console.WriteLine("sonst = Ende");
             ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
             Console.WriteLine("");
@@ -114,6 +118,12 @@ internal class Program
             {
                 var svc = app.Services.GetRequiredService<ICustomerAgreementService>();
                 var testobj = new TestCustomerAgreement(svc);
+                testobj.Menu().GetAwaiter().GetResult();
+            }
+            else if (key.KeyChar == '5')
+            {
+                var svc = app.Services.GetRequiredService<ILoadingService>();
+                var testobj = new TestLoadingService(svc);
                 testobj.Menu().GetAwaiter().GetResult();
             }
             else

@@ -5,15 +5,13 @@ using System.Collections.Generic;
 
 namespace Quva.Database.Models;
 
-public partial class AdditionalBasicType
+public partial class MappingCarrierDebitor
 {
     public long Id { get; set; }
 
-    public long IdBasicType { get; set; }
+    public long IdIdentificationCard { get; set; }
 
-    public long IdSilo { get; set; }
-
-    public int Priority { get; set; }
+    public long IdCarrier { get; set; }
 
     public string CreateUser { get; set; } = null!;
 
@@ -27,7 +25,7 @@ public partial class AdditionalBasicType
 
     public string? Note { get; set; }
 
-    public virtual BasicType IdBasicTypeNavigation { get; set; } = null!;
+    public virtual Carrier IdCarrierNavigation { get; set; } = null!;
 
-    public virtual Silo IdSiloNavigation { get; set; } = null!;
+    public virtual IdentificationCard IdIdentificationCardNavigation { get; set; } = null!;
 }

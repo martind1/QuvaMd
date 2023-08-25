@@ -7,17 +7,24 @@
 
 
   "Serilog": {
-    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+    "Using": [
+      "Serilog.Sinks.Console",
+      "Serilog.Sinks.File",
+      "Serilog.Enrichers.ShortTypeName"
+    ],
     "MinimumLevel": {
       "Default": "Debug",
       "Override": {
         "Microsoft": "Warning",
-        "Microsoft.EntityFrameworkCore.Database.Command": "Debug",
-        "Quva": "Debug"
+        "Microsoft.EntityFrameworkCore.Database.Command": "Error",
+        "Devices": "Debug",
+        "SapTransfer.Services.Services.FtpsService": "Information",
+        "FTP": "Error"
       }
     },
     "Enrich": [
-      "FromLogContext"
+      "FromLogContext",
+      "WithShortTypeName"
     ],
     "XXFilter": [
       {
@@ -28,16 +35,21 @@
       }
     ],
     "WriteTo": [
-      { "Name": "Console" },
+      {
+        "Name": "Console",
+        "Args": {
+          "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}][{ShortTypeName}] {Message:lj}{NewLine}{Exception}"
+        }
+      },
       {
         "Name": "File",
         "Args": {
           "path": "C:/temp/angular/logs/Devices-.log",
           "rollingInterval": "Day",
-          "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+          "retainedFileCountLimit": "100",
+          "outputTemplate": "{Timestamp:HH:mm:ss} [{Level:u3}][{ShortTypeName}] {Message:lj}{NewLine}{Exception}"
         }
       }
     ]
   }
-
 }

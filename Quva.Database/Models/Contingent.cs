@@ -21,18 +21,6 @@ public partial class Contingent
 
     public DateTime? ValidTo { get; set; }
 
-    public long IdSilo1 { get; set; }
-
-    public decimal SiloPart1 { get; set; }
-
-    public long? IdSilo2 { get; set; }
-
-    public decimal? SiloPart2 { get; set; }
-
-    public long? IdSilo3 { get; set; }
-
-    public decimal? SiloPart3 { get; set; }
-
     public string CreateUser { get; set; } = null!;
 
     public DateTime CreateDate { get; set; }
@@ -45,9 +33,15 @@ public partial class Contingent
 
     public string? Note { get; set; }
 
-    public long IdConfigPlantMaterial { get; set; }
+    public long IdMaterial { get; set; }
 
-    public virtual ConfigPlantMaterial IdConfigPlantMaterialNavigation { get; set; } = null!;
+    public string? Name { get; set; }
+
+    public bool CheckSilolevel { get; set; }
+
+    public bool CheckSilolock { get; set; }
+
+    public virtual ICollection<ContingentSilo> ContingentSilo { get; set; } = new List<ContingentSilo>();
 
     public virtual Debitor? IdDebitorNavigation { get; set; }
 
@@ -55,9 +49,5 @@ public partial class Contingent
 
     public virtual Location IdLocationNavigation { get; set; } = null!;
 
-    public virtual Silo IdSilo1Navigation { get; set; } = null!;
-
-    public virtual Silo? IdSilo2Navigation { get; set; }
-
-    public virtual Silo? IdSilo3Navigation { get; set; }
+    public virtual Material IdMaterialNavigation { get; set; } = null!;
 }

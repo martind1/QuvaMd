@@ -20,4 +20,6 @@ public partial class VDeliveryposition
     public string? CustomerProductName { get; set; }
 
     public string? Unit { get; set; }
+
+    public bool? PrintMark { get; set; }
 }

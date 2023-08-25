@@ -41,6 +41,8 @@ public partial class Material
 
     public virtual ICollection<ConfigPlantMaterial> ConfigPlantMaterial { get; set; } = new List<ConfigPlantMaterial>();
 
+    public virtual ICollection<Contingent> Contingent { get; set; } = new List<Contingent>();
+
     public virtual ICollection<CustomerAgreement> CustomerAgreement { get; set; } = new List<CustomerAgreement>();
 
     public virtual Unit IdUnitNavigation { get; set; } = null!;

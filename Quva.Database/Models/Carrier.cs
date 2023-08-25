@@ -27,5 +27,7 @@ public partial class Carrier
 
     public virtual Location IdLocationNavigation { get; set; } = null!;
 
+    public virtual ICollection<MappingCarrierDebitor> MappingCarrierDebitor { get; set; } = new List<MappingCarrierDebitor>();
+
     public virtual ICollection<Vehicle> Vehicle { get; set; } = new List<Vehicle>();
 }

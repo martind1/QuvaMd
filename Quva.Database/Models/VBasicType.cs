@@ -11,13 +11,63 @@ public partial class VBasicType
 
     public string MatCode { get; set; } = null!;
 
-    public string LocShortname { get; set; } = null!;
+    public string Loc { get; set; } = null!;
 
-    public string? SpsCode { get; set; }
+    public string? SpsBasicType { get; set; }
 
-    public bool MixedFlag { get; set; }
+    public int MixIndex { get; set; }
+
+    public string? Code1 { get; set; }
+
+    public decimal? Percent1 { get; set; }
+
+    public string? Code2 { get; set; }
+
+    public decimal? Percent2 { get; set; }
+
+    public string? Code3 { get; set; }
+
+    public decimal? Percent3 { get; set; }
+
+    public string? Code4 { get; set; }
+
+    public decimal? Percent4 { get; set; }
+
+    public string? Code5 { get; set; }
+
+    public decimal? Percent5 { get; set; }
 
     public long IdLocation { get; set; }
 
     public long IdMaterial { get; set; }
+
+    public long? Map1Id { get; set; }
+
+    public long? Bas1Id { get; set; }
+
+    public long? Mat1Id { get; set; }
+
+    public long? Map2Id { get; set; }
+
+    public long? Bas2Id { get; set; }
+
+    public long? Mat2Id { get; set; }
+
+    public long? Map3Id { get; set; }
+
+    public long? Bas3Id { get; set; }
+
+    public long? Mat3Id { get; set; }
+
+    public long? Map4Id { get; set; }
+
+    public long? Bas4Id { get; set; }
+
+    public long? Mat4Id { get; set; }
+
+    public long? Map5Id { get; set; }
+
+    public long? Bas5Id { get; set; }
+
+    public long? Mat5Id { get; set; }
 }

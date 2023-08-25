@@ -64,6 +64,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "QUVA_API.CONTINGENT_SILO",
+         "ObjectType": 0
+      },
+      {
          "Name": "QUVA_API.COUNTRY",
          "ObjectType": 0
       },
@@ -169,6 +173,10 @@
       },
       {
          "Name": "QUVA_API.MAPPING_BASIC_TYPE",
+         "ObjectType": 0
+      },
+      {
+         "Name": "QUVA_API.MAPPING_CARRIER_DEBITOR",
          "ObjectType": 0
       },
       {
@@ -356,6 +364,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "QUVA_API.V_CONTINGENT",
+         "ObjectType": 3
+      },
+      {
          "Name": "QUVA_API.V_CUSTOMER_AGR_PARAMETER",
          "ObjectType": 3
       },
@@ -384,11 +396,15 @@
          "ObjectType": 3
       },
       {
+         "Name": "QUVA_API.V_MAP_SILO_LOADPOINT",
+         "ObjectType": 3
+      },
+      {
          "Name": "QUVA_API.V_MATERIAL",
          "ObjectType": 3
       },
       {
-         "Name": "QUVA_API.V_MATERIAL_STATISTIC",
+         "Name": "QUVA_API.V_SILO",
          "ObjectType": 3
       },
       {

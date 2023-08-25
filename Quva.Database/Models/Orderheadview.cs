@@ -63,7 +63,7 @@ public partial class Orderheadview
 
     public long? IdSalesOrganization { get; set; }
 
-    public string? CodeGoodRecipient { get; set; }
+    public long? CodeGoodRecipient { get; set; }
 
     public string? Name1GoodRecipient { get; set; }
 
@@ -75,7 +75,7 @@ public partial class Orderheadview
 
     public string? PhoneGoodRecipient { get; set; }
 
-    public string? CodeInvoiceRecipient { get; set; }
+    public long? CodeInvoiceRecipient { get; set; }
 
     public string? Name1InvoiceRecipient { get; set; }
 
@@ -87,7 +87,7 @@ public partial class Orderheadview
 
     public string? PhoneInvoiceRecipient { get; set; }
 
-    public string? CodeForwardingAgent { get; set; }
+    public long? CodeForwardingAgent { get; set; }
 
     public string? Name1ForwardingAgent { get; set; }
 

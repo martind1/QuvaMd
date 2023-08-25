@@ -67,11 +67,7 @@ public partial class Silo
 
     public virtual ICollection<AdditionalBasicType> AdditionalBasicType { get; set; } = new List<AdditionalBasicType>();
 
-    public virtual ICollection<Contingent> ContingentIdSilo1Navigation { get; set; } = new List<Contingent>();
-
-    public virtual ICollection<Contingent> ContingentIdSilo2Navigation { get; set; } = new List<Contingent>();
-
-    public virtual ICollection<Contingent> ContingentIdSilo3Navigation { get; set; } = new List<Contingent>();
+    public virtual ICollection<ContingentSilo> ContingentSilo { get; set; } = new List<ContingentSilo>();
 
     public virtual BasicType? IdBasicTypeNavigation { get; set; }
 

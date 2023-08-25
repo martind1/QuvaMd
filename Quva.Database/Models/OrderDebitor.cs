@@ -15,8 +15,6 @@ public partial class OrderDebitor
 
     public int Role { get; set; }
 
-    public string Code { get; set; } = null!;
-
     public string Name1 { get; set; } = null!;
 
     public string? Name2 { get; set; }
@@ -48,6 +46,8 @@ public partial class OrderDebitor
     public int ChangeNumber { get; set; }
 
     public string? Note { get; set; }
+
+    public long DebitorNumber { get; set; }
 
     public virtual Country IdCountryNavigation { get; set; } = null!;
 

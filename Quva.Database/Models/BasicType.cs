@@ -13,8 +13,6 @@ public partial class BasicType
 
     public long IdMaterial { get; set; }
 
-    public string? SpsCode { get; set; }
-
     public string CreateUser { get; set; } = null!;
 
     public DateTime CreateDate { get; set; }
@@ -27,7 +25,9 @@ public partial class BasicType
 
     public string? Note { get; set; }
 
-    public bool MixedFlag { get; set; }
+    public string? SpsBasicType { get; set; }
+
+    public int MixIndex { get; set; }
 
     public virtual ICollection<AdditionalBasicType> AdditionalBasicType { get; set; } = new List<AdditionalBasicType>();
 
