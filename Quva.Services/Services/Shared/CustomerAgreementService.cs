@@ -22,7 +22,26 @@ public class CustomerAgreementService : ICustomerAgreementService
         _scopeFactory = scopeFactory;
     }
 
-    private Dictionary<long, ICustomerAgreements> _cachedCustomerAgreements = new();
+    private readonly Dictionary<long, ICustomerAgreements> _cachedCustomerAgreements = new();
+
+    public async Task<ICustomerAgreements> GetAgreementsByDebitorMaterial(long idLocation, long? idDebitor, long? idMaterial) 
+    {
+        ICustomerAgreements result;
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
+            var filter = new AgreementsFilter()
+            {
+                idMaterials = idMaterial == null ? new() :
+                    new List<long>() { idMaterial ?? 0 },
+                idGoodsRecipient = idDebitor,
+                idInvoiceRecipient = idDebitor,
+                idCarrier = idDebitor
+            };
+            result = await GetAgreementsInternal(context, idLocation, filter);
+        }
+        return result;
+    }
 
     public async Task<ICustomerAgreements> GetAgreementsByDeliveryId(long idDeliveryHead)
     {

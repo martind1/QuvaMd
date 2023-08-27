@@ -5,6 +5,7 @@ namespace Quva.Services.Interfaces.Shared;
 
 public interface ICustomerAgreementService
 {
+    Task<ICustomerAgreements> GetAgreementsByDebitorMaterial(long idLocation, long? idDebitor, long? idMaterial);
     Task<ICustomerAgreements> GetAgreementsByDeliveryId(long idDeliveryHead);
     Task<ICustomerAgreements> GetAgreementsByFilter(long idLocation, AgreementsFilter filter);
 }

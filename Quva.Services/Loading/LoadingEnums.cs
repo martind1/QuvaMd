@@ -25,3 +25,10 @@ Ton = 1,
 Kilogram = 2,
 Gram = 3
 }
+
+public enum OrderDebitorRole
+{
+    GoodsRecipient = 0,
+    InvoiceRecipient = 1,
+    ForwardingAgent = 2
+}

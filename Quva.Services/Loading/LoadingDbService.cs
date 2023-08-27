@@ -5,6 +5,7 @@ namespace Quva.Services.Loading;
 
 public static class LoadingDbService
 {
+    // plus Material
     public static async Task<List<BasicType>> GetBasicTypesFromMaterialId(BtsContext btsc, long? idMaterial)
     {
         btsc.log.Debug($"GetBasicTypesFromMaterialId {idMaterial}");
@@ -19,9 +20,13 @@ public static class LoadingDbService
 
     public static async Task<List<MappingBasicType>> GetMappedTypesFromBasicType(BtsContext btsc, long idBasicType)
     {
+        // plus Other Material
         btsc.log.Debug($"GetMappedTypesFromBasicType {idBasicType}");
         var query = from mbt in btsc.context.MappingBasicType
+                    .Include(mbt => mbt.IdOtherTypeNavigation)
+                        .ThenInclude(otn => otn.IdMaterialNavigation)
                     where mbt.IdBasicType == idBasicType
+                    orderby mbt.Position
                     select mbt;
         var result = await query.ToListAsync();
         return result;
@@ -82,5 +87,43 @@ public static class LoadingDbService
         var result = await query.ToListAsync();
         return result;
     }
+
+    public static async Task<DeliveryHead?> FindDelivery(BtsContext btsc, long idDelivery)
+    {
+        // mit DeliverOrder, DeliverOrderDebitor, DeliveryOrderPosition
+        btsc.log.Debug($"FindDelivery {idDelivery}");
+        var query = from del in btsc.context.DeliveryHead
+                    .Include(del => del.DeliveryOrder)
+                        .ThenInclude(ord => ord!.DeliveryOrderDebitor
+                            .Where(dob => dob.Role == (int)OrderDebitorRole.GoodsRecipient))
+                    .Include(del => del.DeliveryOrder)
+                        .ThenInclude(op => op!.DeliveryOrderPosition
+                            .Where(dop => dop.MainPosition == true))
+                    where del.Id == idDelivery
+                    select del;
+        var result = await query.FirstOrDefaultAsync();
+        return result;
+    }
+
+    public static async Task<long> GetIdDebitorByNumber(BtsContext btsc, long debitorNumber)
+    {
+        btsc.log.Debug($"GetIdDebitorByNumber {debitorNumber}");
+        var query = from lp in btsc.context.Debitor
+                    where lp.DebitorNumber == debitorNumber
+                    select lp.Id;
+        var result = await query.FirstOrDefaultAsync();
+        return result;
+    }
+
+    public static async Task<long> GetIdMaterialByCode(BtsContext btsc, string code)
+    {
+        btsc.log.Debug($"GetIdMaterialByCode {code}");
+        var query = from lp in btsc.context.Material
+                    where lp.Code == code
+                    select lp.Id;
+        var result = await query.FirstOrDefaultAsync();
+        return result;
+    }
+
 
 }
