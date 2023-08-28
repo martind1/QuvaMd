@@ -30,7 +30,13 @@ public partial class BasetypeSilos
         var idDebitor = await LoadingDbService.GetIdDebitorByNumber(btsc, debitorNumber ?? 0);
         if (idDebitor == 0)
         {
-            return Error(btsc, $"kein Debitor in DeliveryId {idDelivery}");
+            return Error(btsc, $"Debitor not found: {debitorNumber ?? -1} in DeliveryId {idDelivery}");
+        }
+        if (btsc.idLocation == 0)
+        {
+            // changing init-only property:
+            btsc = new BtsContext(btsc.context, btsc.customerAgreementService, btsc.log,
+                delivery!.DeliveryOrder!.IdPlantNavigation.IdLocation);
         }
 
         var materialCode = delivery?.DeliveryOrder?.DeliveryOrderPosition.ElementAt(0).MaterialShortName;

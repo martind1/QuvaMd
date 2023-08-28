@@ -1,13 +1,6 @@
-﻿using Quva.Database.Models;
-using Quva.Services.Interfaces;
-using Quva.Services.Interfaces.Shared;
-using SapTransfer.Services.Shared;
+﻿using Quva.Services.Interfaces.Shared;
+using Quva.Services.Loading;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quva.Services.Tests;
 
@@ -23,6 +16,7 @@ public class TestLoadingService
     }
 
     public long IdLocation = 100000009;  //HOH
+    public long IdDelivery = 100002695; //Kunw=700002, Mara=V3004S-L
 
     public async Task Menu()
     {
@@ -31,8 +25,10 @@ public class TestLoadingService
             try
             {
                 Console.WriteLine("### Test LoadingService ###");
-                Console.WriteLine($"1 = set idLocation (default = HOH = {IdLocation})");
+                Console.WriteLine($"1 = set idLocation (HOH = {IdLocation})");
                 Console.WriteLine($"2 = GetBasetypeSilosAll");
+                Console.WriteLine($"3 = set idDelivery ({IdDelivery})");
+                Console.WriteLine($"4 = GetBasetypeSilosFromDelivery");
                 Console.WriteLine("sonst = Ende");
                 ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
                 Console.WriteLine("");
@@ -40,7 +36,7 @@ public class TestLoadingService
                 {
                     Console.WriteLine("IdLocation:");
                     var s1 = Console.ReadLine();
-                    IdLocation = long.Parse(s1 ?? "100000009");
+                    IdLocation = long.Parse(s1!.Trim() == "" ? IdLocation.ToString() : s1);
                     Console.WriteLine(IdLocation);
                 }
                 else if (key.KeyChar == '2')
@@ -52,6 +48,23 @@ public class TestLoadingService
                     //}
                     _log.Information("BaseTypeSilos All:" + Environment.NewLine + agr.ToCsv());
                     Console.WriteLine($"OK");
+                }
+                else if (key.KeyChar == '3')
+                {
+                    Console.WriteLine("IdDelivery:");
+                    var s1 = Console.ReadLine();
+                    IdLocation = long.Parse(s1!.Trim() == "" ? IdDelivery.ToString() : s1);
+                    Console.WriteLine(IdLocation);
+                }
+                else if (key.KeyChar == '4')
+                {
+                    var baseTypeSilos = await _loadingService.GetBasetypeSilosFromDelivery(IdDelivery);
+
+                    var view = BasetypeSilosView.FromBasetypeSilos(baseTypeSilos);
+
+                    _log.Information($"BaseTypeSilos for Delivery {IdDelivery}:{Environment.NewLine}{view.ToCsv()}");
+                    _log.Information($"{string.Join(Environment.NewLine, baseTypeSilos.ErrorLines)}");
+                    Console.WriteLine($"done");
                 }
                 else
                 {

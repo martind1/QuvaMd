@@ -2,12 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Quva.Database.Models;
 using Quva.Services.Devices;
+using Quva.Services.Enums;
 using Quva.Services.Interfaces.Shared;
-using Quva.Services.Services.Shared;
 using Serilog;
 using System.Globalization;
-using PackagingType = Quva.Services.Services.Shared.PackagingType;
-using TransportType = Quva.Services.Services.Shared.TransportType;
+using PackagingType = Quva.Services.Enums.PackagingType;
+using TransportType = Quva.Services.Enums.TransportType;
 
 namespace SapTransfer.Services.Shared;
 

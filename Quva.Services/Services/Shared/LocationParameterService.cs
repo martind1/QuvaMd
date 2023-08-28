@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using Quva.Database.Models;
+using Quva.Services.Enums;
 using Quva.Services.Interfaces.Shared;
-using Quva.Services.Services.Shared;
 using Serilog;
 using System.Globalization;
 using System.Text.RegularExpressions;

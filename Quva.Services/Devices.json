@@ -16,7 +16,7 @@
       "Default": "Debug",
       "Override": {
         "Microsoft": "Warning",
-        "Microsoft.EntityFrameworkCore.Database.Command": "Error",
+        "Microsoft.EntityFrameworkCore.Database.Command": "Debug",
         "SapTransfer.Services.Services.FtpsService": "Information",
         "FTP": "Error",
         "Devices": "Debug",

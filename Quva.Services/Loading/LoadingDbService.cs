@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Quva.Database.Models;
+using Quva.Services.Enums;
 
 namespace Quva.Services.Loading;
 
@@ -90,15 +91,18 @@ public static class LoadingDbService
 
     public static async Task<DeliveryHead?> FindDelivery(BtsContext btsc, long idDelivery)
     {
-        // mit DeliverOrder, DeliverOrderDebitor, DeliveryOrderPosition
+        // mit DeliverOrder, Plant, DeliverOrderDebitor, DeliveryOrderPosition
         btsc.log.Debug($"FindDelivery {idDelivery}");
         var query = from del in btsc.context.DeliveryHead
+                    .Include(del => del.DeliveryOrder)
+                        .ThenInclude(pla => pla!.IdPlantNavigation)
                     .Include(del => del.DeliveryOrder)
                         .ThenInclude(ord => ord!.DeliveryOrderDebitor
                             .Where(dob => dob.Role == (int)OrderDebitorRole.GoodsRecipient))
                     .Include(del => del.DeliveryOrder)
                         .ThenInclude(op => op!.DeliveryOrderPosition
                             .Where(dop => dop.MainPosition == true))
+                    .AsSplitQuery()
                     where del.Id == idDelivery
                     select del;
         var result = await query.FirstOrDefaultAsync();

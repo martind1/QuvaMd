@@ -1,5 +1,5 @@
 ﻿using Quva.Database.Models;
-using Quva.Services.Services.Shared;
+using Quva.Services.Enums;
 
 namespace Quva.Services.Interfaces.Shared;
 
