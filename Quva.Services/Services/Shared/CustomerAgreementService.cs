@@ -168,7 +168,7 @@ public class CustomerAgreementService : ICustomerAgreementService
                 bool setFlag = true;
                 if (optionParameters.TryGetValue(agrParameter.IdOption, out var agrParameterValue))
                 {
-                    setFlag = agrParameterValue.ParameterValue != agrParameterValue.DefaultValue;
+                    setFlag = agrParameterValue.Value != agrParameterValue.DefaultValue;
                 }
                 if (setFlag)
                 {
@@ -298,7 +298,7 @@ public record CustomerAgreements : ICustomerAgreements
         }
         else
         {
-            value = agrParameter.ParameterValue.Trim();  // " " -> ""
+            value = agrParameter.Value.Trim();  // " " -> ""
             datatype = (DataTypeValues)agrParameter.Datatype;
         }
     }

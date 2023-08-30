@@ -5790,15 +5790,23 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("CATEGORY_CODE");
+            entity.Property(e => e.Code)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
             entity.Property(e => e.Datatype)
                 .HasPrecision(9)
                 .HasColumnName("DATATYPE");
+            entity.Property(e => e.DebNo)
+                .HasPrecision(18)
+                .HasColumnName("DEB_NO");
             entity.Property(e => e.DefaultValue)
                 .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("DEFAULT_VALUE");
             entity.Property(e => e.Id)
                 .HasPrecision(18)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ID");
             entity.Property(e => e.IdAgreement)
                 .HasPrecision(18)
@@ -5813,10 +5821,11 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("OPTION_CODE");
-            entity.Property(e => e.ParameterValue)
+            entity.Property(e => e.Value)
                 .HasMaxLength(1000)
                 .IsUnicode(false)
-                .HasColumnName("PARAMETER_VALUE");
+                .ValueGeneratedOnAdd()
+                .HasColumnName("VALUE");
         });
 
         modelBuilder.Entity<VDeliveryReport>(entity =>
@@ -5824,6 +5833,87 @@ public partial class QuvaContext : DbContext
             entity
                 .HasNoKey()
                 .ToView("V_DELIVERY_REPORT");
+
+            entity.Property(e => e.Carrier)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CARRIER");
+            entity.Property(e => e.ClosingDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CLOSING_DATE");
+            entity.Property(e => e.DebitorGrName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEBITOR_GR_NAME1");
+            entity.Property(e => e.DebitorGrNumber)
+                .HasPrecision(18)
+                .HasColumnName("DEBITOR_GR_NUMBER");
+            entity.Property(e => e.DebitorIrName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEBITOR_IR_NAME1");
+            entity.Property(e => e.DebitorIrNumber)
+                .HasPrecision(18)
+                .HasColumnName("DEBITOR_IR_NUMBER");
+            entity.Property(e => e.DeliveryDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DELIVERY_DATE");
+            entity.Property(e => e.DeliveryNumber)
+                .HasPrecision(18)
+                .HasColumnName("DELIVERY_NUMBER");
+            entity.Property(e => e.DeliveryState)
+                .HasPrecision(9)
+                .HasColumnName("DELIVERY_STATE");
+            entity.Property(e => e.FinalWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("FINAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.InitialWeighingMode)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("INITIAL_WEIGHING_MODE");
+            entity.Property(e => e.InitialWeighingWeight)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("INITIAL_WEIGHING_WEIGHT");
+            entity.Property(e => e.LoadedQuantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("LOADED_QUANTITY");
+            entity.Property(e => e.MaterialLongName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_LONG_NAME");
+            entity.Property(e => e.MaterialShortName)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("MATERIAL_SHORT_NAME");
+            entity.Property(e => e.OrderNumber)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NUMBER");
+            entity.Property(e => e.RegistrationDate)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("REGISTRATION_DATE");
+            entity.Property(e => e.SapErrorText)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("SAP_ERROR_TEXT");
+            entity.Property(e => e.SapExportState)
+                .HasPrecision(9)
+                .HasColumnName("SAP_EXPORT_STATE");
+            entity.Property(e => e.ShippingMethod)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SHIPPING_METHOD");
+            entity.Property(e => e.Unit)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("UNIT");
+            entity.Property(e => e.VehicleNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("VEHICLE_NUMBER");
         });
 
         modelBuilder.Entity<VDeliveryTransfer>(entity =>
@@ -5927,10 +6017,6 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.FinalWeighingWeight)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("FINAL_WEIGHING_WEIGHT");
-            entity.Property(e => e.GoodRecipienCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("GOOD_RECIPIEN_CODE");
             entity.Property(e => e.GoodRecipienCountyCode)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -5947,6 +6033,9 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("GOOD_RECIPIEN_NAME2");
+            entity.Property(e => e.GoodRecipienNumber)
+                .HasPrecision(18)
+                .HasColumnName("GOOD_RECIPIEN_NUMBER");
             entity.Property(e => e.GoodRecipienPostcode)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -5976,10 +6065,6 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.InitialWeighingWeight)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("INITIAL_WEIGHING_WEIGHT");
-            entity.Property(e => e.InvoiceRecipienCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("INVOICE_RECIPIEN_CODE");
             entity.Property(e => e.InvoiceRecipienCountyCode)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -5996,6 +6081,9 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("INVOICE_RECIPIEN_NAME2");
+            entity.Property(e => e.InvoiceRecipienNumber)
+                .HasPrecision(18)
+                .HasColumnName("INVOICE_RECIPIEN_NUMBER");
             entity.Property(e => e.InvoiceRecipienPostcode)
                 .HasMaxLength(100)
                 .IsUnicode(false)

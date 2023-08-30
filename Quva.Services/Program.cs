@@ -89,10 +89,9 @@ internal class Program
         {
             Console.WriteLine("### Startmenü ###");
             Console.WriteLine("1 = Test DeviceService");
-            Console.WriteLine("2 = Test Loadorder");
-            Console.WriteLine("3 = Test Werkparameter");
-            Console.WriteLine("4 = Test Kundenvereinbarungen");
-            Console.WriteLine("5 = Test LoadingService");
+            Console.WriteLine("2 = Test Locationparameter");
+            Console.WriteLine("3 = Test CustomerAgreements");
+            Console.WriteLine("4 = Test LoadingService");
             Console.WriteLine("sonst = Ende");
             ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
             Console.WriteLine("");
@@ -104,21 +103,17 @@ internal class Program
             }
             else if (key.KeyChar == '2')
             {
-                Console.WriteLine("TestLoadorder coming soon ..");
-            }
-            else if (key.KeyChar == '3')
-            {
                 var svc = app.Services.GetRequiredService<ILocationParameterService>();
                 var testobj = new TestLocationParameter(svc);
                 testobj.Menu().GetAwaiter().GetResult(); 
             }
-            else if (key.KeyChar == '4')
+            else if (key.KeyChar == '3')
             {
                 var svc = app.Services.GetRequiredService<ICustomerAgreementService>();
                 var testobj = new TestCustomerAgreement(svc);
                 testobj.Menu().GetAwaiter().GetResult();
             }
-            else if (key.KeyChar == '5')
+            else if (key.KeyChar == '4')
             {
                 var svc = app.Services.GetRequiredService<ILoadingService>();
                 var testobj = new TestLoadingService(svc);

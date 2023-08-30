@@ -1,11 +1,6 @@
 ﻿using Quva.Database.Models;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quva.Services.Loading;
 
@@ -43,7 +38,7 @@ public class LoadingResult
 
 // Transfer between Service/Controller and lower classes
 public record BtsContext(
-    QuvaContext context, 
-    ICustomerAgreementService customerAgreementService, 
-    ILogger log, 
+    QuvaContext context,
+    ICustomerAgreementService customerAgreementService,
+    ILogger log,
     long idLocation);

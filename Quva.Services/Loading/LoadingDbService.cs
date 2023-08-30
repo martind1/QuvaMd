@@ -8,13 +8,15 @@ namespace Quva.Services.Loading;
 public static class LoadingDbService
 {
     // plus Material
-    public static async Task<List<BasicType>> GetBasicTypesByMaterialId(BtsContext btsc, long? idMaterial)
+    public static async Task<List<BasicType>> GetBasicTypesByMaterialId(BtsContext btsc, long? idMaterial, bool onlyTrue)
     {
+        // onlyTrue: true = only True Basic Types (no Mix Types)
         btsc.log.Debug($"GetBasicTypesByMaterialId {idMaterial}");
         var query = from bt in btsc.context.BasicType
                     .Include(bt => bt.IdMaterialNavigation)
-                    where bt.IdLocation == btsc.idLocation &&
-                          (idMaterial == null || bt.IdMaterial == idMaterial)
+                    where bt.IdLocation == btsc.idLocation 
+                       && (idMaterial == null || bt.IdMaterial == idMaterial)
+                       && (!onlyTrue || bt.MixIndex == 0)
                     select bt;
         var result = await query.ToListAsync();
         return result;
@@ -200,5 +202,28 @@ public static class LoadingDbService
         var result = await query.FirstOrDefaultAsync();
         return result;
     }
+
+    public static async Task<List<Contingent>> GetActiveContingents(BtsContext btsc, 
+        long? idDebitor, long idMaterial, DateTime? date)
+    {
+        // with ContingentSilo, Silo, LoadingPoint
+        string day = date != null ? ((DateTime)date).ToString("yyyy-MM-dd") : "null";
+        btsc.log.Debug($"GetActiveContingents IdDeb:{idDebitor ?? 0} IdMat:{idMaterial} Day:{day}");
+        var query = from cs in btsc.context.Contingent
+                    .Include(csi => csi.ContingentSilo)
+                        .ThenInclude(csi => csi.IdSiloNavigation)
+                    .Include(cs => cs.IdLoadingPointNavigation)
+                    where cs.IdLocation == btsc.idLocation
+                       && ((idDebitor == null && cs.IdDebitor == null) || cs.IdDebitor == (idDebitor ?? 0))
+                       && cs.IdMaterial == idMaterial
+                       && cs.Active == true
+                       && (date == null || cs.ValidFrom == null || cs.ValidFrom <= date)
+                       && (date == null || cs.ValidTo == null || cs.ValidTo >= date)
+                    select cs;
+        var result = await query.ToListAsync();
+        return result;
+    }
+
+
 
 }

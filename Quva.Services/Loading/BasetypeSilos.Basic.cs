@@ -7,11 +7,11 @@ public partial class BasetypeSilos
     private async Task AddTrueBasicTypes()
     {
         // BaseTypes mit Material ..
-        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(btsc, filter.idMaterial);
+        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(Btsc, filter.idMaterial, false);
         foreach (var basicType in basicTypes)
         {
             // .. plus MapingBasicType mit Other Material
-            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(btsc, basicType.Id);
+            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(Btsc, basicType.Id);
             if (mappedBasicTypes.Count <= 0)  //if (basicType.MixIndex <= 0)
             {
                 if (basicType.MixIndex > 0)
@@ -19,7 +19,7 @@ public partial class BasetypeSilos
                     AddError($"Falscher MixIndex {basicType.MixIndex}. Muss 0 sein wenn kein Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
                     continue;  //produktiv
                 }
-                var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(btsc, basicType.Id, null);
+                var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(Btsc, basicType.Id, null);
                 foreach (var lpSilo in lpSilos)
                 {
                     Silo silo = lpSilo.IdSiloNavigation;
@@ -27,6 +27,7 @@ public partial class BasetypeSilos
                     {
                         continue;
                     }
+                    debugList.Clear();
                     SiloSet siloSet = new()
                     {
                         TheBasicType = basicType,
@@ -40,8 +41,12 @@ public partial class BasetypeSilos
                         TheSilo = silo,
                         Percentage = 999,
                     };
+                    debugList.Add(silo.SiloNumber.ToString() + " " + siloItem.Percentage + '%');
                     siloSet.SiloItems.Add(siloItem);
-                    AddSiloSet(siloSet);  // mit Checks, Priority
+                    if (!AddSiloSet(siloSet))  // mit Checks, Priority
+                        Btsc.log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+                    else
+                        Btsc.log.Information(string.Join(", ", debugList));
                 }
 
             }
@@ -51,11 +56,11 @@ public partial class BasetypeSilos
     private async Task AddMixedBasicTypes()
     {
         // BaseTypes mit Material ..
-        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(btsc, filter.idMaterial);
+        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(Btsc, filter.idMaterial, false);
         foreach (var basicType in basicTypes)
         {
             // .. plus MapingBasicType mit Other Material
-            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(btsc, basicType.Id);
+            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(Btsc, basicType.Id);
             if (mappedBasicTypes.Count > 0)  //if (basicType.MixIndex <= 0)
             {
                 // Mischsorten:
@@ -64,7 +69,7 @@ public partial class BasetypeSilos
                     AddError($"Falscher MixIndex 0. Muss >0 sein bei Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
                     continue;  //produktiv
                 }
-                var loadingPoints = await LoadingDbService.GetLoadingPoints(btsc);
+                var loadingPoints = await LoadingDbService.GetLoadingPoints(Btsc);
                 foreach (var loadingPoint in loadingPoints)
                 {
                     if (filter.idLoadingPoints.Count > 0 && !filter.idLoadingPoints.Contains(loadingPoint.Id))
@@ -77,7 +82,7 @@ public partial class BasetypeSilos
                     debugList.Clear();
                     foreach (var mappedbasicType in mappedBasicTypes)
                     {
-                        var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(btsc,
+                        var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(Btsc,
                             mappedbasicType.IdOtherType, loadingPoint.Id);
                         if (lpSilos.Count > 0)
                         {
@@ -91,13 +96,13 @@ public partial class BasetypeSilos
                                 basicType.IdMaterialNavigation.Code, basicType.Id, basicType.MixIndex, loadingPoint.Name));
                         }
                         var idsilos = lpSilos.Select(x => x.IdSiloNavigation.SiloNumber).ToList();
-                        btsc.log.Information("{0} Silos.Pt{1} für IdOtherType.{2}: {3}",
+                        Btsc.log.Information("{0} Silos.Pt{1} für IdOtherType.{2}: {3}",
                             basicType.IdMaterialNavigation.Code, loadingPoint.LoadingNumber, mappedbasicType.IdOtherTypeNavigation.IdMaterialNavigation.Code,
                               string.Join(", ", idsilos));
                     }
                     if (siloLists.Count == 0)
                     {
-                        btsc.log.Information("Keine Silo Kombinationen Basetype:{0}.{1} Point:{2}",
+                        Btsc.log.Information("Keine Silo Kombinationen Basetype:{0}.{1} Point:{2}",
                             basicType.IdMaterialNavigation.Code, basicType.MixIndex, loadingPoint.Name);
                         continue;
                     }
@@ -108,7 +113,7 @@ public partial class BasetypeSilos
                     }
 
                     // Varianten aller Silo Kombinationen
-                    btsc.log.Information("Silo Kombinationen Basetype:{0}.{1} Point:{2}",
+                    Btsc.log.Information("Silo Kombinationen Basetype:{0}.{1} Point:{2}",
                         basicType.IdMaterialNavigation.Code, basicType.MixIndex, loadingPoint.Name);
                     foreach (IEnumerable<Object> siloList in CartesianProductContainer.Cartesian(siloLists))
                     {
@@ -130,17 +135,15 @@ public partial class BasetypeSilos
                                 TheSilo = silo.IdSiloNavigation,
                                 Percentage = percentageList[pos - 1],
                             };
-                            debugList.Add(
-                                silo.IdSiloNavigation.SiloNumber.ToString() +
-                                " " + siloItem.Percentage + '%');
+                            debugList.Add(silo.IdSiloNavigation.SiloNumber.ToString() + " " + siloItem.Percentage + '%');
 
                             pos++;
                             siloSet.SiloItems.Add(siloItem);
                         }
                         if (!AddSiloSet(siloSet))  // mit Checks, Priority
-                            btsc.log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+                            Btsc.log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
                         else
-                            btsc.log.Information(string.Join(", ", debugList));
+                            Btsc.log.Information(string.Join(", ", debugList));
                     }
 
                 }

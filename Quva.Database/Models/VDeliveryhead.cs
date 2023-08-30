@@ -67,7 +67,7 @@ public partial class VDeliveryhead
 
     public long? OrderNumber { get; set; }
 
-    public string? GoodRecipienCode { get; set; }
+    public long? GoodRecipienNumber { get; set; }
 
     public string? GoodRecipienName1 { get; set; }
 
@@ -81,7 +81,7 @@ public partial class VDeliveryhead
 
     public string GoodRecipienCountyCode { get; set; } = null!;
 
-    public string? InvoiceRecipienCode { get; set; }
+    public long? InvoiceRecipienNumber { get; set; }
 
     public string? InvoiceRecipienName1 { get; set; }
 

@@ -11,7 +11,7 @@ public record SiloSet
     public int Priority { get; set; }  //Berechnung nach werksbezogenen Regeln (zB 99 wenn Silostand niedrig)
 
     public LoadingPoint? TheLoadingPoint { get; set; }
-    public BasicType? TheBasicType { get; set; }  // also MIX
+    public BasicType? TheBasicType { get; set; }  // MIX or TrueType
     public int MixIndex { get; set; } = 0;
 
     public Contingent? TheContingent { get; set; }

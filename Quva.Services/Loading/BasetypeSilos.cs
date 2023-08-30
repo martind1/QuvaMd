@@ -13,13 +13,13 @@ public partial class BasetypeSilos
 {
     public List<SiloSet> SiloSets { get; set; } = new();
     public List<string> ErrorLines { get; set; } = new();
-    public BtsContext btsc;
+    public BtsContext Btsc;
     public BaseTypeSiloFilter filter;
     private readonly List<string> debugList = new();
 
     public BasetypeSilos(BtsContext btsc, BaseTypeSiloFilter filter)
     {
-        this.btsc = btsc;
+        Btsc = btsc;
         this.filter = filter;
     }
 
@@ -40,7 +40,7 @@ public partial class BasetypeSilos
         if (idDebitor == 0)
         {
             btsc.log.Error($"Debitor not found: {debitorNumber ?? -1} in DeliveryId {delivery.Id}");
-            //return Error(btsc, $"Debitor not found: {debitorNumber ?? -1} in DeliveryId {idDelivery}");
+            //return Error(Btsc, $"Debitor not found: {debitorNumber ?? -1} in DeliveryId {idDelivery}");
         }
         if (btsc.idLocation == 0)
         {
@@ -119,7 +119,7 @@ public partial class BasetypeSilos
                 }
             }
         }
-        else if (filter.idDebitor == null)
+        //Nein! else if (filter.idDebitor == null)
         {
             await result.AddGeneralContingents();
             // Allgemeine Kontingente vorhanden -> weiter suchen (wie bisher bei Mischsilos)
@@ -153,7 +153,7 @@ public partial class BasetypeSilos
 
     private void AddError(string message)
     {
-        btsc.log.Error(message);
+        Btsc.log.Error(message);
         ErrorLines.Add(message);
     }
 

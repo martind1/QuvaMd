@@ -16,7 +16,7 @@ public class BasetypeSilosView
             BasetypeSilosItem item = new()
             {
                 BaseTypeCode = siloset.TheBasicType!.IdMaterialNavigation.Code,
-                MaterialName = siloset.TheBasicType!.IdMaterialNavigation.Name,
+                MaterialName = siloset.TheBasicType.IdMaterialNavigation.Name,
                 MixIndex = siloset.TheBasicType.MixIndex,
                 Contingent = siloset.TheContingent != null ? siloset.ContingentSiloset : null,
                 Point = siloset.TheLoadingPoint!.LoadingNumber,
@@ -59,7 +59,7 @@ public class BasetypeSilosView
         };
         using (var stream = new MemoryStream())
         using (var writer = new StreamWriter(stream))
-        using (StreamReader reader = new StreamReader(stream))
+        using (StreamReader reader = new(stream))
         using (var csv = new CsvWriter(writer, config))
         {
             csv.WriteRecords<BasetypeSilosItem>(SiloSets);

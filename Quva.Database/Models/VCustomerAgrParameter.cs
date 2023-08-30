@@ -7,17 +7,21 @@ namespace Quva.Database.Models;
 
 public partial class VCustomerAgrParameter
 {
+    public long Id { get; set; }
+
+    public long? DebNo { get; set; }
+
+    public string? Code { get; set; }
+
     public string CategoryCode { get; set; } = null!;
 
     public string OptionCode { get; set; } = null!;
 
-    public string ParameterValue { get; set; } = null!;
+    public string Value { get; set; } = null!;
 
     public int Datatype { get; set; }
 
     public string DefaultValue { get; set; } = null!;
-
-    public long Id { get; set; }
 
     public long IdAgreement { get; set; }
 
