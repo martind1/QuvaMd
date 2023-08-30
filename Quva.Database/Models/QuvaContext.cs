@@ -944,6 +944,7 @@ public partial class QuvaContext : DbContext
 
             entity.HasOne(d => d.IdSiloNavigation).WithMany(p => p.ContingentSilo)
                 .HasForeignKey(d => d.IdSilo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CONTSILO_SILO");
         });
 
@@ -1714,10 +1715,6 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CHANGE_USER");
-            entity.Property(e => e.Code)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("CODE");
             entity.Property(e => e.CreateDate)
                 .HasDefaultValueSql("sysdate ")
                 .HasColumnType("DATE")
@@ -2248,8 +2245,7 @@ public partial class QuvaContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("CUSTOMERNAME3");
             entity.Property(e => e.Customernumber)
-                .HasMaxLength(10)
-                .IsUnicode(false)
+                .HasPrecision(18)
                 .HasColumnName("CUSTOMERNUMBER");
             entity.Property(e => e.Customerpostcode)
                 .HasMaxLength(100)
@@ -5595,14 +5591,17 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.Code1)
                 .HasMaxLength(20)
                 .IsUnicode(false)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("CODE1");
             entity.Property(e => e.Code2)
                 .HasMaxLength(20)
                 .IsUnicode(false)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("CODE2");
             entity.Property(e => e.Code3)
                 .HasMaxLength(20)
                 .IsUnicode(false)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("CODE3");
             entity.Property(e => e.Code4)
                 .HasMaxLength(20)
@@ -5614,6 +5613,7 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("CODE5");
             entity.Property(e => e.Id)
                 .HasPrecision(18)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ID");
             entity.Property(e => e.IdLocation)
                 .HasPrecision(18)
@@ -5663,12 +5663,15 @@ public partial class QuvaContext : DbContext
                 .HasPrecision(9)
                 .HasColumnName("MIX_INDEX");
             entity.Property(e => e.Percent1)
+                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(18,2)")
                 .HasColumnName("PERCENT1");
             entity.Property(e => e.Percent2)
+                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(18,2)")
                 .HasColumnName("PERCENT2");
             entity.Property(e => e.Percent3)
+                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(18,2)")
                 .HasColumnName("PERCENT3");
             entity.Property(e => e.Percent4)
@@ -5725,19 +5728,19 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.Active)
                 .HasPrecision(1)
                 .HasColumnName("ACTIVE");
-            entity.Property(e => e.CheckSilolevel)
+            entity.Property(e => e.ChkLevel)
                 .HasPrecision(1)
-                .HasColumnName("CHECK_SILOLEVEL");
-            entity.Property(e => e.CheckSilolock)
+                .HasColumnName("CHK_LEVEL");
+            entity.Property(e => e.ChkLock)
                 .HasPrecision(1)
-                .HasColumnName("CHECK_SILOLOCK");
+                .HasColumnName("CHK_LOCK");
             entity.Property(e => e.Code)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("CODE");
-            entity.Property(e => e.DebitorNumber)
+            entity.Property(e => e.DebNo)
                 .HasPrecision(18)
-                .HasColumnName("DEBITOR_NUMBER");
+                .HasColumnName("DEB_NO");
             entity.Property(e => e.Id)
                 .HasPrecision(18)
                 .HasColumnName("ID");
@@ -5753,13 +5756,13 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.IdMaterial)
                 .HasPrecision(18)
                 .HasColumnName("ID_MATERIAL");
-            entity.Property(e => e.LoadingNumber)
-                .HasPrecision(9)
-                .HasColumnName("LOADING_NUMBER");
             entity.Property(e => e.Name)
                 .HasMaxLength(250)
                 .IsUnicode(false)
                 .HasColumnName("NAME");
+            entity.Property(e => e.Point)
+                .HasPrecision(9)
+                .HasColumnName("POINT");
             entity.Property(e => e.Siloset0)
                 .IsUnicode(false)
                 .HasColumnName("SILOSET0");
@@ -5821,89 +5824,6 @@ public partial class QuvaContext : DbContext
             entity
                 .HasNoKey()
                 .ToView("V_DELIVERY_REPORT");
-
-            entity.Property(e => e.Carrier)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("CARRIER");
-            entity.Property(e => e.ClosingDate)
-                .HasColumnType("DATE")
-                .HasColumnName("CLOSING_DATE");
-            entity.Property(e => e.DebitorGrCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("DEBITOR_GR_CODE");
-            entity.Property(e => e.DebitorGrName1)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("DEBITOR_GR_NAME1");
-            entity.Property(e => e.DebitorIrCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("DEBITOR_IR_CODE");
-            entity.Property(e => e.DebitorIrName1)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("DEBITOR_IR_NAME1");
-            entity.Property(e => e.DeliveryDate)
-                .HasColumnType("DATE")
-                .HasColumnName("DELIVERY_DATE");
-            entity.Property(e => e.DeliveryNumber)
-                .HasPrecision(18)
-                .HasColumnName("DELIVERY_NUMBER");
-            entity.Property(e => e.DeliveryState)
-                .HasPrecision(9)
-                .HasColumnName("DELIVERY_STATE");
-            entity.Property(e => e.FinalWeighingWeight)
-                .HasColumnType("NUMBER(18,3)")
-                .HasColumnName("FINAL_WEIGHING_WEIGHT");
-            entity.Property(e => e.IdPlant)
-                .HasPrecision(18)
-                .HasColumnName("ID_PLANT");
-            entity.Property(e => e.InitialWeighingMode)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("INITIAL_WEIGHING_MODE");
-            entity.Property(e => e.InitialWeighingWeight)
-                .HasColumnType("NUMBER(18,3)")
-                .HasColumnName("INITIAL_WEIGHING_WEIGHT");
-            entity.Property(e => e.LoadedQuantity)
-                .HasColumnType("NUMBER(18,3)")
-                .HasColumnName("LOADED_QUANTITY");
-            entity.Property(e => e.MaterialLongName)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("MATERIAL_LONG_NAME");
-            entity.Property(e => e.MaterialShortName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("MATERIAL_SHORT_NAME");
-            entity.Property(e => e.OrderNumber)
-                .HasPrecision(18)
-                .HasColumnName("ORDER_NUMBER");
-            entity.Property(e => e.RegistrationDate)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .HasColumnName("REGISTRATION_DATE");
-            entity.Property(e => e.SapErrorText)
-                .HasMaxLength(1000)
-                .IsUnicode(false)
-                .HasColumnName("SAP_ERROR_TEXT");
-            entity.Property(e => e.SapExportState)
-                .HasPrecision(9)
-                .HasColumnName("SAP_EXPORT_STATE");
-            entity.Property(e => e.ShippingMethod)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("SHIPPING_METHOD");
-            entity.Property(e => e.Unit)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("UNIT");
-            entity.Property(e => e.VehicleNumber)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("VEHICLE_NUMBER");
         });
 
         modelBuilder.Entity<VDeliveryTransfer>(entity =>
@@ -6384,23 +6304,27 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.Add1Code)
                 .HasMaxLength(20)
                 .IsUnicode(false)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ADD1_CODE");
             entity.Property(e => e.Add2Code)
                 .HasMaxLength(20)
                 .IsUnicode(false)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ADD2_CODE");
             entity.Property(e => e.Add3Code)
                 .HasMaxLength(20)
                 .IsUnicode(false)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ADD3_CODE");
             entity.Property(e => e.Akz)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("AKZ");
-            entity.Property(e => e.BasicTypeCode)
+            entity.Property(e => e.BasicCode)
                 .HasMaxLength(20)
                 .IsUnicode(false)
-                .HasColumnName("BASIC_TYPE_CODE");
+                .ValueGeneratedOnAdd()
+                .HasColumnName("BASIC_CODE");
             entity.Property(e => e.DrainageTime)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -6410,6 +6334,7 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("DRY");
             entity.Property(e => e.Id)
                 .HasPrecision(18)
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ID");
             entity.Property(e => e.IdBasicType)
                 .HasPrecision(18)
@@ -6441,6 +6366,13 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.MinSiloLevelVolume)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("MIN_SILO_LEVEL_VOLUME");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Num)
+                .HasPrecision(9)
+                .HasColumnName("NUM");
             entity.Property(e => e.Points)
                 .IsUnicode(false)
                 .HasColumnName("POINTS");
@@ -6453,23 +6385,20 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.SiloLevelVolume)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("SILO_LEVEL_VOLUME");
-            entity.Property(e => e.SiloNumber)
-                .HasPrecision(9)
-                .HasColumnName("SILO_NUMBER");
             entity.Property(e => e.SiloVolume)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("SILO_VOLUME");
             entity.Property(e => e.SortNumber)
                 .HasPrecision(9)
                 .HasColumnName("SORT_NUMBER");
-            entity.Property(e => e.SpsBasicType)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("SPS_BASIC_TYPE");
             entity.Property(e => e.SpsCode)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("SPS_CODE");
+            entity.Property(e => e.SpsType)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("SPS_TYPE");
         });
 
         modelBuilder.Entity<VSiloMatrix>(entity =>

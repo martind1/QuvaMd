@@ -7,11 +7,11 @@ public partial class BasetypeSilos
     private async Task AddTrueBasicTypes()
     {
         // BaseTypes mit Material ..
-        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesFromMaterialId(btsc, filter.idMaterial);
+        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(btsc, filter.idMaterial);
         foreach (var basicType in basicTypes)
         {
             // .. plus MapingBasicType mit Other Material
-            var mappedBasicTypes = await LoadingDbService.GetMappedTypesFromBasicType(btsc, basicType.Id);
+            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(btsc, basicType.Id);
             if (mappedBasicTypes.Count <= 0)  //if (basicType.MixIndex <= 0)
             {
                 if (basicType.MixIndex > 0)
@@ -19,7 +19,7 @@ public partial class BasetypeSilos
                     AddError($"Falscher MixIndex {basicType.MixIndex}. Muss 0 sein wenn kein Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
                     continue;  //produktiv
                 }
-                var lpSilos = await LoadingDbService.GetLoadingpointSilosFromBasictype(btsc, basicType.Id, null);
+                var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(btsc, basicType.Id, null);
                 foreach (var lpSilo in lpSilos)
                 {
                     Silo silo = lpSilo.IdSiloNavigation;
@@ -51,11 +51,11 @@ public partial class BasetypeSilos
     private async Task AddMixedBasicTypes()
     {
         // BaseTypes mit Material ..
-        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesFromMaterialId(btsc, filter.idMaterial);
+        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(btsc, filter.idMaterial);
         foreach (var basicType in basicTypes)
         {
             // .. plus MapingBasicType mit Other Material
-            var mappedBasicTypes = await LoadingDbService.GetMappedTypesFromBasicType(btsc, basicType.Id);
+            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(btsc, basicType.Id);
             if (mappedBasicTypes.Count > 0)  //if (basicType.MixIndex <= 0)
             {
                 // Mischsorten:
@@ -77,7 +77,7 @@ public partial class BasetypeSilos
                     debugList.Clear();
                     foreach (var mappedbasicType in mappedBasicTypes)
                     {
-                        var lpSilos = await LoadingDbService.GetLoadingpointSilosFromBasictype(btsc,
+                        var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(btsc,
                             mappedbasicType.IdOtherType, loadingPoint.Id);
                         if (lpSilos.Count > 0)
                         {

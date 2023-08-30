@@ -15,8 +15,6 @@ public partial class DeliveryOrderDebitor
 
     public int Role { get; set; }
 
-    public string Code { get; set; } = null!;
-
     public string Name1 { get; set; } = null!;
 
     public string? Name2 { get; set; }

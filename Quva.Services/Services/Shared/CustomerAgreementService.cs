@@ -6,8 +6,8 @@ using Quva.Services.Enums;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
 using System.Globalization;
-using PackagingType = Quva.Services.Enums.PackagingType;
-using TransportType = Quva.Services.Enums.TransportType;
+using PackagingTypeValues = Quva.Services.Enums.PackagingTypeValues;
+using TransportTypeValues = Quva.Services.Enums.TransportTypeValues;
 
 namespace SapTransfer.Services.Shared;
 
@@ -71,8 +71,8 @@ public class CustomerAgreementService : ICustomerAgreementService
 
             long idLocation = deliveryHead.DeliveryOrder!.IdPlantNavigation.IdLocation;
             filter.idPlant = deliveryHead.DeliveryOrder!.IdPlant;
-            filter.packagingType = (PackagingType)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.PackagingType;
-            filter.transportType = (TransportType)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.TransportType;
+            filter.packagingType = (PackagingTypeValues)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.PackagingType;
+            filter.transportType = (TransportTypeValues)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.TransportType;
             filter.validDate = deliveryHead.DeliveryDate;
 
             foreach (var delPos in deliveryHead.DeliveryPosition)
@@ -141,9 +141,9 @@ public class CustomerAgreementService : ICustomerAgreementService
             bool b5 = agr.IdDebitor == null || (agr.FlagInvoiceRecipient && agr.IdDebitor == filter.idInvoiceRecipient);
             bool b6 = agr.IdDebitor == null || (agr.FlagCarrier && agr.IdDebitor == filter.idCarrier);
 
-            bool b7 = agr.PackagingType == (int)PackagingType.All || filter.packagingType == null ||
+            bool b7 = agr.PackagingType == (int)PackagingTypeValues.All || filter.packagingType == null ||
                 agr.PackagingType == (int)filter.packagingType;
-            bool b8 = agr.TransportType == (int)TransportType.All || filter.transportType == null ||
+            bool b8 = agr.TransportType == (int)TransportTypeValues.All || filter.transportType == null ||
                 agr.TransportType == (int)filter.transportType;
 
             bool b9 = agr.ValidFrom == null || filter.validDate == null ||

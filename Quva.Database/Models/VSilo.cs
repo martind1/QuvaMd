@@ -9,7 +9,11 @@ public partial class VSilo
 {
     public long Id { get; set; }
 
-    public int SiloNumber { get; set; }
+    public int Num { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public bool Dry { get; set; }
 
     public string? Points { get; set; }
 
@@ -19,9 +23,9 @@ public partial class VSilo
 
     public string? SpsCode { get; set; }
 
-    public string? SpsBasicType { get; set; }
+    public string? SpsType { get; set; }
 
-    public string? BasicTypeCode { get; set; }
+    public string? BasicCode { get; set; }
 
     public string? Add1Code { get; set; }
 
@@ -40,8 +44,6 @@ public partial class VSilo
     public bool LockLaboratory { get; set; }
 
     public bool LockForSensitiveCustomer { get; set; }
-
-    public bool Dry { get; set; }
 
     public int SortNumber { get; set; }
 

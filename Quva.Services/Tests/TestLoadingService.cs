@@ -1,4 +1,5 @@
-﻿using Quva.Services.Interfaces.Shared;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading;
 using Serilog;
 
@@ -28,7 +29,8 @@ public class TestLoadingService
                 Console.WriteLine($"1 = set idLocation (HOH = {IdLocation})");
                 Console.WriteLine($"2 = GetBasetypeSilosAll");
                 Console.WriteLine($"3 = set idDelivery ({IdDelivery})");
-                Console.WriteLine($"4 = GetBasetypeSilosFromDelivery");
+                Console.WriteLine($"4 = GetBasetypeSilosByDelivery");
+                Console.WriteLine($"5 = CreateLoadorder (10t)");
                 Console.WriteLine("sonst = Ende");
                 ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
                 Console.WriteLine("");
@@ -53,18 +55,31 @@ public class TestLoadingService
                 {
                     Console.WriteLine("IdDelivery:");
                     var s1 = Console.ReadLine();
-                    IdLocation = long.Parse(s1!.Trim() == "" ? IdDelivery.ToString() : s1);
+                    IdDelivery = long.Parse(s1!.Trim() == "" ? IdDelivery.ToString() : s1);
                     Console.WriteLine(IdLocation);
                 }
                 else if (key.KeyChar == '4')
                 {
-                    var baseTypeSilos = await _loadingService.GetBasetypeSilosFromDelivery(IdDelivery);
+                    var baseTypeSilos = await _loadingService.GetBasetypeSilosByDelivery(IdDelivery);
 
                     var view = BasetypeSilosView.FromBasetypeSilos(baseTypeSilos);
 
                     _log.Information($"BaseTypeSilos for Delivery {IdDelivery}:{Environment.NewLine}{view.ToCsv()}");
                     _log.Information($"{string.Join(Environment.NewLine, baseTypeSilos.ErrorLines)}");
                     Console.WriteLine($"done");
+                }
+                else if (key.KeyChar == '5')
+                {
+                    LoadingParameter parameter = new()
+                    {
+                        IdLocation = IdLocation,
+                        IdDelivery = IdDelivery,
+                        TargetQuantity = 10
+                    };
+                    var loadingResult = await _loadingService.CreateLoadorder(parameter);
+                    _log.Information($"Created Loadorders {IdDelivery}: {string.Join(", ", loadingResult.IdLoadorders)}");
+
+                    _log.Information($"Errors: {string.Join(Environment.NewLine, loadingResult.ErrorLines)}");
                 }
                 else
                 {

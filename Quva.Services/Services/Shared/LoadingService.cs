@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using Quva.Database.Models;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading;
@@ -35,13 +36,24 @@ public class LoadingService : ILoadingService
         return BasetypeSilosView.FromBasetypeSilos(baseTypeSilos);
     }
 
-    public async Task<BasetypeSilos> GetBasetypeSilosFromDelivery(long idDelivery)
+    public async Task<BasetypeSilos> GetBasetypeSilosByDelivery(long idDelivery)
     {
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
 
-        return await BasetypeSilos.CreateFromDelivery(new BtsContext(context, _customerAgreementService, _log, 0), idDelivery);
+        var btsc = new BtsContext(context, _customerAgreementService, _log, 0);
+        return await BasetypeSilos.CreateByDelivery(btsc, idDelivery, null);
 
+    }
+
+
+    public async Task<LoadingResult> CreateLoadorder(LoadingParameter parameter)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
+
+        var btsc = new BtsContext(context, _customerAgreementService, _log, parameter.IdLocation);
+        return await LoadOrderService.CreateLoadorder(btsc, parameter);
     }
 
 }

@@ -15,7 +15,7 @@ public partial class ContingentSilo
 
     public int Position { get; set; }
 
-    public long? IdSilo { get; set; }
+    public long IdSilo { get; set; }
 
     public decimal? Percentage { get; set; }
 
@@ -35,5 +35,5 @@ public partial class ContingentSilo
 
     public virtual Contingent IdContingentNavigation { get; set; } = null!;
 
-    public virtual Silo? IdSiloNavigation { get; set; }
+    public virtual Silo IdSiloNavigation { get; set; } = null!;
 }

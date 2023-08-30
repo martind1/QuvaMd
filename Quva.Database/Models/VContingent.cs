@@ -7,13 +7,15 @@ namespace Quva.Database.Models;
 
 public partial class VContingent
 {
-    public long? DebitorNumber { get; set; }
+    public long Id { get; set; }
+
+    public long? DebNo { get; set; }
 
     public string Code { get; set; } = null!;
 
     public string? Name { get; set; }
 
-    public int LoadingNumber { get; set; }
+    public int Point { get; set; }
 
     public bool Active { get; set; }
 
@@ -21,17 +23,15 @@ public partial class VContingent
 
     public DateTime? ValidTo { get; set; }
 
-    public bool CheckSilolevel { get; set; }
+    public bool ChkLevel { get; set; }
 
-    public bool CheckSilolock { get; set; }
+    public bool ChkLock { get; set; }
 
     public string? Siloset0 { get; set; }
 
     public string? Siloset1 { get; set; }
 
     public string? Siloset2 { get; set; }
-
-    public long Id { get; set; }
 
     public long IdLocation { get; set; }
 

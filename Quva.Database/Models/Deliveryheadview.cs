@@ -111,7 +111,7 @@ public partial class Deliveryheadview
 
     public string? Name { get; set; }
 
-    public string? Customernumber { get; set; }
+    public long? Customernumber { get; set; }
 
     public string? Customername1 { get; set; }
 

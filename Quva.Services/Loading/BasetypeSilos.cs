@@ -4,7 +4,7 @@ using Serilog;
 
 namespace Quva.Services.Loading;
 
-public record BtsContext(QuvaContext context, ICustomerAgreementService customerAgreementService, ILogger log, long idLocation);
+
 
 /// <summary>
 /// Verwaltung der möglichen Silokombinationen. Analog View V_GRSO_SILOS
@@ -23,39 +23,53 @@ public partial class BasetypeSilos
         this.filter = filter;
     }
 
-    public static async Task<BasetypeSilos> CreateFromDelivery(BtsContext btsc, long idDelivery)
+    public static async Task<BasetypeSilos> CreateByDelivery(BtsContext btsc, long idDelivery, long? idLoadingPoint)
     {
         var delivery = await LoadingDbService.FindDelivery(btsc, idDelivery);
-        var debitorNumber = delivery?.DeliveryOrder?.DeliveryOrderDebitor.ElementAt(0).DebitorNumber;
+        if (delivery == null)
+        {
+            return Error(btsc, $"Delivery not found ID:{idDelivery}");
+        }
+        return await CreateByDelivery(btsc, delivery, idLoadingPoint);
+    }
+
+    public static async Task<BasetypeSilos> CreateByDelivery(BtsContext btsc, DeliveryHead delivery, long? idLoadingPoint)
+    {
+        var debitorNumber = delivery.DeliveryOrder?.DeliveryOrderDebitor.FirstOrDefault()?.DebitorNumber;
         var idDebitor = await LoadingDbService.GetIdDebitorByNumber(btsc, debitorNumber ?? 0);
         if (idDebitor == 0)
         {
-            return Error(btsc, $"Debitor not found: {debitorNumber ?? -1} in DeliveryId {idDelivery}");
+            btsc.log.Error($"Debitor not found: {debitorNumber ?? -1} in DeliveryId {delivery.Id}");
+            //return Error(btsc, $"Debitor not found: {debitorNumber ?? -1} in DeliveryId {idDelivery}");
         }
         if (btsc.idLocation == 0)
         {
             // changing init-only property:
             btsc = new BtsContext(btsc.context, btsc.customerAgreementService, btsc.log,
-                delivery!.DeliveryOrder!.IdPlantNavigation.IdLocation);
+                delivery.DeliveryOrder!.IdPlantNavigation.IdLocation);
         }
 
-        var materialCode = delivery?.DeliveryOrder?.DeliveryOrderPosition.ElementAt(0).MaterialShortName;
+        var materialCode = delivery.DeliveryOrder?.DeliveryOrderPosition.ElementAt(0).MaterialShortName;
         var idMaterial = await LoadingDbService.GetIdMaterialByCode(btsc, materialCode ?? "0");
         if (idMaterial == 0)
         {
-            return Error(btsc, $"kein Material in DeliveryId {idDelivery}");
+            return Error(btsc, $"kein Material in DeliveryId {delivery.Id}");
         }
 
         var agr = await btsc.customerAgreementService.GetAgreementsByDebitorMaterial(btsc.idLocation, idDebitor, idMaterial);
         var kontPflicht = (bool)agr.GetParameter("KONT_PFLICHT");
 
-        return await CreateFromFilter(btsc,
-            new BaseTypeSiloFilter
-            {
-                idDebitor = idDebitor,
-                idMaterial = idMaterial,
-                ContingentRequired = kontPflicht,
-            }); 
+        var filter = new BaseTypeSiloFilter
+        {
+            idDebitor = idDebitor,
+            idMaterial = idMaterial,
+            ContingentRequired = kontPflicht,
+        };
+        if (idLoadingPoint != null)
+        {
+            filter.idLoadingPoints.Add((long)idLoadingPoint);
+        }
+        return await CreateByFilter(btsc, filter); 
     }
 
     public static async Task<BasetypeSilos> CreateAll(BtsContext btsc)
@@ -65,14 +79,23 @@ public partial class BasetypeSilos
         // mit Mischsorten (MappingBaseType). Mit Grundsorte2 (ADDITIONAL_BASIC_TYPE)
 
         // TODO: Options?
-        return await CreateFromFilter(btsc,
+        return await CreateByFilter(btsc,
             new BaseTypeSiloFilter
             {
                 idMaterial = null,
             });
     }
 
-    private static async Task<BasetypeSilos> CreateFromFilter(BtsContext btsc, BaseTypeSiloFilter filter)
+    public void SortByPrio()
+    {
+        // Sorts and deletes 0-Priorities
+        SiloSets = SiloSets
+            .Where(o => o.Priority > 0)
+            .OrderBy(o => o.Priority)
+            .ToList();
+    }
+
+    private static async Task<BasetypeSilos> CreateByFilter(BtsContext btsc, BaseTypeSiloFilter filter)
     {
         // Erzeugt BaseTypeSilos mit den SiloSets
         // Generische Basisfunktion anhand Filter
@@ -92,6 +115,7 @@ public partial class BasetypeSilos
                 if (filter.ContingentRequired)
                 {
                     result.AddError("keine gültigen Kontingente trotz Kontingentpflicht");
+                    return result;
                 }
             }
         }
@@ -117,9 +141,6 @@ public partial class BasetypeSilos
 
         foreach (var otherSiloSet in SiloSets)
         {
-            if (otherSiloSet.TheBasicType?.IdMaterialNavigation.Code !=
-                siloSet.TheBasicType?.IdMaterialNavigation.Code) continue;
-
             if (otherSiloSet.Equals(siloSet)) return false;
         }
 

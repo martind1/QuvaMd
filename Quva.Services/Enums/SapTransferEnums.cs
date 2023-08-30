@@ -105,14 +105,14 @@ public enum TransferTypeValues
     ExportToBde = 11
 }
 
-public enum TransportType
+public enum TransportTypeValues
 {
     All = 0,
     Truck = 1,
     Rail = 2
 }
 
-public enum PackagingType
+public enum PackagingTypeValues
 {
     All = 0,
     Bulk = 1,

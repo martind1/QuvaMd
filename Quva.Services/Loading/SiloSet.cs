@@ -49,8 +49,16 @@ public record SiloSet
     {
         if (other == null) return false;
 
-        bool b1 = TheLoadingPoint != null && TheLoadingPoint.Equals(other.TheLoadingPoint);
+        bool b1 = TheLoadingPoint?.LoadingNumber != null &&
+                  other.TheLoadingPoint?.LoadingNumber != null &&
+                  TheLoadingPoint?.LoadingNumber == other.TheLoadingPoint?.LoadingNumber;
         if (!b1) return false;
+
+        bool b2 = TheBasicType?.IdMaterialNavigation.Code != null &&
+                  other.TheBasicType?.IdMaterialNavigation.Code != null &&
+                  TheBasicType?.IdMaterialNavigation.Code ==
+                    other.TheBasicType?.IdMaterialNavigation.Code;
+        if (!b2) return false;
 
         if (SiloItems.Count != other.SiloItems.Count) return false;
 

@@ -9,6 +9,8 @@ public enum LoadorderStateValues
     LoadingCanceled = 4,
     ToReload = 5,
     GetWeight = 6,
+    Reserved1 = 7,
+    Reserved2 = 8,
     Inactive = 9
 }
 
@@ -20,14 +22,3 @@ public enum WeighingUnit
     Gram = 3
 }
 
-public enum DeliveryStateValues
-{
-    //0 Entered, 1 Scheduled, 2 Yard list, 3 Loaded, 4 Weighed, 5 Exported SAP, 6 Cancelled.
-    Entered = 0, 
-    Scheduled = 1, 
-    YardList = 2, 
-    Loaded = 3, 
-    Weighed = 4, 
-    ExportedSap = 5, 
-    Cancelled = 6
-}

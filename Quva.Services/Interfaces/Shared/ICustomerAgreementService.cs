@@ -18,8 +18,8 @@ public record AgreementsFilter
     public long? idGoodsRecipient; 
     public long? idInvoiceRecipient; 
     public long? idCarrier;
-    public PackagingType? packagingType; 
-    public TransportType? transportType;
+    public PackagingTypeValues? packagingType; 
+    public TransportTypeValues? transportType;
     public DateTime? validDate;
 }
 
