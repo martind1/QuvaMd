@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Quva.Database.Models;
-using Quva.Services.Interfaces.Shared;
+﻿using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading;
 using Quva.Services.Loading.Interfaces;
 using Serilog;

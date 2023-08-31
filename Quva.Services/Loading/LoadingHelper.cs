@@ -40,18 +40,21 @@ public static class CartesianProductContainer
             // increase enumerators
             foreach (var slot in slots)
             {
-                // reset the slot if it couldn't move next
-                if (!slot.MoveNext())
+                if (slot.MoveNext())
+                {
+                    // we could increase the current enumerator without reset so stop here
+                    break;
+                }
+                if (slot == slots.Last())
                 {
                     // stop when the last enumerator resets
-                    if (slot == slots.Last()) { yield break; }
-                    slot.Reset();
-                    slot.MoveNext();
-                    // move to the next enumerator if this reseted
-                    continue;
+                    yield break;
                 }
-                // we could increase the current enumerator without reset so stop here
-                break;
+                // reset the slot if it couldn't move next
+                slot.Reset();
+                // move to the next enumerator if this reseted
+                slot.MoveNext();
+                continue;
             }
         }
     }
