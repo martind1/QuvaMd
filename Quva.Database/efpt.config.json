@@ -332,6 +332,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "QUVA_API.BELADUNGEN",
+         "ObjectType": 3
+      },
+      {
          "Name": "QUVA_API.DELIVERYHEADVIEW",
          "ObjectType": 3
       },
@@ -360,6 +364,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "QUVA_API.V_BASIC_TYPE_REPORT",
+         "ObjectType": 3
+      },
+      {
          "Name": "QUVA_API.V_CONFIG_PRODUCTGROUP",
          "ObjectType": 3
       },
@@ -368,7 +376,19 @@
          "ObjectType": 3
       },
       {
+         "Name": "QUVA_API.V_CONTINGENT_SILOSET",
+         "ObjectType": 3
+      },
+      {
          "Name": "QUVA_API.V_CUSTOMER_AGR_PARAMETER",
+         "ObjectType": 3
+      },
+      {
+         "Name": "QUVA_API.V_CUSTOMER_AGREEMENT",
+         "ObjectType": 3
+      },
+      {
+         "Name": "QUVA_API.V_DELIVERY_HEAD_MD",
          "ObjectType": 3
       },
       {

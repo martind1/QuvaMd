@@ -105,6 +105,8 @@ public partial class LoadorderHead
 
     public string? Note { get; set; }
 
+    public int PositionNumber { get; set; }
+
     public virtual DeliveryHead IdDeliveryNavigation { get; set; } = null!;
 
     public virtual LoadingPoint IdLoadingPointNavigation { get; set; } = null!;

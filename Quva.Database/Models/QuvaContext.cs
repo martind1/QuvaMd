@@ -19,6 +19,8 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<Batch> Batch { get; set; }
 
+    public virtual DbSet<Beladungen> Beladungen { get; set; }
+
     public virtual DbSet<Carrier> Carrier { get; set; }
 
     public virtual DbSet<ConfigMessage> ConfigMessage { get; set; }
@@ -177,11 +179,19 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<VBasicType> VBasicType { get; set; }
 
+    public virtual DbSet<VBasicTypeReport> VBasicTypeReport { get; set; }
+
     public virtual DbSet<VConfigProductgroup> VConfigProductgroup { get; set; }
 
     public virtual DbSet<VContingent> VContingent { get; set; }
 
+    public virtual DbSet<VContingentSiloset> VContingentSiloset { get; set; }
+
     public virtual DbSet<VCustomerAgrParameter> VCustomerAgrParameter { get; set; }
+
+    public virtual DbSet<VCustomerAgreement> VCustomerAgreement { get; set; }
+
+    public virtual DbSet<VDeliveryHeadMd> VDeliveryHeadMd { get; set; }
 
     public virtual DbSet<VDeliveryReport> VDeliveryReport { get; set; }
 
@@ -395,6 +405,54 @@ public partial class QuvaContext : DbContext
                 .HasForeignKey(d => d.IdUnit)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BATCH_UNIT");
+        });
+
+        modelBuilder.Entity<Beladungen>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("BELADUNGEN");
+
+            entity.Property(e => e.BeinNr)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("BEIN_NR");
+            entity.Property(e => e.BelaId)
+                .HasPrecision(9)
+                .HasColumnName("BELA_ID");
+            entity.Property(e => e.BruttoGewicht)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("BRUTTO_GEWICHT");
+            entity.Property(e => e.BruttoGewichtId)
+                .HasPrecision(9)
+                .HasColumnName("BRUTTO_GEWICHT_ID");
+            entity.Property(e => e.GewichtEinheit)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .HasColumnName("GEWICHT_EINHEIT");
+            entity.Property(e => e.Istmenge)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("ISTMENGE");
+            entity.Property(e => e.NettoGewicht)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("NETTO_GEWICHT");
+            entity.Property(e => e.Sollmenge)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("SOLLMENGE");
+            entity.Property(e => e.Status)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("STATUS");
+            entity.Property(e => e.TaraGewicht)
+                .HasColumnType("NUMBER(9,3)")
+                .HasColumnName("TARA_GEWICHT");
+            entity.Property(e => e.TaraGewichtId)
+                .HasPrecision(9)
+                .HasColumnName("TARA_GEWICHT_ID");
+            entity.Property(e => e.WerkNr)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("WERK_NR");
         });
 
         modelBuilder.Entity<Carrier>(entity =>
@@ -2787,6 +2845,9 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("PATTERN_NUMBER");
+            entity.Property(e => e.PositionNumber)
+                .HasPrecision(9)
+                .HasColumnName("POSITION_NUMBER");
             entity.Property(e => e.SandCalibNumber)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -5686,6 +5747,28 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("SPS_BASIC_TYPE");
         });
 
+        modelBuilder.Entity<VBasicTypeReport>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_BASIC_TYPE_REPORT");
+
+            entity.Property(e => e.Code)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("CODE");
+            entity.Property(e => e.LoadingDay)
+                .HasColumnType("DATE")
+                .HasColumnName("LOADING_DAY");
+            entity.Property(e => e.Name)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+            entity.Property(e => e.Quantity)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("QUANTITY");
+        });
+
         modelBuilder.Entity<VConfigProductgroup>(entity =>
         {
             entity
@@ -5780,6 +5863,95 @@ public partial class QuvaContext : DbContext
                 .HasColumnName("VALID_TO");
         });
 
+        modelBuilder.Entity<VContingentSiloset>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_CONTINGENT_SILOSET");
+
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.ChkLevel)
+                .HasPrecision(1)
+                .HasColumnName("CHK_LEVEL");
+            entity.Property(e => e.ChkLock)
+                .HasPrecision(1)
+                .HasColumnName("CHK_LOCK");
+            entity.Property(e => e.Code)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("CODE");
+            entity.Property(e => e.DebNo)
+                .HasPrecision(18)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("DEB_NO");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdDebitor)
+                .HasPrecision(18)
+                .HasColumnName("ID_DEBITOR");
+            entity.Property(e => e.IdLoadingPoint)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOADING_POINT");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.Loc)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("LOC");
+            entity.Property(e => e.Name)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("NAME");
+            entity.Property(e => e.Pct1)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("NUMBER(18,2)")
+                .HasColumnName("PCT1");
+            entity.Property(e => e.Pct2)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("NUMBER(18,2)")
+                .HasColumnName("PCT2");
+            entity.Property(e => e.Pct3)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("NUMBER(18,2)")
+                .HasColumnName("PCT3");
+            entity.Property(e => e.Point)
+                .HasPrecision(9)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("POINT");
+            entity.Property(e => e.Silo1)
+                .HasPrecision(9)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("SILO1");
+            entity.Property(e => e.Silo2)
+                .HasPrecision(9)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("SILO2");
+            entity.Property(e => e.Silo3)
+                .HasPrecision(9)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("SILO3");
+            entity.Property(e => e.SiloSet)
+                .HasPrecision(9)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("SILO_SET");
+            entity.Property(e => e.ValidFrom)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_FROM");
+            entity.Property(e => e.ValidTo)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_TO");
+        });
+
         modelBuilder.Entity<VCustomerAgrParameter>(entity =>
         {
             entity
@@ -5826,6 +5998,221 @@ public partial class QuvaContext : DbContext
                 .IsUnicode(false)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("VALUE");
+        });
+
+        modelBuilder.Entity<VCustomerAgreement>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_CUSTOMER_AGREEMENT");
+
+            entity.Property(e => e.Active)
+                .HasPrecision(1)
+                .HasColumnName("ACTIVE");
+            entity.Property(e => e.Carrier)
+                .HasPrecision(1)
+                .HasColumnName("CARRIER");
+            entity.Property(e => e.Category)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("CATEGORY");
+            entity.Property(e => e.Code)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("CODE");
+            entity.Property(e => e.Ctry)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CTRY");
+            entity.Property(e => e.DebName1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEB_NAME1");
+            entity.Property(e => e.DebNo)
+                .HasPrecision(18)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("DEB_NO");
+            entity.Property(e => e.Goods)
+                .HasPrecision(1)
+                .HasColumnName("GOODS");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.IdCategory)
+                .HasPrecision(18)
+                .HasColumnName("ID_CATEGORY");
+            entity.Property(e => e.IdCountry)
+                .HasPrecision(18)
+                .HasColumnName("ID_COUNTRY");
+            entity.Property(e => e.IdDebitor)
+                .HasPrecision(18)
+                .HasColumnName("ID_DEBITOR");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.IdMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_MATERIAL");
+            entity.Property(e => e.IdPlant)
+                .HasPrecision(18)
+                .HasColumnName("ID_PLANT");
+            entity.Property(e => e.Invoice)
+                .HasPrecision(1)
+                .HasColumnName("INVOICE");
+            entity.Property(e => e.Loc)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("LOC");
+            entity.Property(e => e.PackagingType)
+                .HasPrecision(9)
+                .HasColumnName("PACKAGING_TYPE");
+            entity.Property(e => e.PckTyp)
+                .HasMaxLength(49)
+                .IsUnicode(false)
+                .HasColumnName("PCK_TYP");
+            entity.Property(e => e.Pla)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("PLA");
+            entity.Property(e => e.TransportType)
+                .HasPrecision(9)
+                .HasColumnName("TRANSPORT_TYPE");
+            entity.Property(e => e.TrpTyp)
+                .HasMaxLength(48)
+                .IsUnicode(false)
+                .HasColumnName("TRP_TYP");
+            entity.Property(e => e.ValidFrom)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_FROM");
+            entity.Property(e => e.ValidTo)
+                .HasColumnType("DATE")
+                .HasColumnName("VALID_TO");
+        });
+
+        modelBuilder.Entity<VDeliveryHeadMd>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("V_DELIVERY_HEAD_MD");
+
+            entity.Property(e => e.Art)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("ART");
+            entity.Property(e => e.CollectNo)
+                .HasPrecision(18)
+                .HasColumnName("COLLECT_NO");
+            entity.Property(e => e.ContainerNumber)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CONTAINER_NUMBER");
+            entity.Property(e => e.Cum)
+                .HasPrecision(9)
+                .HasColumnName("CUM");
+            entity.Property(e => e.Deb0Id)
+                .HasPrecision(18)
+                .HasColumnName("DEB0_ID");
+            entity.Property(e => e.Deb0Name1)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEB0_NAME1");
+            entity.Property(e => e.Deb0No)
+                .HasPrecision(18)
+                .HasColumnName("DEB0_NO");
+            entity.Property(e => e.Deb0Town)
+                .HasMaxLength(400)
+                .IsUnicode(false)
+                .HasColumnName("DEB0_TOWN");
+            entity.Property(e => e.Deb1Id)
+                .HasPrecision(18)
+                .HasColumnName("DEB1_ID");
+            entity.Property(e => e.Deb1No)
+                .HasPrecision(18)
+                .HasColumnName("DEB1_NO");
+            entity.Property(e => e.Deb2Id)
+                .HasPrecision(18)
+                .HasColumnName("DEB2_ID");
+            entity.Property(e => e.Deb2No)
+                .HasPrecision(18)
+                .HasColumnName("DEB2_NO");
+            entity.Property(e => e.DelNo)
+                .HasPrecision(18)
+                .HasColumnName("DEL_NO");
+            entity.Property(e => e.DelState)
+                .HasMaxLength(52)
+                .IsUnicode(false)
+                .HasColumnName("DEL_STATE");
+            entity.Property(e => e.DesiredDate)
+                .HasColumnType("DATE")
+                .HasColumnName("DESIRED_DATE");
+            entity.Property(e => e.Device)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("DEVICE");
+            entity.Property(e => e.Gross)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("GROSS");
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Ident)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("IDENT");
+            entity.Property(e => e.LoadDate)
+                .HasColumnType("DATE")
+                .HasColumnName("LOAD_DATE");
+            entity.Property(e => e.Loc)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("LOC");
+            entity.Property(e => e.Materialcodes)
+                .IsUnicode(false)
+                .HasColumnName("MATERIALCODES");
+            entity.Property(e => e.Moist)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MOIST");
+            entity.Property(e => e.Net)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("NET");
+            entity.Property(e => e.NonSap)
+                .HasPrecision(1)
+                .HasColumnName("NON_SAP");
+            entity.Property(e => e.OrderNo)
+                .HasPrecision(18)
+                .HasColumnName("ORDER_NO");
+            entity.Property(e => e.Pla)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .HasColumnName("PLA");
+            entity.Property(e => e.RailTerminal)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("RAIL_TERMINAL");
+            entity.Property(e => e.SapState)
+                .HasMaxLength(62)
+                .IsUnicode(false)
+                .HasColumnName("SAP_STATE");
+            entity.Property(e => e.SlipNo)
+                .HasPrecision(18)
+                .HasColumnName("SLIP_NO");
+            entity.Property(e => e.Tara)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("TARA");
+            entity.Property(e => e.TransNo)
+                .HasPrecision(18)
+                .HasColumnName("TRANS_NO");
+            entity.Property(e => e.Unit)
+                .HasPrecision(9)
+                .HasColumnName("UNIT");
+            entity.Property(e => e.VehicleNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("VEHICLE_NUMBER");
         });
 
         modelBuilder.Entity<VDeliveryReport>(entity =>

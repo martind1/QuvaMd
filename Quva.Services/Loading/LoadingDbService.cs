@@ -106,7 +106,7 @@ public class LoadingDbService : ILoadingDbService
 
     public async Task<DeliveryHead?> FindDelivery(long idDelivery)
     {
-        // mit DeliverOrder, Plant, DeliverOrderDebitor, DeliveryOrderPosition
+        // mit DeliverOrder, Plant, DeliverOrderDebitor, DeliveryOrderPosition (only mainPosition)
         //   ShippingMethod
         _log.Debug($"FindDelivery {idDelivery}");
         var query = from del in _context.DeliveryHead

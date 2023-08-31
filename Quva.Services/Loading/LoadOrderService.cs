@@ -59,6 +59,7 @@ public class LoadOrderService : ILoadOrderService
                 // obligatory:
                 Id = 0,
                 IdDelivery = parameter.IdDelivery,
+                PositionNumber = delivery.DeliveryPosition.First().PositionNumber,
                 LoadorderState = (int)LoadorderStateValues.ToLoad,
                 IdLoadingPoint = loadingPoint.Id,
                 CreateUser = delivery.CreateUser,
