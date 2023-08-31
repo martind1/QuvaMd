@@ -44,6 +44,13 @@ public class LoadOrderService : ILoadOrderService
             AddError(result, $"No Loading Points for IdDelivery:({parameter.IdDelivery})");
             return result;
         }
+
+        if (delivery.DeliveryPosition.Count <= 0)
+        {
+            AddError(result, $"No Main Positions for IdDelivery:({parameter.IdDelivery})");
+            return result;
+        }
+
         foreach (var loadingPoint in loadingPoints)
         {
             // Check if active Loadorder with this Point already exists

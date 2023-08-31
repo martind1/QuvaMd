@@ -110,6 +110,7 @@ public class LoadingDbService : ILoadingDbService
         //   ShippingMethod
         _log.Debug($"FindDelivery {idDelivery}");
         var query = from del in _context.DeliveryHead
+                    .Include(del => del.DeliveryPosition)
                     .Include(del => del.DeliveryOrder)
                         .ThenInclude(pla => pla!.IdPlantNavigation)
                     .Include(del => del.DeliveryOrder)
