@@ -1,54 +1,56 @@
 ﻿using Quva.Database.Models;
 using Quva.Services.Enums;
+using Quva.Services.Loading.Interfaces;
 using Serilog;
 using System.Reflection.Emit;
 
 namespace Quva.Services.Loading;
 
-internal class LoadOrderService
+public class LoadOrderService : ILoadOrderService
 {
-    public BtsContext Btsc;
-    private readonly LoadingResult _loadingResult;
+    private readonly ILogger _log;
+    private readonly ILoadingDbService _loadingDbService;
+    private readonly IBasetypeService _basetypeService;
 
-    public LoadOrderService(BtsContext btsc, LoadingResult loadingResult)
+    public LoadOrderService(ILoadingDbService loadingDbService, IBasetypeService basetypeService)
     {
-        Btsc = btsc;
-        _loadingResult = loadingResult;
+        _log = Log.ForContext(GetType());
+        _loadingDbService = loadingDbService;
+        _basetypeService = basetypeService;
     }
 
-    public static async Task<LoadingResult> CreateLoadorder(BtsContext btsc, LoadingParameter parameter)
+    public async Task<LoadingResult> CreateLoadorder(LoadingParameter parameter)
     {
         LoadingResult result = new();
-        LoadOrderService loService = new(btsc, result);
 
         if (parameter.SiloSet != null)
         {
             //throw new NotImplementedException("LoadingParameter SiloSet is not implemented");
-            loService.AddError("LoadingParameter SiloSet is not implemented");
+            AddError(result, "LoadingParameter SiloSet is not implemented");
             return result;
         }
 
-        var delivery = await LoadingDbService.FindDelivery(btsc, parameter.IdDelivery);
+        var delivery = await _loadingDbService.FindDelivery(parameter.IdDelivery);
         if (delivery == null)
         {
-            loService.AddError($"IdDelivery not found ({parameter.IdDelivery})");
+            AddError(result, $"IdDelivery not found ({parameter.IdDelivery})");
             return result;
         }
 
-        var loadingPoints = await LoadingDbService.GetLoadingPointsByShippingMethod(btsc,
+        var loadingPoints = await _loadingDbService.GetLoadingPointsByShippingMethod(parameter.IdLocation,
             delivery.DeliveryOrder!.IdShippingMethodNavigation);
         if (loadingPoints.Count == 0)
         {
-            loService.AddError($"No Loading Points for IdDelivery:({parameter.IdDelivery})");
+            AddError(result, $"No Loading Points for IdDelivery:({parameter.IdDelivery})");
             return result;
         }
         foreach (var loadingPoint in loadingPoints)
         {
             // Check if active Loadorder with this Point already exists
-            var activeOrder = await LoadingDbService.GetActiveLoadorder(btsc, parameter.IdDelivery, loadingPoint.Id);
+            var activeOrder = await _loadingDbService.GetActiveLoadorder(parameter.IdDelivery, loadingPoint.Id);
             if (activeOrder != null)
             {
-                loService.AddError($"Active Loadorder already exists. Point({loadingPoint.Name}) ID({activeOrder.Id})");
+                AddError(result, $"Active Loadorder already exists. Point({loadingPoint.Name}) ID({activeOrder.Id})");
                 continue;
             }
 
@@ -96,11 +98,11 @@ internal class LoadOrderService
             }
 
             // Silos:
-            var silos = await BasetypeSilos.CreateByDelivery(btsc, delivery, loadingPoint.Id);
+            var silos = await _basetypeService.GetByDelivery(delivery, loadingPoint.Id);
             result.AddErrorLines(silos.ErrorLines);
             if (silos.SiloSets.Count == 0)
             {
-                loService.AddError($"No Silos for IdDelivery:({parameter.IdDelivery}) Point({loadingPoint.LoadingNumber})");
+                AddError(result, $"No Silos for IdDelivery:({parameter.IdDelivery}) Point({loadingPoint.LoadingNumber})");
                 return result;
             }
             silos.SortByPrio();  // sorts silosets
@@ -131,7 +133,7 @@ internal class LoadOrderService
             }
 
             // persist:
-            var idLoadorder = await LoadingDbService.SaveLoadorder(btsc, hdr);
+            var idLoadorder = await _loadingDbService.SaveLoadorder(hdr);
             result.IdLoadorders.Add(idLoadorder);
 
         }  // loadingPoint
@@ -140,10 +142,10 @@ internal class LoadOrderService
         return result;
     }
 
-    private void AddError(string message)
+    private void AddError(LoadingResult loadingResult, string message)
     {
-        Btsc.log.Error(message);
-        _loadingResult.ErrorLines.Add(message);
+        _log.Error(message);
+        loadingResult.ErrorLines.Add(message);
     }
 
 }

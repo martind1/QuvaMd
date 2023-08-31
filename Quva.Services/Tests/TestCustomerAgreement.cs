@@ -10,9 +10,9 @@ namespace Quva.Services.Tests;
 
 public class TestCustomerAgreement
 {
-    private readonly ICustomerAgreementService _customerAgreementService;
+    private readonly IAgreementsService _customerAgreementService;
 
-    public TestCustomerAgreement(ICustomerAgreementService customerAgreementService)
+    public TestCustomerAgreement(IAgreementsService customerAgreementService)
     {
         _customerAgreementService = customerAgreementService;
     }

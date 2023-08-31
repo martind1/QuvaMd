@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Client;
 using Quva.Database.Models;
 using Quva.Services.Enums;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace SapTransfer.Services.Shared;
 
@@ -16,12 +13,12 @@ namespace SapTransfer.Services.Shared;
 public class LocationParameterService : ILocationParameterService
 {
     private readonly ILogger _log;
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly QuvaContext _context;
 
-    public LocationParameterService(IServiceScopeFactory scopeFactory)
+    public LocationParameterService(QuvaContext context)
     {
         _log = Log.ForContext(GetType());
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
 
     private long _cachedIdLocation = 0;
@@ -69,9 +66,7 @@ public class LocationParameterService : ILocationParameterService
         if (_cachedIdLocation != idLocation)
         {
             _cachedIdLocation = idLocation;
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
-            var query0 = from locpar in context.VLocationParameter
+            var query0 = from locpar in _context.VLocationParameter
                          where locpar.IdLocation == idLocation
                          select locpar;
             _cachedLocationParameters = await query0.ToListAsync();

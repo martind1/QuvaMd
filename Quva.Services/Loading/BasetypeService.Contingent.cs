@@ -2,46 +2,46 @@
 
 namespace Quva.Services.Loading;
 
-public partial class BasetypeSilos
+public partial class BasetypeService
 {
-    private async Task AddSpecificContingents()
+    private async Task AddSpecificContingents(BasetypeSilos bts)
     {
-        var basicType = await CheckBasicType();
+        var basicType = await CheckBasicType(bts);
         if (basicType == null) return;
-        List<Contingent> contingents = await LoadingDbService.GetActiveContingents(Btsc,
-            filter.idDebitor ?? 0, basicType.IdMaterial, DateTime.Now.Date);
+        List<Contingent> contingents = await _loadingDbService.GetActiveContingents(bts.filter.IdLocation,
+            bts.filter.idDebitor ?? 0, basicType.IdMaterial, DateTime.Now.Date);
         foreach (var contingent in contingents)
         {
-            AddContingent(contingent, basicType);
+            AddContingent(bts, contingent, basicType);
         }
     }
 
-    private async Task AddGeneralContingents()
+    private async Task AddGeneralContingents(BasetypeSilos bts)
     {
-        var basicType = await CheckBasicType();
+        var basicType = await CheckBasicType(bts);
         if (basicType == null) return;
-        List<Contingent> contingents = await LoadingDbService.GetActiveContingents(Btsc,
+        List<Contingent> contingents = await _loadingDbService.GetActiveContingents(bts.filter.IdLocation,
             null, basicType.IdMaterial, DateTime.Now.Date);
         foreach (var contingent in contingents)
         {
-            AddContingent(contingent, basicType);
+            AddContingent(bts, contingent, basicType);
         }
     }
 
-    private async Task<BasicType?> CheckBasicType()
+    private async Task<BasicType?> CheckBasicType(BasetypeSilos bts)
     {
-        long idMaterial = filter.idMaterial ?? 0;
+        long idMaterial = bts.filter.idMaterial ?? 0;
         // only True Basictype (Mix=0):
-        var basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(Btsc, idMaterial, true);
+        var basicTypes = await _loadingDbService.GetBasicTypesByMaterialId(bts.filter.IdLocation, idMaterial, true);
         if (basicTypes.Count == 0)
         {
-            AddError($"Contingent Material no True Basic Type; MaterialId:{idMaterial}");
+            AddError(bts, $"Contingent Material no True Basic Type; MaterialId:{idMaterial}");
             return null;
         }
         return basicTypes.FirstOrDefault();
     }
 
-    private void AddContingent(Contingent contingent, BasicType basicType)
+    private void AddContingent(BasetypeSilos bts, Contingent contingent, BasicType basicType)
     {
         int maxSiloset = contingent.ContingentSilo.Select(x => x.SiloSet).Max();
         for (int iSet = 0; iSet <= maxSiloset; iSet++)
@@ -49,7 +49,7 @@ public partial class BasetypeSilos
             var silos = contingent.ContingentSilo.Where(x => x.SiloSet == iSet).ToList();
             if (silos.Count <= 0)
             {
-                AddError($"Contingent Siloset keine Silos; Set:{iSet} Id:{contingent.Id}");
+                AddError(bts, $"Contingent Siloset keine Silos; Set:{iSet} Id:{contingent.Id}");
                 continue;  //produktiv
 
             }
@@ -74,10 +74,10 @@ public partial class BasetypeSilos
                 debugList.Add(silo.IdSiloNavigation.SiloNumber.ToString() + " " + siloItem.Percentage + '%');
                 siloSet.SiloItems.Add(siloItem);
             }
-            if (!AddSiloSet(siloSet))  // mit Checks, Priority
-                Btsc.log.Warning("Cont: " + string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+            if (!bts.AddSiloSet(siloSet))  // mit Checks, Priority
+                _log.Warning("Cont: " + string.Join(", ", debugList) + ": Siloset bereits vorhanden");
             else
-                Btsc.log.Information("Cont: " + string.Join(", ", debugList));
+                _log.Information("Cont: " + string.Join(", ", debugList));
 
         }
     }

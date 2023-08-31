@@ -9,6 +9,8 @@ using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Interfaces.Shared;
+using Quva.Services.Loading;
+using Quva.Services.Loading.Interfaces;
 using Quva.Services.Mapping;
 using Quva.Services.Services.Shared;
 using Quva.Services.Tests;
@@ -76,9 +78,12 @@ internal class Program
         builder.Host.UseSerilog();  //log sql
 
         //My Services:
-        builder.Services.AddSingleton<ILocationParameterService, LocationParameterService>();
-        builder.Services.AddSingleton<ICustomerAgreementService, CustomerAgreementService>();
-        builder.Services.AddSingleton<ILoadingService, LoadingService>();
+        builder.Services.AddScoped<ILocationParameterService, LocationParameterService>();
+        builder.Services.AddScoped<IAgreementsService, AgreementsService>();
+        builder.Services.AddScoped<ILoadingDbService, LoadingDbService>();
+        builder.Services.AddScoped<IBasetypeService, BasetypeService>();
+        builder.Services.AddScoped<ILoadOrderService, LoadOrderService>();
+        builder.Services.AddScoped<ILoadingService, LoadingService>();
 
 
         var app = builder.Build();
@@ -109,7 +114,7 @@ internal class Program
             }
             else if (key.KeyChar == '3')
             {
-                var svc = app.Services.GetRequiredService<ICustomerAgreementService>();
+                var svc = app.Services.GetRequiredService<IAgreementsService>();
                 var testobj = new TestCustomerAgreement(svc);
                 testobj.Menu().GetAwaiter().GetResult();
             }

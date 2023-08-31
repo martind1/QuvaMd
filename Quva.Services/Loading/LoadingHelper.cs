@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace Quva.Services.Loading;
 
 public static class CartesianProductContainer
 {
+    // Begründung für static: Compiler Error CS1106:
+    // Extension methods must be defined as static methods in a non-generic static class.
+
     // https://stackoverflow.com/questions/14643009/generate-all-possible-combinations-from-multiple-arrays-c-vb-net
     // does not work
     public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences)

@@ -3,7 +3,7 @@ using Quva.Services.Enums;
 
 namespace Quva.Services.Interfaces.Shared;
 
-public interface ICustomerAgreementService
+public interface IAgreementsService
 {
     Task<ICustomerAgreements> GetAgreementsByDebitorMaterial(long idLocation, long? idDebitor, long? idMaterial);
     Task<ICustomerAgreements> GetAgreementsByDeliveryId(long idDeliveryHead);

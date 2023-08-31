@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Quva.Database.Models;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading;
+using Quva.Services.Loading.Interfaces;
 using Serilog;
 
 namespace Quva.Services.Services.Shared;
@@ -10,50 +10,32 @@ namespace Quva.Services.Services.Shared;
 public class LoadingService : ILoadingService
 {
     private readonly ILogger _log;
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ICustomerAgreementService _customerAgreementService;
+    private readonly IBasetypeService _basetypeService;
+    private readonly ILoadOrderService _loadOrderService;
 
-    public LoadingService(IServiceScopeFactory scopeFactory, ICustomerAgreementService customerAgreementService)
+    public LoadingService(IBasetypeService basetypeService, ILoadOrderService loadOrderService)
     {
         _log = Log.ForContext(GetType());
-        _scopeFactory = scopeFactory;
-        _customerAgreementService = customerAgreementService;
+        _basetypeService = basetypeService;
+        _loadOrderService = loadOrderService;
     }
 
     public async Task<BasetypeSilos> GetBasetypeSilosAll(long idLocation)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
+        return await _basetypeService.GetAll(idLocation);
 
-        return await BasetypeSilos.CreateAll(new BtsContext(context, _customerAgreementService, _log, idLocation));
-
-    }
-
-    public async Task<BasetypeSilosView> GetBasetypeSilosAllView(long idLocation)
-    {
-        var baseTypeSilos = await GetBasetypeSilosAll(idLocation);
-
-        return BasetypeSilosView.FromBasetypeSilos(baseTypeSilos);
     }
 
     public async Task<BasetypeSilos> GetBasetypeSilosByDelivery(long idDelivery)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
-
-        var btsc = new BtsContext(context, _customerAgreementService, _log, 0);
-        return await BasetypeSilos.CreateByDelivery(btsc, idDelivery, null);
-
+        return await _basetypeService.GetByDelivery(idDelivery, null);
     }
 
 
     public async Task<LoadingResult> CreateLoadorder(LoadingParameter parameter)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
-
-        var btsc = new BtsContext(context, _customerAgreementService, _log, parameter.IdLocation);
-        return await LoadOrderService.CreateLoadorder(btsc, parameter);
+        _log.Information($"CreateLoadorder IdDel:{parameter.IdDelivery}, {parameter.TargetQuantity} t");
+        return await _loadOrderService.CreateLoadorder(parameter);
     }
 
 }

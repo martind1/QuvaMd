@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Quva.Database.Models;
-using Quva.Services.Devices;
 using Quva.Services.Enums;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
@@ -11,35 +9,32 @@ using TransportTypeValues = Quva.Services.Enums.TransportTypeValues;
 
 namespace SapTransfer.Services.Shared;
 
-public class CustomerAgreementService : ICustomerAgreementService
+public class AgreementsService : IAgreementsService
 {
     private readonly ILogger _log;
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly QuvaContext _context;
 
-    public CustomerAgreementService(IServiceScopeFactory scopeFactory)
+    public AgreementsService(QuvaContext context)
     {
         _log = Log.ForContext(GetType());
-        _scopeFactory = scopeFactory;
+        _context = context;
     }
 
     private readonly Dictionary<long, ICustomerAgreements> _cachedCustomerAgreements = new();
 
-    public async Task<ICustomerAgreements> GetAgreementsByDebitorMaterial(long idLocation, long? idDebitor, long? idMaterial) 
+    public async Task<ICustomerAgreements> GetAgreementsByDebitorMaterial(long idLocation, long? idDebitor, long? idMaterial)
     {
         ICustomerAgreements result;
-        using (var scope = _scopeFactory.CreateScope())
+        var filter = new AgreementsFilter()
         {
-            var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
-            var filter = new AgreementsFilter()
-            {
-                idMaterials = idMaterial == null ? new() :
-                    new List<long>() { idMaterial ?? 0 },
-                idGoodsRecipient = idDebitor,
-                idInvoiceRecipient = idDebitor,
-                idCarrier = idDebitor
-            };
-            result = await GetAgreementsInternal(context, idLocation, filter);
-        }
+            idMaterials = idMaterial == null ? new() :
+                new List<long>() { idMaterial ?? 0 },
+            idGoodsRecipient = idDebitor,
+            idInvoiceRecipient = idDebitor,
+            idCarrier = idDebitor,
+            validDate = DateTime.Now.Date,
+    };
+        result = await GetAgreementsInternal(idLocation, filter);
         return result;
     }
 
@@ -62,74 +57,63 @@ public class CustomerAgreementService : ICustomerAgreementService
         ICustomerAgreements result;
         var filter = new AgreementsFilter();
 
-        using (var scope = _scopeFactory.CreateScope())
+        //DeliveryHead + ~Order + Plant + SalesOrg + ~OrderDebitor + ~Position + ~OrderPosition + Unit
+        var deliveryHead = await FindDelivery(idDeliveryHead);
+
+        long idLocation = deliveryHead.DeliveryOrder!.IdPlantNavigation.IdLocation;
+        filter.idPlant = deliveryHead.DeliveryOrder!.IdPlant;
+        filter.packagingType = (PackagingTypeValues)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.PackagingType;
+        filter.transportType = (TransportTypeValues)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.TransportType;
+        filter.validDate = deliveryHead.DeliveryDate;
+
+        foreach (var delPos in deliveryHead.DeliveryPosition)
         {
-            var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
-
-            //DeliveryHead + ~Order + Plant + SalesOrg + ~OrderDebitor + ~Position + ~OrderPosition + Unit
-            var deliveryHead = await FindDelivery(context, idDeliveryHead);
-
-            long idLocation = deliveryHead.DeliveryOrder!.IdPlantNavigation.IdLocation;
-            filter.idPlant = deliveryHead.DeliveryOrder!.IdPlant;
-            filter.packagingType = (PackagingTypeValues)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.PackagingType;
-            filter.transportType = (TransportTypeValues)deliveryHead.DeliveryOrder!.IdShippingMethodNavigation.TransportType;
-            filter.validDate = deliveryHead.DeliveryDate;
-
-            foreach (var delPos in deliveryHead.DeliveryPosition)
+            var materialShort = delPos.DeliveryOrderPosition!.MaterialShortName;
+            var material = await GetMaterialByCode(materialShort);
+            if (material != null)
             {
-                var materialShort = delPos.DeliveryOrderPosition!.MaterialShortName;
-                var material = await GetMaterialByCode(context, materialShort);
-                if (material != null)
-                {
-                    filter.idMaterials.Add(material.Id);
-                }
-                else
-                {
-                    _log.Warning($"GetCustomerAgreementsByDelivery({idDeliveryHead}) Material not found ({materialShort})");
-                }
+                filter.idMaterials.Add(material.Id);
             }
-
-            foreach (var deb in deliveryHead.DeliveryOrder.DeliveryOrderDebitor)
+            else
             {
-                switch ((OrderDebitorRole)deb.Role)
-                {
-                    case OrderDebitorRole.GoodsRecipient:
-                        filter.idCountry = deb.IdCountry;
-                        filter.idGoodsRecipient = deb.Id;
-                        break;
-                    case OrderDebitorRole.InvoiceRecipient:
-                        filter.idInvoiceRecipient = deb.Id;
-                        break;
-                    case OrderDebitorRole.ForwardingAgent:
-                        filter.idCarrier = deb.Id;
-                        break;
-                }
+                _log.Warning($"GetCustomerAgreementsByDelivery({idDeliveryHead}) Material not found ({materialShort})");
             }
-            result = await GetAgreementsInternal(context, idLocation, filter);
-            _cachedCustomerAgreements[idDeliveryHead] = result;
         }
+
+        foreach (var deb in deliveryHead.DeliveryOrder.DeliveryOrderDebitor)
+        {
+            switch ((OrderDebitorRole)deb.Role)
+            {
+                case OrderDebitorRole.GoodsRecipient:
+                    filter.idCountry = deb.IdCountry;
+                    filter.idGoodsRecipient = deb.Id;
+                    break;
+                case OrderDebitorRole.InvoiceRecipient:
+                    filter.idInvoiceRecipient = deb.Id;
+                    break;
+                case OrderDebitorRole.ForwardingAgent:
+                    filter.idCarrier = deb.Id;
+                    break;
+            }
+        }
+        result = await GetAgreementsInternal(idLocation, filter);
+        _cachedCustomerAgreements[idDeliveryHead] = result;
         return result;
     }
 
     public async Task<ICustomerAgreements> GetAgreementsByFilter(long idLocation, AgreementsFilter filter)
     {
         ICustomerAgreements result;
-        using (var scope = _scopeFactory.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
-
-            result = await GetAgreementsInternal(context, idLocation, filter);
-        }
+        result = await GetAgreementsInternal(idLocation, filter);
         return result;
     }
 
     private async Task<ICustomerAgreements> GetAgreementsInternal(
-        QuvaContext context,
         long idLocation,
         AgreementsFilter filter)
     {
         // valid Agreements
-        var allAgreements = await GetAllCustomerAgreements(context, idLocation, true);  //only active
+        var allAgreements = await GetAllCustomerAgreements(idLocation, true);  //only active
         var agreements = new List<CustomerAgreement>();
         foreach (var agr in allAgreements)
         {
@@ -162,7 +146,7 @@ public class CustomerAgreementService : ICustomerAgreementService
         foreach (var a in agreements)
         {
             long idAgreement = a.Id;
-            var agrParameters = await GetVCustomerAgrParameters(context, idAgreement);
+            var agrParameters = await GetVCustomerAgrParameters(idAgreement);
             foreach (var agrParameter in agrParameters)
             {
                 bool setFlag = true;
@@ -178,17 +162,17 @@ public class CustomerAgreementService : ICustomerAgreementService
         }
         List<VCustomerAgrParameter> parameters = optionParameters.Values.ToList();
 
-        var defaultValues = await GetTypeAgreementOptions(context);
+        var defaultValues = await GetTypeAgreementOptions();
 
         var result = new CustomerAgreements(_log, agreements, parameters, defaultValues);
         return result;
     }
 
-    private async Task<DeliveryHead> FindDelivery(QuvaContext context, long idDeliveryHead)
+    private async Task<DeliveryHead> FindDelivery(long idDeliveryHead)
     {
         _log.Debug($"FindDelivery {idDeliveryHead}");
         //DeliveryHead + ~Order + Plant + SalesOrg + ShippingMethod + ~OrderDebitor + ~Position + ~OrderPosition + Unit
-        var query = from delhdr in context.DeliveryHead
+        var query = from delhdr in _context.DeliveryHead
                     .Include(delhdr => delhdr.DeliveryOrder)
                         .ThenInclude(delord => delord!.IdPlantNavigation)  //(1)
                     .Include(delhdr => delhdr.DeliveryOrder)
@@ -210,10 +194,10 @@ public class CustomerAgreementService : ICustomerAgreementService
         return await Task.FromResult(value);
     }
 
-    private async Task<Material?> GetMaterialByCode(QuvaContext context, string code)
+    private async Task<Material?> GetMaterialByCode(string code)
     {
         _log.Debug($"GetMaterialByCode");
-        var query = from d in context.Material
+        var query = from d in _context.Material
                     where d.Code == code
                     select d;
         Material? value = await query.FirstOrDefaultAsync();
@@ -221,30 +205,30 @@ public class CustomerAgreementService : ICustomerAgreementService
         return await Task.FromResult(value);
     }
 
-    private async Task<List<CustomerAgreement>> GetAllCustomerAgreements(QuvaContext context, long idLocation, bool? active)
+    private async Task<List<CustomerAgreement>> GetAllCustomerAgreements(long idLocation, bool? active)
     {
         _log.Debug($"GetCustomerAgreements {idLocation}");
-        var query = from agr in context.CustomerAgreement
+        var query = from agr in _context.CustomerAgreement
                     where agr.IdLocation == idLocation && (active == null || agr.Active == active)
                     select agr;
         var result = await query.ToListAsync();
         return result;
     }
 
-    private async Task<List<VCustomerAgrParameter>> GetVCustomerAgrParameters(QuvaContext context, long idAgreement)
+    private async Task<List<VCustomerAgrParameter>> GetVCustomerAgrParameters(long idAgreement)
     {
         _log.Debug($"GetVCustomerAgrParameters {idAgreement}");
-        var query = from par in context.VCustomerAgrParameter
+        var query = from par in _context.VCustomerAgrParameter
                     where par.IdAgreement == idAgreement
                     select par;
         var result = await query.ToListAsync();
         return result;
     }
 
-    private async Task<List<TypeAgreementOption>> GetTypeAgreementOptions(QuvaContext context)
+    private async Task<List<TypeAgreementOption>> GetTypeAgreementOptions()
     {
         _log.Debug($"GetTypeAgreementOptions");
-        var query = from par in context.TypeAgreementOption
+        var query = from par in _context.TypeAgreementOption
                     select par;
         var result = await query.ToListAsync();
         return result;

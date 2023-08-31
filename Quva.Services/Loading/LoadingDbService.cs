@@ -1,20 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Quva.Database.Models;
 using Quva.Services.Enums;
+using Quva.Services.Loading.Interfaces;
 using Serilog;
 
 namespace Quva.Services.Loading;
 
-public static class LoadingDbService
+public class LoadingDbService : ILoadingDbService
 {
+    private readonly QuvaContext _context;
+    private readonly ILogger _log;
+
+    public LoadingDbService(QuvaContext context)
+    {
+        _log = Log.ForContext(GetType());
+        _context = context;
+    }
+
+
+
     // plus Material
-    public static async Task<List<BasicType>> GetBasicTypesByMaterialId(BtsContext btsc, long? idMaterial, bool onlyTrue)
+    public async Task<List<BasicType>> GetBasicTypesByMaterialId(long idLocation, long? idMaterial, bool onlyTrue)
     {
         // onlyTrue: true = only True Basic Types (no Mix Types)
-        btsc.log.Debug($"GetBasicTypesByMaterialId {idMaterial}");
-        var query = from bt in btsc.context.BasicType
+        _log.Debug($"GetBasicTypesByMaterialId {idMaterial}");
+        var query = from bt in _context.BasicType
                     .Include(bt => bt.IdMaterialNavigation)
-                    where bt.IdLocation == btsc.idLocation 
+                    where bt.IdLocation == idLocation
                        && (idMaterial == null || bt.IdMaterial == idMaterial)
                        && (!onlyTrue || bt.MixIndex == 0)
                     select bt;
@@ -22,11 +34,11 @@ public static class LoadingDbService
         return result;
     }
 
-    public static async Task<List<MappingBasicType>> GetMappedTypesByBasicType(BtsContext btsc, long idBasicType)
+    public async Task<List<MappingBasicType>> GetMappedTypesByBasicType(long idBasicType)
     {
         // plus Other Material
-        btsc.log.Debug($"GetMappedTypesByBasicType {idBasicType}");
-        var query = from mbt in btsc.context.MappingBasicType
+        _log.Debug($"GetMappedTypesByBasicType {idBasicType}");
+        var query = from mbt in _context.MappingBasicType
                     .Include(mbt => mbt.IdOtherTypeNavigation)
                         .ThenInclude(otn => otn.IdMaterialNavigation)
                     where mbt.IdBasicType == idBasicType
@@ -36,13 +48,13 @@ public static class LoadingDbService
         return result;
     }
 
-    public static async Task<List<Silo>> GetSilosByBasictype(BtsContext btsc, long idBasicType)
+    public async Task<List<Silo>> GetSilosByBasictype(long idBasicType)
     {
         // with Additional Basic Types as LEFT JOIN
         // https://learn.microsoft.com/en-us/ef/core/querying/complex-query-operators#left-join
-        btsc.log.Debug($"GetSilosByBasictype {idBasicType}");
-        var query = from sil in btsc.context.Silo
-                    join ads in btsc.context.AdditionalBasicType
+        _log.Debug($"GetSilosByBasictype {idBasicType}");
+        var query = from sil in _context.Silo
+                    join ads in _context.AdditionalBasicType
                         on sil.Id equals ads.IdSilo
                         into grouping
                     from ads in grouping.DefaultIfEmpty()
@@ -52,15 +64,15 @@ public static class LoadingDbService
         return result;
     }
 
-    public static async Task<List<MappingSiloLoadingPoint>> GetLoadingpointSilosByBasictype(BtsContext btsc, long idBasicType,
+    public async Task<List<MappingSiloLoadingPoint>> GetLoadingpointSilosByBasictype(long idBasicType,
         long? idLoadingPoint)
     {
         //Loadingpoint + Silo
-        btsc.log.Debug($"GetLoadingpointSilosByBasictype {idBasicType}");
-        var silos = await GetSilosByBasictype(btsc, idBasicType);
+        _log.Debug($"GetLoadingpointSilosByBasictype {idBasicType}");
+        var silos = await GetSilosByBasictype(idBasicType);
         var idSilos = (from s in silos select s.Id).ToList();
 
-        var query = from lp in btsc.context.MappingSiloLoadingPoint
+        var query = from lp in _context.MappingSiloLoadingPoint
                     .Include(lp => lp.IdSiloNavigation)
                     .Include(lp => lp.IdLoadingPointNavigation)
                     where idSilos.Contains(lp.IdSiloNavigation.Id)
@@ -71,10 +83,10 @@ public static class LoadingDbService
     }
 
 
-    public static async Task<List<LoadingPoint>> GetLoadingPointsBySilo(BtsContext btsc, long idSilo)
+    public async Task<List<LoadingPoint>> GetLoadingPointsBySilo(long idLocation, long idSilo)
     {
-        btsc.log.Debug($"GetIdLoadingPointsFromSilo {idSilo}");
-        var query = from mlp in btsc.context.MappingSiloLoadingPoint
+        _log.Debug($"GetIdLoadingPointsFromSilo {idSilo}");
+        var query = from mlp in _context.MappingSiloLoadingPoint
                     .Include(mlp => mlp.IdLoadingPointNavigation)
                     where mlp.IdSilo == idSilo
                     select mlp.IdLoadingPointNavigation;
@@ -82,22 +94,22 @@ public static class LoadingDbService
         return result;
     }
 
-    public static async Task<List<LoadingPoint>> GetLoadingPoints(BtsContext btsc)
+    public async Task<List<LoadingPoint>> GetLoadingPoints(long idLocation)
     {
-        btsc.log.Debug($"GetLoadingPoints {btsc.idLocation}");
-        var query = from lp in btsc.context.LoadingPoint
-                    where lp.IdLocation == btsc.idLocation
+        _log.Debug($"GetLoadingPoints {idLocation}");
+        var query = from lp in _context.LoadingPoint
+                    where lp.IdLocation == idLocation
                     select lp;
         var result = await query.ToListAsync();
         return result;
     }
 
-    public static async Task<DeliveryHead?> FindDelivery(BtsContext btsc, long idDelivery)
+    public async Task<DeliveryHead?> FindDelivery(long idDelivery)
     {
         // mit DeliverOrder, Plant, DeliverOrderDebitor, DeliveryOrderPosition
         //   ShippingMethod
-        btsc.log.Debug($"FindDelivery {idDelivery}");
-        var query = from del in btsc.context.DeliveryHead
+        _log.Debug($"FindDelivery {idDelivery}");
+        var query = from del in _context.DeliveryHead
                     .Include(del => del.DeliveryOrder)
                         .ThenInclude(pla => pla!.IdPlantNavigation)
                     .Include(del => del.DeliveryOrder)
@@ -115,20 +127,20 @@ public static class LoadingDbService
         return result;
     }
 
-    public static async Task<long> GetIdDebitorByNumber(BtsContext btsc, long debitorNumber)
+    public async Task<long> GetIdDebitorByNumber(long debitorNumber)
     {
-        btsc.log.Debug($"GetIdDebitorByNumber {debitorNumber}");
-        var query = from lp in btsc.context.Debitor
+        _log.Debug($"GetIdDebitorByNumber {debitorNumber}");
+        var query = from lp in _context.Debitor
                     where lp.DebitorNumber == debitorNumber
                     select lp.Id;
         var result = await query.FirstOrDefaultAsync();
         return result;
     }
 
-    public static async Task<long> GetIdMaterialByCode(BtsContext btsc, string code)
+    public async Task<long> GetIdMaterialByCode(string code)
     {
-        btsc.log.Debug($"GetIdMaterialByCode {code}");
-        var query = from lp in btsc.context.Material
+        _log.Debug($"GetIdMaterialByCode {code}");
+        var query = from lp in _context.Material
                     where lp.Code == code
                     select lp.Id;
         var result = await query.FirstOrDefaultAsync();
@@ -136,9 +148,9 @@ public static class LoadingDbService
     }
 
 
-    public static async Task<List<LoadingPoint>> GetLoadingPointsByShippingMethod(BtsContext btsc, ShippingMethod shippingMethod)
+    public async Task<List<LoadingPoint>> GetLoadingPointsByShippingMethod(long idLocation, ShippingMethod shippingMethod)
     {
-        btsc.log.Debug($"GetLoadingPointsByShippingMethod {shippingMethod.Name}");
+        _log.Debug($"GetLoadingPointsByShippingMethod {shippingMethod.Name}");
         TransportTypeValues[] allowedTransportTypes = (TransportTypeValues)shippingMethod.TransportType switch
         {
             TransportTypeValues.Rail => new TransportTypeValues[] { TransportTypeValues.All,
@@ -161,40 +173,41 @@ public static class LoadingDbService
                                              PackagingTypeValues.Bulk },
         };
 
-        var query = from lp in btsc.context.LoadingPoint
+        var query = from lp in _context.LoadingPoint
                     where allowedTransportTypes.Contains((TransportTypeValues)lp.TransportType)
                        && allowedPackagingTypes.Contains((PackagingTypeValues)lp.PackagingType)
+                       && lp.IdLocation == idLocation
                     select lp;
         var result = await query.ToListAsync();
         return result;
     }
 
 
-    public static async Task<long> SaveLoadorder(BtsContext btsc, LoadorderHead loadorder)
+    public async Task<long> SaveLoadorder(LoadorderHead loadorder)
     {
-        btsc.log.Debug($"SaveLoadorder {loadorder.IdDelivery} Id:{loadorder.Id}");
+        _log.Debug($"SaveLoadorder {loadorder.IdDelivery} Id:{loadorder.Id}");
         if (loadorder.Id == 0)
         {
             loadorder.CreateUser = "LoadOrderService";  //is notnull and no trigger logic
-            btsc.context.LoadorderHead.Add(loadorder);
+            _context.LoadorderHead.Add(loadorder);
         }
         else
         {
             loadorder.ChangeUser = "LoadOrderService";
             loadorder.ChangeDate = DateTime.Now;
             loadorder.ChangeNumber++;
-            btsc.context.LoadorderHead.Update(loadorder);
+            _context.LoadorderHead.Update(loadorder);
         }
-        await btsc.context.SaveChangesAsync();
-        btsc.log.Debug($"Saved ID:{loadorder.Id}");
+        await _context.SaveChangesAsync();
+        _log.Debug($"Saved ID:{loadorder.Id}");
         return await Task.FromResult(loadorder.Id);
     }
 
-    
-    public static async Task<LoadorderHead?> GetActiveLoadorder(BtsContext btsc, long idDelivery, long idLoadingPoint)
+
+    public async Task<LoadorderHead?> GetActiveLoadorder(long idDelivery, long idLoadingPoint)
     {
-        btsc.log.Debug($"GetActiveLoadorder {idDelivery}, {idLoadingPoint}");
-        var query = from lo in btsc.context.LoadorderHead
+        _log.Debug($"GetActiveLoadorder {idDelivery}, {idLoadingPoint}");
+        var query = from lo in _context.LoadorderHead
                     where lo.IdDelivery == idDelivery
                        && lo.IdLoadingPoint == idLoadingPoint
                        && lo.LoadorderState < (int)LoadorderStateValues.Inactive
@@ -203,17 +216,17 @@ public static class LoadingDbService
         return result;
     }
 
-    public static async Task<List<Contingent>> GetActiveContingents(BtsContext btsc, 
+    public async Task<List<Contingent>> GetActiveContingents(long idLocation,
         long? idDebitor, long idMaterial, DateTime? date)
     {
         // with ContingentSilo, Silo, LoadingPoint
         string day = date != null ? ((DateTime)date).ToString("yyyy-MM-dd") : "null";
-        btsc.log.Debug($"GetActiveContingents IdDeb:{idDebitor ?? 0} IdMat:{idMaterial} Day:{day}");
-        var query = from cs in btsc.context.Contingent
+        _log.Debug($"GetActiveContingents IdDeb:{idDebitor ?? 0} IdMat:{idMaterial} Day:{day}");
+        var query = from cs in _context.Contingent
                     .Include(csi => csi.ContingentSilo)
                         .ThenInclude(csi => csi.IdSiloNavigation)
                     .Include(cs => cs.IdLoadingPointNavigation)
-                    where cs.IdLocation == btsc.idLocation
+                    where cs.IdLocation == idLocation
                        && ((idDebitor == null && cs.IdDebitor == null) || cs.IdDebitor == (idDebitor ?? 0))
                        && cs.IdMaterial == idMaterial
                        && cs.Active == true

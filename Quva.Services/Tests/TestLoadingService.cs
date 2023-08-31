@@ -43,12 +43,13 @@ public class TestLoadingService
                 }
                 else if (key.KeyChar == '2')
                 {
-                    var agr = await _loadingService.GetBasetypeSilosAllView(IdLocation);
+                    var agr = await _loadingService.GetBasetypeSilosAll(IdLocation);
                     //foreach (var siloset in agr.SiloSets)
                     //{
                     //    _log.Information(siloset.ToString());
                     //}
-                    _log.Information("BaseTypeSilos All:" + Environment.NewLine + agr.ToCsv());
+                    BasetypeSilosView view = BasetypeSilosView.FromBasetypeSilos(agr);
+                    _log.Information("BaseTypeSilos All:" + Environment.NewLine + view.ToCsv());
                     Console.WriteLine($"OK");
                 }
                 else if (key.KeyChar == '3')

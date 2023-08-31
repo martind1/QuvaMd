@@ -1,8 +1,4 @@
-﻿using Quva.Database.Models;
-using Quva.Services.Interfaces.Shared;
-using Serilog;
-
-namespace Quva.Services.Loading;
+﻿namespace Quva.Services.Loading;
 
 public class LoadingParameter
 {
@@ -36,9 +32,3 @@ public class LoadingResult
 }
 
 
-// Transfer between Service/Controller and lower classes
-public record BtsContext(
-    QuvaContext context,
-    ICustomerAgreementService customerAgreementService,
-    ILogger log,
-    long idLocation);

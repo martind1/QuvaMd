@@ -6,8 +6,6 @@ namespace Quva.Services.Interfaces.Shared
     {
         Task<BasetypeSilos> GetBasetypeSilosAll(long idLocation);
 
-        Task<BasetypeSilosView> GetBasetypeSilosAllView(long idLocation);
-
         Task<BasetypeSilos> GetBasetypeSilosByDelivery(long idDelivery);
 
         Task<LoadingResult> CreateLoadorder(LoadingParameter parameter);

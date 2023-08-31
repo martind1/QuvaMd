@@ -2,28 +2,28 @@
 
 namespace Quva.Services.Loading;
 
-public partial class BasetypeSilos
+public partial class BasetypeService
 {
-    private async Task AddTrueBasicTypes()
+    private async Task AddTrueBasicTypes(BasetypeSilos bts)
     {
         // BaseTypes mit Material ..
-        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(Btsc, filter.idMaterial, false);
+        var basicTypes = await _loadingDbService.GetBasicTypesByMaterialId(bts.filter.IdLocation, bts.filter.idMaterial, false);
         foreach (var basicType in basicTypes)
         {
             // .. plus MapingBasicType mit Other Material
-            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(Btsc, basicType.Id);
+            var mappedBasicTypes = await _loadingDbService.GetMappedTypesByBasicType(basicType.Id);
             if (mappedBasicTypes.Count <= 0)  //if (basicType.MixIndex <= 0)
             {
                 if (basicType.MixIndex > 0)
                 {
-                    AddError($"Falscher MixIndex {basicType.MixIndex}. Muss 0 sein wenn kein Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
+                    AddError(bts, $"Falscher MixIndex {basicType.MixIndex}. Muss 0 sein wenn kein Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
                     continue;  //produktiv
                 }
-                var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(Btsc, basicType.Id, null);
+                var lpSilos = await _loadingDbService.GetLoadingpointSilosByBasictype(basicType.Id, null);
                 foreach (var lpSilo in lpSilos)
                 {
                     Silo silo = lpSilo.IdSiloNavigation;
-                    if (filter.idLoadingPoints.Count > 0 && !filter.idLoadingPoints.Contains(lpSilo.IdLoadingPoint))
+                    if (bts.filter.idLoadingPoints.Count > 0 && !bts.filter.idLoadingPoints.Contains(lpSilo.IdLoadingPoint))
                     {
                         continue;
                     }
@@ -43,36 +43,36 @@ public partial class BasetypeSilos
                     };
                     debugList.Add(silo.SiloNumber.ToString() + " " + siloItem.Percentage + '%');
                     siloSet.SiloItems.Add(siloItem);
-                    if (!AddSiloSet(siloSet))  // mit Checks, Priority
-                        Btsc.log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+                    if (!bts.AddSiloSet(siloSet))  // mit Checks, Priority
+                        _log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
                     else
-                        Btsc.log.Information(string.Join(", ", debugList));
+                        _log.Information(string.Join(", ", debugList));
                 }
 
             }
         }
     }
 
-    private async Task AddMixedBasicTypes()
+    private async Task AddMixedBasicTypes(BasetypeSilos bts)
     {
         // BaseTypes mit Material ..
-        List<BasicType> basicTypes = await LoadingDbService.GetBasicTypesByMaterialId(Btsc, filter.idMaterial, false);
+        var basicTypes = await _loadingDbService.GetBasicTypesByMaterialId(bts.filter.IdLocation, bts.filter.idMaterial, false);
         foreach (var basicType in basicTypes)
         {
             // .. plus MapingBasicType mit Other Material
-            var mappedBasicTypes = await LoadingDbService.GetMappedTypesByBasicType(Btsc, basicType.Id);
+            var mappedBasicTypes = await _loadingDbService.GetMappedTypesByBasicType(basicType.Id);
             if (mappedBasicTypes.Count > 0)  //if (basicType.MixIndex <= 0)
             {
                 // Mischsorten:
                 if (basicType.MixIndex == 0)
                 {
-                    AddError($"Falscher MixIndex 0. Muss >0 sein bei Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
+                    AddError(bts, $"Falscher MixIndex 0. Muss >0 sein bei Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
                     continue;  //produktiv
                 }
-                var loadingPoints = await LoadingDbService.GetLoadingPoints(Btsc);
+                var loadingPoints = await _loadingDbService.GetLoadingPoints(bts.filter.IdLocation);
                 foreach (var loadingPoint in loadingPoints)
                 {
-                    if (filter.idLoadingPoints.Count > 0 && !filter.idLoadingPoints.Contains(loadingPoint.Id))
+                    if (bts.filter.idLoadingPoints.Count > 0 && !bts.filter.idLoadingPoints.Contains(loadingPoint.Id))
                     {
                         continue;
                     }
@@ -82,8 +82,8 @@ public partial class BasetypeSilos
                     debugList.Clear();
                     foreach (var mappedbasicType in mappedBasicTypes)
                     {
-                        var lpSilos = await LoadingDbService.GetLoadingpointSilosByBasictype(Btsc,
-                            mappedbasicType.IdOtherType, loadingPoint.Id);
+                        var lpSilos = await _loadingDbService.GetLoadingpointSilosByBasictype(mappedbasicType.IdOtherType,
+                            loadingPoint.Id);
                         if (lpSilos.Count > 0)
                         {
                             siloLists.Add(lpSilos);
@@ -96,24 +96,24 @@ public partial class BasetypeSilos
                                 basicType.IdMaterialNavigation.Code, basicType.Id, basicType.MixIndex, loadingPoint.Name));
                         }
                         var idsilos = lpSilos.Select(x => x.IdSiloNavigation.SiloNumber).ToList();
-                        Btsc.log.Information("{0} Silos.Pt{1} für IdOtherType.{2}: {3}",
+                        _log.Information("{0} Silos.Pt{1} für IdOtherType.{2}: {3}",
                             basicType.IdMaterialNavigation.Code, loadingPoint.LoadingNumber, mappedbasicType.IdOtherTypeNavigation.IdMaterialNavigation.Code,
                               string.Join(", ", idsilos));
                     }
                     if (siloLists.Count == 0)
                     {
-                        Btsc.log.Information("Keine Silo Kombinationen Basetype:{0}.{1} Point:{2}",
+                        _log.Information("Keine Silo Kombinationen Basetype:{0}.{1} Point:{2}",
                             basicType.IdMaterialNavigation.Code, basicType.MixIndex, loadingPoint.Name);
                         continue;
                     }
                     if (siloLists.Count < mappedBasicTypes.Count)
                     {
-                        AddError(string.Join(Environment.NewLine, debugList));
+                        AddError(bts, string.Join(Environment.NewLine, debugList));
                         continue;  //produktiv
                     }
 
                     // Varianten aller Silo Kombinationen
-                    Btsc.log.Information("Silo Kombinationen Basetype:{0}.{1} Point:{2}",
+                    _log.Information("Silo Kombinationen Basetype:{0}.{1} Point:{2}",
                         basicType.IdMaterialNavigation.Code, basicType.MixIndex, loadingPoint.Name);
                     foreach (IEnumerable<Object> siloList in CartesianProductContainer.Cartesian(siloLists))
                     {
@@ -140,10 +140,10 @@ public partial class BasetypeSilos
                             pos++;
                             siloSet.SiloItems.Add(siloItem);
                         }
-                        if (!AddSiloSet(siloSet))  // mit Checks, Priority
-                            Btsc.log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+                        if (!bts.AddSiloSet(siloSet))  // mit Checks, Priority
+                            _log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
                         else
-                            Btsc.log.Information(string.Join(", ", debugList));
+                            _log.Information(string.Join(", ", debugList));
                     }
 
                 }
