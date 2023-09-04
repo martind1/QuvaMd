@@ -110,7 +110,6 @@ public class LoadingDbService : ILoadingDbService
         //   ShippingMethod
         _log.Debug($"FindDelivery {idDelivery}");
         var query = from del in _context.DeliveryHead
-                    .Include(del => del.DeliveryPosition)
                     .Include(del => del.DeliveryOrder)
                         .ThenInclude(pla => pla!.IdPlantNavigation)
                     .Include(del => del.DeliveryOrder)
@@ -121,6 +120,7 @@ public class LoadingDbService : ILoadingDbService
                     .Include(del => del.DeliveryOrder)
                         .ThenInclude(op => op!.DeliveryOrderPosition
                             .Where(dop => dop.MainPosition == true))
+                        .ThenInclude(dop => dop.IdDeliveryPositionNavigation)
                     .AsSplitQuery()
                     where del.Id == idDelivery
                     select del;
@@ -205,13 +205,13 @@ public class LoadingDbService : ILoadingDbService
     }
 
 
-    public async Task<LoadorderHead?> GetActiveLoadorder(long idDelivery, long idLoadingPoint)
+    public async Task<LoadorderHead?> GetActiveLoadorder(long idDelivery, long idLoadingPoint, int[] activeStates)
     {
         _log.Debug($"GetActiveLoadorder {idDelivery}, {idLoadingPoint}");
         var query = from lo in _context.LoadorderHead
                     where lo.IdDelivery == idDelivery
                        && lo.IdLoadingPoint == idLoadingPoint
-                       && lo.LoadorderState < (int)LoadorderStateValues.Inactive
+                       && activeStates.Contains(lo.LoadorderState)
                     select lo;
         var result = await query.FirstOrDefaultAsync();
         return result;

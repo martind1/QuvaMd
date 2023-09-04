@@ -75,7 +75,8 @@ public class TestLoadingService
                     {
                         IdLocation = IdLocation,
                         IdDelivery = IdDelivery,
-                        TargetQuantity = 10
+                        TargetQuantity = 30,
+                        PartQuantities = new List<decimal> { 10, 10, 10 },
                     };
                     var loadingResult = await _loadingService.CreateLoadorder(parameter);
                     _log.Information($"Created Loadorders {IdDelivery}: {string.Join(", ", loadingResult.IdLoadorders)}");

@@ -45,7 +45,7 @@ public class LoadOrderService : ILoadOrderService
             return result;
         }
 
-        if (delivery.DeliveryPosition.Count <= 0)
+        if (delivery.DeliveryOrder.DeliveryOrderPosition.Count <= 0)
         {
             AddError(result, $"No Main Positions for IdDelivery:({parameter.IdDelivery})");
             return result;
@@ -54,7 +54,8 @@ public class LoadOrderService : ILoadOrderService
         foreach (var loadingPoint in loadingPoints)
         {
             // Check if active Loadorder with this Point already exists
-            var activeOrder = await _loadingDbService.GetActiveLoadorder(parameter.IdDelivery, loadingPoint.Id);
+            var activeStates = new int[] { (int)LoadorderStateValues.ToLoad, (int)LoadorderStateValues.LoadingRunning };
+            var activeOrder = await _loadingDbService.GetActiveLoadorder(parameter.IdDelivery, loadingPoint.Id, activeStates);
             if (activeOrder != null)
             {
                 AddError(result, $"Active Loadorder already exists. Point({loadingPoint.Name}) ID({activeOrder.Id})");
@@ -66,7 +67,7 @@ public class LoadOrderService : ILoadOrderService
                 // obligatory:
                 Id = 0,
                 IdDelivery = parameter.IdDelivery,
-                PositionNumber = delivery.DeliveryPosition.First().PositionNumber,
+                PositionNumber = delivery.DeliveryOrder.DeliveryOrderPosition.First().PositionNumber,
                 LoadorderState = (int)LoadorderStateValues.ToLoad,
                 IdLoadingPoint = loadingPoint.Id,
                 CreateUser = delivery.CreateUser,
