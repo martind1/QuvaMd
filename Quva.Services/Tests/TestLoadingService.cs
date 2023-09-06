@@ -19,6 +19,9 @@ public class TestLoadingService
     public long IdLocation = 100000009;  //HOH
     public long IdDelivery = 100002695; //Kunw=700002, Mara=V3004S-L
 
+    public long IdOrder = 100002586;
+    public string VehicleNumber = "K-FC 300";
+
     public async Task Menu()
     {
         while (true)
@@ -31,7 +34,8 @@ public class TestLoadingService
                 Console.WriteLine($"3 = set idDelivery ({IdDelivery})");
                 Console.WriteLine($"4 = GetBasetypeSilosByDelivery");
                 Console.WriteLine($"5 = CreateLoadorder (10t)");
-                Console.WriteLine($"6 = GetLoadingInfo(idDelivery)");
+                Console.WriteLine($"6 = GetLoadingInfoByDelivery({IdDelivery})");
+                Console.WriteLine($"7 = GetLoadingInfoByOrder({IdOrder}, {VehicleNumber})");
                 Console.WriteLine("sonst = Ende");
                 ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
                 Console.WriteLine("");
@@ -87,9 +91,16 @@ public class TestLoadingService
                 }
                 else if (key.KeyChar == '6')
                 {
-                    LoadingInfo info = await _loadingService.GetLoadInfo(IdDelivery);
+                    LoadingInfo info = await _loadingService.GetLoadInfoByDelivery(IdDelivery);
 
                     _log.Information($"{IdDelivery}:{info}");
+                    Console.WriteLine($"done");
+                }
+                else if (key.KeyChar == '7')
+                {
+                    LoadingInfo info = await _loadingService.GetLoadInfoByOrder(IdOrder, VehicleNumber);
+
+                    _log.Information($"{IdOrder},{VehicleNumber}:{info}");
                     Console.WriteLine($"done");
                 }
                 else

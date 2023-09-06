@@ -39,11 +39,17 @@ public class LoadingService : ILoadingService
         return await _loadOrderService.CreateLoadorder(parameter);
     }
 
-    public async Task<LoadingInfo> GetLoadInfo(long idDelivery)
+    public async Task<LoadingInfo> GetLoadInfoByDelivery(long idDelivery)
     {
-        LoadingInfo info = await _loadInfoService.GetLoadInfo(idDelivery);
+        LoadingInfo info = await _loadInfoService.GetLoadInfoByDelivery(idDelivery);
         return info;
         // Exception when error
     }
 
+    public async Task<LoadingInfo> GetLoadInfoByOrder(long idOrder, string vehicleNumber)
+    {
+        LoadingInfo info = await _loadInfoService.GetLoadInfoByOrder(idOrder, vehicleNumber);
+        return info;
+        // Exception when error
+    }
 }

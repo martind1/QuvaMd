@@ -10,5 +10,5 @@ public record LoadingInfo
 {
     public decimal MaxGross { get; set; } = 0;
     public decimal MaxNet { get; set; } = 0;
-    public bool CumulativFlag { get; set; } = false;
+    public bool CumulativeFlag { get; set; } = false;
 }

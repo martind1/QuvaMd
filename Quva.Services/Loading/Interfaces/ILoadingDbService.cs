@@ -5,6 +5,7 @@ namespace Quva.Services.Loading.Interfaces
     public interface ILoadingDbService
     {
         Task<DeliveryHead?> FindDelivery(long idDelivery);
+        Task<OrderHead?> FindOrder(long idOrder);
         Task<List<Contingent>> GetActiveContingents(long idLocation, long? idDebitor, long idMaterial, DateTime? date);
         Task<LoadorderHead?> GetActiveLoadorder(long idDelivery, long idLoadingPoint, int[] activeStates);
         Task<List<BasicType>> GetBasicTypesByMaterialId(long idLocation, long? idMaterial, bool onlyTrue);

@@ -128,6 +128,25 @@ public class LoadingDbService : ILoadingDbService
         return result;
     }
 
+    public async Task<OrderHead?> FindOrder(long idOrder)
+    {
+        // mit DeliverOrder, Plant, DeliverOrderDebitor, DeliveryOrderPosition (only mainPosition)
+        //   ShippingMethod
+        _log.Debug($"FindOrder {idOrder}");
+        var query = from ord in _context.OrderHead
+                        .Include(pla => pla!.IdPlantNavigation)
+                        .Include(shi => shi!.IdShippingMethodNavigation)
+                        .Include(ord => ord!.OrderDebitor
+                            .Where(dob => dob.Role == (int)OrderDebitorRole.GoodsRecipient))
+                        .Include(op => op!.OrderPosition
+                            .Where(dop => dop.MainPosition == true))
+                    .AsSplitQuery()
+                    where ord.Id == idOrder
+                    select ord;
+        var result = await query.FirstOrDefaultAsync();
+        return result;
+    }
+
     public async Task<long> GetIdDebitorByNumber(long debitorNumber)
     {
         _log.Debug($"GetIdDebitorByNumber {debitorNumber}");

@@ -4,6 +4,8 @@ namespace Quva.Services.Interfaces
 {
     public interface ILoadInfoService
     {
-        Task<LoadingInfo> GetLoadInfo(long idDelivery);
+        Task<LoadingInfo> GetLoadInfoByDelivery(long idDelivery);
+
+        Task<LoadingInfo> GetLoadInfoByOrder(long idOrder, string vehicleNumber);
     }
 }

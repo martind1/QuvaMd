@@ -309,7 +309,7 @@ public record CustomerAgreements : ICustomerAgreements
                 result = boolValue;
                 break;
             case DataTypeValues.t_float:
-                double doubleValue = double.Parse(value, CultureInfo.InvariantCulture);
+                decimal doubleValue = decimal.Parse(value, CultureInfo.InvariantCulture);
                 result = doubleValue;
                 break;
             case DataTypeValues.t_date:
@@ -327,10 +327,6 @@ public record CustomerAgreements : ICustomerAgreements
             default:
                 result = value;
                 break;
-        }
-        if (typeof(T) == typeof(decimal))
-        {
-            result = Convert.ToDecimal(result);
         }
         return (T)result;
     }

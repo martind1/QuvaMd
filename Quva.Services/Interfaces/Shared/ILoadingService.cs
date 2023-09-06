@@ -10,6 +10,8 @@ namespace Quva.Services.Interfaces.Shared
 
         Task<LoadingResult> CreateLoadorder(LoadingParameter parameter);
 
-        Task<LoadingInfo> GetLoadInfo(long idDelivery);
+        Task<LoadingInfo> GetLoadInfoByDelivery(long idDelivery);
+
+        Task<LoadingInfo> GetLoadInfoByOrder(long idOrder, string vehicleNumber);
     }
 }
