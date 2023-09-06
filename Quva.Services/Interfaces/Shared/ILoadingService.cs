@@ -9,5 +9,7 @@ namespace Quva.Services.Interfaces.Shared
         Task<BasetypeSilos> GetBasetypeSilosByDelivery(long idDelivery);
 
         Task<LoadingResult> CreateLoadorder(LoadingParameter parameter);
+
+        Task<LoadingInfo> GetLoadInfo(long idDelivery);
     }
 }

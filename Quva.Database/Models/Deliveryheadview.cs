@@ -101,6 +101,8 @@ public partial class Deliveryheadview
 
     public int FinalWeighingType { get; set; }
 
+    public decimal? MaxGross { get; set; }
+
     public long? IdDeliveryOrder { get; set; }
 
     public long? OrderNumber { get; set; }

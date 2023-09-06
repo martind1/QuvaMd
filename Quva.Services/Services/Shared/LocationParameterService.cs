@@ -78,14 +78,15 @@ public class LocationParameterService : ILocationParameterService
                        && locpar.IdPlant == idPlant
                     select locpar;
         var result = query.FirstOrDefault();
-        if (result == null)
-        {
-            _log.Error($"Unknown LocationOption {idLocation}.{groupDotKey}.{idPlant}");
-        }
+        // try with plant=null, so no error
+        //if (result == null)
+        //{
+        //    _log.Error($"Unknown LocationOption {idLocation}.{groupDotKey}.{idPlant}");
+        //}
         return result;
     }
 
-    public async Task<object> GetParameter(long idLocation, string groupDotKey, long? idPlant)
+    public async Task<T> GetParameter<T>(long idLocation, string groupDotKey, long? idPlant)
     {
         object result;
         VLocationParameter? valueType = null;
@@ -98,7 +99,7 @@ public class LocationParameterService : ILocationParameterService
         valueType ??= await GetValue(idLocation, groupDotKey, null);
         if (valueType == null)
         {
-            throw new Exception($"Unknown LocationOption {idLocation}.{groupDotKey}.{idPlant}");
+            throw new Exception($"Unknown LocationOption {idLocation}.{groupDotKey}.{idPlant}|null");
         }
         string value = valueType.Value;
         DataTypeValues datatype = (DataTypeValues)valueType.Datatype;
@@ -135,7 +136,12 @@ public class LocationParameterService : ILocationParameterService
                 result = value;
                 break;
         }
-        return result;
+
+        if (typeof(T) == typeof(decimal))
+        {
+            result = Convert.ToDecimal(result);
+        }
+        return (T)result;
     }
 
 }

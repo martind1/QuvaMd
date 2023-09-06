@@ -59,7 +59,7 @@ public class TestCustomerAgreement
                     var agr = await _customerAgreementService.GetAgreementsByDeliveryId(IdDelivery);
 
                     Console.WriteLine($"Agr:{agr.Agreements.Count} Par:{agr.Parameters.Count} Def:{agr.DefaultValues.Count}");
-                    var val = agr.GetParameter(s1!);
+                    var val = agr.GetParameter<string>(s1!);
                     Console.WriteLine($"{IdDelivery}.{s1}={val}");
                 }
                 else

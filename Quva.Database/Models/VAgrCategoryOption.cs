@@ -11,6 +11,12 @@ public partial class VAgrCategoryOption
 
     public string OptionCode { get; set; } = null!;
 
+    public string? TypeDisp { get; set; }
+
+    public string DefaultValue { get; set; } = null!;
+
+    public string Display { get; set; } = null!;
+
     public long Id { get; set; }
 
     public long IdCategory { get; set; }

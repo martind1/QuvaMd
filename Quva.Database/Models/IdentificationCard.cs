@@ -11,8 +11,6 @@ public partial class IdentificationCard
 
     public string Code { get; set; } = null!;
 
-    public long IdVehicles { get; set; }
-
     public string CreateUser { get; set; } = null!;
 
     public DateTime CreateDate { get; set; }
@@ -31,9 +29,11 @@ public partial class IdentificationCard
 
     public long? IdDebitor { get; set; }
 
+    public long IdVehicle { get; set; }
+
     public virtual Debitor? IdDebitorNavigation { get; set; }
 
-    public virtual Vehicle IdVehiclesNavigation { get; set; } = null!;
+    public virtual Vehicle IdVehicleNavigation { get; set; } = null!;
 
     public virtual ICollection<MappingCarrierDebitor> MappingCarrierDebitor { get; set; } = new List<MappingCarrierDebitor>();
 }

@@ -19,13 +19,17 @@ public partial class VCustomerAgrParameter
 
     public string Value { get; set; } = null!;
 
-    public int Datatype { get; set; }
+    public string? TypeDisp { get; set; }
 
     public string DefaultValue { get; set; } = null!;
+
+    public string Display { get; set; } = null!;
 
     public long IdAgreement { get; set; }
 
     public long IdCategory { get; set; }
 
     public long IdOption { get; set; }
+
+    public int Datatype { get; set; }
 }

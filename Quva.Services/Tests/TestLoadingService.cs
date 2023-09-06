@@ -31,6 +31,7 @@ public class TestLoadingService
                 Console.WriteLine($"3 = set idDelivery ({IdDelivery})");
                 Console.WriteLine($"4 = GetBasetypeSilosByDelivery");
                 Console.WriteLine($"5 = CreateLoadorder (10t)");
+                Console.WriteLine($"6 = GetLoadingInfo(idDelivery)");
                 Console.WriteLine("sonst = Ende");
                 ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
                 Console.WriteLine("");
@@ -80,8 +81,16 @@ public class TestLoadingService
                     };
                     var loadingResult = await _loadingService.CreateLoadorder(parameter);
                     _log.Information($"Created Loadorders {IdDelivery}: {string.Join(", ", loadingResult.IdLoadorders)}");
+                    _log.Information($"Loadingpoints: {string.Join(", ", loadingResult.LoadingPoints)}");
 
                     _log.Information($"Errors: {string.Join(Environment.NewLine, loadingResult.ErrorLines)}");
+                }
+                else if (key.KeyChar == '6')
+                {
+                    LoadingInfo info = await _loadingService.GetLoadInfo(IdDelivery);
+
+                    _log.Information($"{IdDelivery}:{info}");
+                    Console.WriteLine($"done");
                 }
                 else
                 {

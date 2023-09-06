@@ -19,8 +19,6 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<Batch> Batch { get; set; }
 
-    public virtual DbSet<Beladungen> Beladungen { get; set; }
-
     public virtual DbSet<Carrier> Carrier { get; set; }
 
     public virtual DbSet<ConfigMessage> ConfigMessage { get; set; }
@@ -405,54 +403,6 @@ public partial class QuvaContext : DbContext
                 .HasForeignKey(d => d.IdUnit)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BATCH_UNIT");
-        });
-
-        modelBuilder.Entity<Beladungen>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("BELADUNGEN");
-
-            entity.Property(e => e.BeinNr)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .HasColumnName("BEIN_NR");
-            entity.Property(e => e.BelaId)
-                .HasPrecision(9)
-                .HasColumnName("BELA_ID");
-            entity.Property(e => e.BruttoGewicht)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("BRUTTO_GEWICHT");
-            entity.Property(e => e.BruttoGewichtId)
-                .HasPrecision(9)
-                .HasColumnName("BRUTTO_GEWICHT_ID");
-            entity.Property(e => e.GewichtEinheit)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .HasColumnName("GEWICHT_EINHEIT");
-            entity.Property(e => e.Istmenge)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("ISTMENGE");
-            entity.Property(e => e.NettoGewicht)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("NETTO_GEWICHT");
-            entity.Property(e => e.Sollmenge)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("SOLLMENGE");
-            entity.Property(e => e.Status)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("STATUS");
-            entity.Property(e => e.TaraGewicht)
-                .HasColumnType("NUMBER(9,3)")
-                .HasColumnName("TARA_GEWICHT");
-            entity.Property(e => e.TaraGewichtId)
-                .HasPrecision(9)
-                .HasColumnName("TARA_GEWICHT_ID");
-            entity.Property(e => e.WerkNr)
-                .HasMaxLength(4)
-                .IsUnicode(false)
-                .HasColumnName("WERK_NR");
         });
 
         modelBuilder.Entity<Carrier>(entity =>
@@ -2408,6 +2358,9 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.LoadingSlip)
                 .HasPrecision(18)
                 .HasColumnName("LOADING_SLIP");
+            entity.Property(e => e.MaxGross)
+                .HasColumnType("NUMBER(18,3)")
+                .HasColumnName("MAX_GROSS");
             entity.Property(e => e.MoistPercentage)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("MOIST_PERCENTAGE");
@@ -2630,9 +2583,9 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.IdDebitor)
                 .HasPrecision(18)
                 .HasColumnName("ID_DEBITOR");
-            entity.Property(e => e.IdVehicles)
+            entity.Property(e => e.IdVehicle)
                 .HasPrecision(18)
-                .HasColumnName("ID_VEHICLES");
+                .HasColumnName("ID_VEHICLE");
             entity.Property(e => e.Locked)
                 .HasPrecision(1)
                 .HasColumnName("LOCKED");
@@ -2644,10 +2597,10 @@ public partial class QuvaContext : DbContext
                 .HasForeignKey(d => d.IdDebitor)
                 .HasConstraintName("FK_IC_DEBITOR");
 
-            entity.HasOne(d => d.IdVehiclesNavigation).WithMany(p => p.IdentificationCard)
-                .HasForeignKey(d => d.IdVehicles)
+            entity.HasOne(d => d.IdVehicleNavigation).WithMany(p => p.IdentificationCard)
+                .HasForeignKey(d => d.IdVehicle)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_IC_VEHICLES");
+                .HasConstraintName("FK_IC_VEHICLE");
         });
 
         modelBuilder.Entity<LoadingPoint>(entity =>
@@ -5495,6 +5448,14 @@ public partial class QuvaContext : DbContext
                 .IsUnicode(false)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("CREATE_USER");
+            entity.Property(e => e.DefaultValue)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("DEFAULT_VALUE");
+            entity.Property(e => e.Display)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("DISPLAY");
             entity.Property(e => e.Id)
                 .HasPrecision(18)
                 .HasColumnName("ID");
@@ -5509,6 +5470,10 @@ public partial class QuvaContext : DbContext
                 .IsUnicode(false)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("OPTION_CODE");
+            entity.Property(e => e.TypeDisp)
+                .HasMaxLength(48)
+                .IsUnicode(false)
+                .HasColumnName("TYPE_DISP");
         });
 
         modelBuilder.Entity<VApplicationOptionKey>(entity =>
@@ -5540,10 +5505,13 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("KEY_NAME");
-            entity.Property(e => e.TypeDisplay)
-                .HasMaxLength(6)
+            entity.Property(e => e.Note)
                 .IsUnicode(false)
-                .HasColumnName("TYPE_DISPLAY");
+                .HasColumnName("NOTE");
+            entity.Property(e => e.TypeDisp)
+                .HasMaxLength(47)
+                .IsUnicode(false)
+                .HasColumnName("TYPE_DISP");
         });
 
         modelBuilder.Entity<VAuditChanges>(entity =>
@@ -5976,6 +5944,10 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("DEFAULT_VALUE");
+            entity.Property(e => e.Display)
+                .HasMaxLength(1000)
+                .IsUnicode(false)
+                .HasColumnName("DISPLAY");
             entity.Property(e => e.Id)
                 .HasPrecision(18)
                 .ValueGeneratedOnAdd()
@@ -5993,6 +5965,10 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("OPTION_CODE");
+            entity.Property(e => e.TypeDisp)
+                .HasMaxLength(48)
+                .IsUnicode(false)
+                .HasColumnName("TYPE_DISP");
             entity.Property(e => e.Value)
                 .HasMaxLength(1000)
                 .IsUnicode(false)
@@ -6620,6 +6596,10 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.Datatype)
                 .HasPrecision(9)
                 .HasColumnName("DATATYPE");
+            entity.Property(e => e.Dtype)
+                .HasMaxLength(47)
+                .IsUnicode(false)
+                .HasColumnName("DTYPE");
             entity.Property(e => e.GroupDotKey)
                 .HasMaxLength(201)
                 .IsUnicode(false)
@@ -6652,18 +6632,17 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("KEY_NAME");
-            entity.Property(e => e.LocShortname)
+            entity.Property(e => e.Loc)
                 .HasMaxLength(20)
                 .IsUnicode(false)
-                .HasColumnName("LOC_SHORTNAME");
+                .HasColumnName("LOC");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
             entity.Property(e => e.PlaCode)
                 .HasMaxLength(4)
                 .IsUnicode(false)
                 .HasColumnName("PLA_CODE");
-            entity.Property(e => e.TypeDisplay)
-                .HasMaxLength(6)
-                .IsUnicode(false)
-                .HasColumnName("TYPE_DISPLAY");
             entity.Property(e => e.Value)
                 .HasMaxLength(1000)
                 .IsUnicode(false)
@@ -7160,6 +7139,7 @@ public partial class QuvaContext : DbContext
         modelBuilder.HasSequence("DOPC_ID_SEQ");
         modelBuilder.HasSequence("DOPT_ID_SEQ");
         modelBuilder.HasSequence("DOT_ID_SEQ");
+        modelBuilder.HasSequence("EVENT_MESSAGE_ID_SEQ");
         modelBuilder.HasSequence("IDENTIFICATION_CARD_ID_SEQ");
         modelBuilder.HasSequence("LOADING_ORDERS_ID_SEQ");
         modelBuilder.HasSequence("LOADING_POINT_ID_SEQ");

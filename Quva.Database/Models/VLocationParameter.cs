@@ -7,23 +7,25 @@ namespace Quva.Database.Models;
 
 public partial class VLocationParameter
 {
-    public string LocShortname { get; set; } = null!;
-
-    public string? GroupDotKey { get; set; }
-
-    public string? PlaCode { get; set; }
-
-    public string? TypeDisplay { get; set; }
-
-    public string Value { get; set; } = null!;
-
-    public string InitialValue { get; set; } = null!;
+    public string Loc { get; set; } = null!;
 
     public string GroupName { get; set; } = null!;
 
     public string KeyName { get; set; } = null!;
 
+    public string? PlaCode { get; set; }
+
+    public string? Dtype { get; set; }
+
+    public string Value { get; set; } = null!;
+
+    public string InitialValue { get; set; } = null!;
+
+    public string? Note { get; set; }
+
     public int Datatype { get; set; }
+
+    public string? GroupDotKey { get; set; }
 
     public long Id { get; set; }
 

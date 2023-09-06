@@ -1,4 +1,5 @@
-﻿using Quva.Services.Interfaces.Shared;
+﻿using Quva.Services.Interfaces;
+using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading;
 using Quva.Services.Loading.Interfaces;
 using Serilog;
@@ -10,12 +11,14 @@ public class LoadingService : ILoadingService
     private readonly ILogger _log;
     private readonly IBasetypeService _basetypeService;
     private readonly ILoadOrderService _loadOrderService;
+    private readonly ILoadInfoService _loadInfoService;
 
-    public LoadingService(IBasetypeService basetypeService, ILoadOrderService loadOrderService)
+    public LoadingService(IBasetypeService basetypeService, ILoadOrderService loadOrderService, ILoadInfoService loadInfoService)
     {
         _log = Log.ForContext(GetType());
         _basetypeService = basetypeService;
         _loadOrderService = loadOrderService;
+        _loadInfoService = loadInfoService;
     }
 
     public async Task<BasetypeSilos> GetBasetypeSilosAll(long idLocation)
@@ -34,6 +37,13 @@ public class LoadingService : ILoadingService
     {
         _log.Information($"CreateLoadorder IdDel:{parameter.IdDelivery}, {parameter.TargetQuantity} t");
         return await _loadOrderService.CreateLoadorder(parameter);
+    }
+
+    public async Task<LoadingInfo> GetLoadInfo(long idDelivery)
+    {
+        LoadingInfo info = await _loadInfoService.GetLoadInfo(idDelivery);
+        return info;
+        // Exception when error
     }
 
 }

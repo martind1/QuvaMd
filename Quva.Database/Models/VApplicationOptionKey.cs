@@ -11,9 +11,11 @@ public partial class VApplicationOptionKey
 
     public string KeyName { get; set; } = null!;
 
-    public string? TypeDisplay { get; set; }
+    public string? TypeDisp { get; set; }
 
     public string InitialValue { get; set; } = null!;
+
+    public string? Note { get; set; }
 
     public int Datatype { get; set; }
 

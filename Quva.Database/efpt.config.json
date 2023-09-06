@@ -332,10 +332,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "QUVA_API.BELADUNGEN",
-         "ObjectType": 3
-      },
-      {
          "Name": "QUVA_API.DELIVERYHEADVIEW",
          "ObjectType": 3
       },

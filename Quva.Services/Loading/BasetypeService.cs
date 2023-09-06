@@ -77,7 +77,7 @@ public partial class BasetypeService : IBasetypeService
         }
 
         var agr = await _agreementsService.GetAgreementsByDebitorMaterial(idLocation, idDebitor, idMaterial);
-        var kontPflicht = (bool)agr.GetParameter("KONT_PFLICHT");
+        var kontPflicht = agr.GetParameter<bool>("KONT_PFLICHT");
 
         var filter = new BaseTypeSiloFilter
         {

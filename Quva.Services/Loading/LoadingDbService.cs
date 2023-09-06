@@ -148,6 +148,16 @@ public class LoadingDbService : ILoadingDbService
         return result;
     }
 
+    public async Task<Vehicle?> GetVehicleByPlate(string plate)
+    {
+        _log.Debug($"GetVehicleByPlate {plate}");
+        var query = from ve in _context.Vehicle
+                    where ve.LicensePlate == plate
+                    select ve;
+        var result = await query.FirstOrDefaultAsync();
+        return result;
+    }
+
 
     public async Task<List<LoadingPoint>> GetLoadingPointsByShippingMethod(long idLocation, ShippingMethod shippingMethod)
     {

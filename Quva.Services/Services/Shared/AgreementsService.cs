@@ -287,7 +287,7 @@ public record CustomerAgreements : ICustomerAgreements
         }
     }
 
-    public object GetParameter(string code)
+    public T GetParameter<T>(string code)
     {
         object result;
         GetValueType(code, out string? value, out DataTypeValues datatype);
@@ -328,7 +328,11 @@ public record CustomerAgreements : ICustomerAgreements
                 result = value;
                 break;
         }
-        return result;
+        if (typeof(T) == typeof(decimal))
+        {
+            result = Convert.ToDecimal(result);
+        }
+        return (T)result;
     }
 
 }

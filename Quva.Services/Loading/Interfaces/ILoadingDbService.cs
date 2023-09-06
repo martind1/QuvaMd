@@ -10,6 +10,7 @@ namespace Quva.Services.Loading.Interfaces
         Task<List<BasicType>> GetBasicTypesByMaterialId(long idLocation, long? idMaterial, bool onlyTrue);
         Task<long> GetIdDebitorByNumber(long debitorNumber);
         Task<long> GetIdMaterialByCode(string code);
+        Task<Vehicle?> GetVehicleByPlate(string plate);
         Task<List<LoadingPoint>> GetLoadingPoints(long idLocation);
         Task<List<LoadingPoint>> GetLoadingPointsByShippingMethod(long idLocation, ShippingMethod shippingMethod);
         Task<List<LoadingPoint>> GetLoadingPointsBySilo(long idLocation, long idSilo);

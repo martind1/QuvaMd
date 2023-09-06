@@ -45,7 +45,7 @@ public class TestLocationParameter
                     long? plant = s2.IsNullOrEmpty() ? null : long.Parse(s2!);
                     string s2Disp = s2.IsNullOrEmpty() ? "*" : s2!;
                     // für Controller:
-                    var val = await _locationParameterService.GetParameter(IdLocation, s1!, plant);
+                    var val = await _locationParameterService.GetParameter<string>(IdLocation, s1!, plant);
                     Console.WriteLine($"{s1}.{s2Disp}={val}");
                 }
                 else

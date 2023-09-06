@@ -8,6 +8,7 @@ using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
+using Quva.Services.Interfaces;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading;
 using Quva.Services.Loading.Interfaces;
@@ -84,6 +85,7 @@ internal class Program
         builder.Services.AddScoped<IBasetypeService, BasetypeService>();
         builder.Services.AddScoped<ILoadOrderService, LoadOrderService>();
         builder.Services.AddScoped<ILoadingService, LoadingService>();
+        builder.Services.AddScoped<ILoadInfoService, LoadInfoService>();
 
 
         var app = builder.Build();
