@@ -73,6 +73,8 @@ public partial class QuvaContext : DbContext
 
     public virtual DbSet<DeviceParameter> DeviceParameter { get; set; }
 
+    public virtual DbSet<EventMessage> EventMessage { get; set; }
+
     public virtual DbSet<IdentificationCard> IdentificationCard { get; set; }
 
     public virtual DbSet<LoadingPoint> LoadingPoint { get; set; }
@@ -2547,6 +2549,63 @@ public partial class QuvaContext : DbContext
                 .HasConstraintName("FK_DEVICE_PARAMETER_DEVICE");
         });
 
+        modelBuilder.Entity<EventMessage>(entity =>
+        {
+            entity.ToTable("EVENT_MESSAGE");
+
+            entity.HasIndex(e => new { e.Origin, e.CreateDate }, "I1_EVENT_MESSAGE");
+
+            entity.HasIndex(e => new { e.IdLocation, e.Category, e.Origin, e.CreateDate }, "UK_EVENT_MESSAGE").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasPrecision(18)
+                .HasColumnName("ID");
+            entity.Property(e => e.Category)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CATEGORY");
+            entity.Property(e => e.ChangeDate)
+                .HasColumnType("DATE")
+                .HasColumnName("CHANGE_DATE");
+            entity.Property(e => e.ChangeNumber)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("CHANGE_NUMBER");
+            entity.Property(e => e.ChangeUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CHANGE_USER");
+            entity.Property(e => e.Confirmed)
+                .HasPrecision(1)
+                .HasColumnName("CONFIRMED");
+            entity.Property(e => e.CreateDate)
+                .HasDefaultValueSql("sysdate ")
+                .HasColumnType("DATE")
+                .HasColumnName("CREATE_DATE");
+            entity.Property(e => e.CreateUser)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLocation)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOCATION");
+            entity.Property(e => e.Note)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.Origin)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("ORIGIN");
+            entity.Property(e => e.Text)
+                .IsUnicode(false)
+                .HasColumnName("TEXT");
+
+            entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.EventMessage)
+                .HasForeignKey(d => d.IdLocation)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EVENT_MESSAGE_LOCATION");
+        });
+
         modelBuilder.Entity<IdentificationCard>(entity =>
         {
             entity.ToTable("IDENTIFICATION_CARD");
@@ -2633,6 +2692,9 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CREATE_USER");
+            entity.Property(e => e.IdLoadorder)
+                .HasPrecision(18)
+                .HasColumnName("ID_LOADORDER");
             entity.Property(e => e.IdLocation)
                 .HasPrecision(18)
                 .HasColumnName("ID_LOCATION");
@@ -2652,6 +2714,10 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.TransportType)
                 .HasPrecision(9)
                 .HasColumnName("TRANSPORT_TYPE");
+
+            entity.HasOne(d => d.IdLoadorderNavigation).WithMany(p => p.LoadingPoint)
+                .HasForeignKey(d => d.IdLoadorder)
+                .HasConstraintName("FK_LOADING_POINT_LOADORDER");
 
             entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.LoadingPoint)
                 .HasForeignKey(d => d.IdLocation)

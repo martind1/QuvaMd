@@ -246,6 +246,31 @@ public class LoadingDbService : ILoadingDbService
         return result;
     }
 
+    public async Task<LoadingPoint?> GetLoadingPointByLoadorder(long idLoadorder)
+    {
+        _log.Debug($"GetLoadingPointByLoadorder {idLoadorder}");
+        var query1 = from lo in _context.LoadorderHead
+                    where lo.Id == idLoadorder
+                    select lo.IdLoadingPoint;
+        var idLoadingPoint = await query1.FirstOrDefaultAsync();
+        if (idLoadingPoint == default) return null;
+
+        var query = from lo in _context.LoadingPoint
+                    where lo.Id == idLoadingPoint
+                    select lo;
+        var result = await query.FirstOrDefaultAsync();
+        return result;
+    }
+
+    public async Task SetLoadingPointLoadorder(LoadingPoint loadingPoint, long idLoadorder)
+    {
+        _log.Debug($"SetLoadingPointLoadorder Point:{loadingPoint.Id} Order:{idLoadorder}");
+        _context.Attach(loadingPoint);
+        loadingPoint.IdLoadorder = idLoadorder;
+        await _context.SaveChangesAsync();
+    }
+
+
     public async Task<List<Contingent>> GetActiveContingents(long idLocation,
         long? idDebitor, long idMaterial, DateTime? date)
     {

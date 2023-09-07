@@ -74,6 +74,11 @@ public class LoadInfoService : ILoadInfoService
         // Cumulative
         result.CumulativeFlag = agr.GetParameter<bool>(TypeAgreementOptionCode.KUMULIERT);
 
+        // MaxReload
+        var minReloadQuantity = await _locationParameterService.GetParameter<decimal>(idLocation,
+                 ApplicationOption.WeighingMode.MinReloadQuantity, idPlant);
+        result.MaxReloadWeight = result.MaxGross - minReloadQuantity;
+
         _log.Debug($"GetLoadInfoByDelivery({idDelivery}): {result}");
 
         return result;
@@ -129,6 +134,11 @@ public class LoadInfoService : ILoadInfoService
 
         // Cumulative
         result.CumulativeFlag = agr.GetParameter<bool>(TypeAgreementOptionCode.KUMULIERT);
+
+        // MaxReload
+        var minReloadQuantity = await _locationParameterService.GetParameter<decimal>(idLocation,
+                 ApplicationOption.WeighingMode.MinReloadQuantity, idPlant);
+        result.MaxReloadWeight = result.MaxGross - minReloadQuantity;
 
         _log.Debug($"GetLoadInfoByOrder({idOrder}): {result}");
 

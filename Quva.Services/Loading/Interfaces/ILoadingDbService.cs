@@ -8,6 +8,8 @@ namespace Quva.Services.Loading.Interfaces
         Task<OrderHead?> FindOrder(long idOrder);
         Task<List<Contingent>> GetActiveContingents(long idLocation, long? idDebitor, long idMaterial, DateTime? date);
         Task<LoadorderHead?> GetActiveLoadorder(long idDelivery, long idLoadingPoint, int[] activeStates);
+        Task<LoadingPoint?> GetLoadingPointByLoadorder(long idLoadorder);
+        Task SetLoadingPointLoadorder(LoadingPoint loadingPoint, long idLoadorder);
         Task<List<BasicType>> GetBasicTypesByMaterialId(long idLocation, long? idMaterial, bool onlyTrue);
         Task<long> GetIdDebitorByNumber(long debitorNumber);
         Task<long> GetIdMaterialByCode(string code);

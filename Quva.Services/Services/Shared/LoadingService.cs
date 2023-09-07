@@ -1,8 +1,11 @@
-﻿using Quva.Services.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using Quva.Database.Models;
+using Quva.Services.Interfaces;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading;
 using Quva.Services.Loading.Interfaces;
 using Serilog;
+using System.Reflection.Metadata;
 
 namespace Quva.Services.Services.Shared;
 
@@ -37,6 +40,11 @@ public class LoadingService : ILoadingService
     {
         _log.Information($"CreateLoadorder IdDel:{parameter.IdDelivery}, {parameter.TargetQuantity} t");
         return await _loadOrderService.CreateLoadorder(parameter);
+    }
+
+    public async Task ActivateLoadorder(long idLoadorder)
+    {
+        await _loadOrderService.ActivateLoadorder(idLoadorder);
     }
 
     public async Task<LoadingInfo> GetLoadInfoByDelivery(long idDelivery)

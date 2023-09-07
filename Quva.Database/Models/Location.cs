@@ -53,6 +53,8 @@ public partial class Location
 
     public virtual ICollection<Device> Device { get; set; } = new List<Device>();
 
+    public virtual ICollection<EventMessage> EventMessage { get; set; } = new List<EventMessage>();
+
     public virtual ICollection<LoadingPoint> LoadingPoint { get; set; } = new List<LoadingPoint>();
 
     public virtual ICollection<LocationParameter> LocationParameter { get; set; } = new List<LocationParameter>();

@@ -3,5 +3,7 @@
     public interface ILoadOrderService
     {
         Task<LoadingResult> CreateLoadorder(LoadingParameter parameter);
+
+        Task ActivateLoadorder(long idLoadorder);
     }
 }

@@ -136,6 +136,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "QUVA_API.EVENT_MESSAGE",
+         "ObjectType": 0
+      },
+      {
          "Name": "QUVA_API.IDENTIFICATION_CARD",
          "ObjectType": 0
       },

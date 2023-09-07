@@ -111,6 +111,8 @@ public partial class LoadorderHead
 
     public virtual LoadingPoint IdLoadingPointNavigation { get; set; } = null!;
 
+    public virtual ICollection<LoadingPoint> LoadingPoint { get; set; } = new List<LoadingPoint>();
+
     public virtual ICollection<LoadorderPart> LoadorderPart { get; set; } = new List<LoadorderPart>();
 
     public virtual ICollection<LoadorderSilo> LoadorderSilo { get; set; } = new List<LoadorderSilo>();

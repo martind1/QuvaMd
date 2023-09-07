@@ -14,5 +14,6 @@ public static class ApplicationOption
         public const string CountOfDeliverynotes = "WeighingMode.CountOfDeliverynotes"; // Anzahl Lieferscheine (Vorgabe)
         public const string MaxGross = "WeighingMode.MaxGross"; // Max. Bruttogewicht für Lieferschein.
         public const string MaxSingleQuantity = "WeighingMode.MaxSingleQuantity";
+        public const string MinReloadQuantity = "WeighingMode.MinReloadQuantity";
     }
 }

@@ -31,7 +31,11 @@ public partial class LoadingPoint
 
     public int TransportType { get; set; }
 
+    public long? IdLoadorder { get; set; }
+
     public virtual ICollection<Contingent> Contingent { get; set; } = new List<Contingent>();
+
+    public virtual LoadorderHead? IdLoadorderNavigation { get; set; }
 
     public virtual Location IdLocationNavigation { get; set; } = null!;
 

@@ -24,6 +24,18 @@ public class LoadOrderService : ILoadOrderService
         _agreementsService = agreementsService;
     }
 
+    public async Task ActivateLoadorder(long idLoadorder)
+    {
+
+        LoadingPoint? loadingPoint = await _loadingDbService.GetLoadingPointByLoadorder(idLoadorder);
+        ArgumentNullException.ThrowIfNull(loadingPoint, $"No LoadingPoint for Loadorder Id({idLoadorder})");
+        if (loadingPoint.IdLoadorder != null)
+        {
+            // TODO: erkennen ob bereits Beladung läuft (LoadingPoint.Loadorder.State)
+        }
+        await _loadingDbService.SetLoadingPointLoadorder(loadingPoint, idLoadorder);
+    }
+
     public async Task<LoadingResult> CreateLoadorder(LoadingParameter parameter)
     {
         LoadingResult result = new();
