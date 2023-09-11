@@ -34,6 +34,8 @@ internal class TestDeviceService
             Console.WriteLine("3 = Callback Scale async Test");
             Console.WriteLine("4 = Callback Display Test");
             Console.WriteLine("5 = Camera Test");
+            Console.WriteLine("6 = Test HOH.TRANSP1");
+            Console.WriteLine("7 = Test HOH.BARCODE1");
             Console.WriteLine("sonst = Ende");
             ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
             Console.WriteLine("");
@@ -47,15 +49,23 @@ internal class TestDeviceService
             }
             else if (key.KeyChar == '3')
             {
-                Test5().GetAwaiter().GetResult();
+                TestScaleStatus().GetAwaiter().GetResult();
             }
             else if (key.KeyChar == '4')
             {
-                Test6().GetAwaiter().GetResult();
+                TestDisplayShowScale().GetAwaiter().GetResult();
             }
             else if (key.KeyChar == '5')
             {
-                Test1().GetAwaiter().GetResult();
+                TestCam().GetAwaiter().GetResult();
+            }
+            else if (key.KeyChar == '6')
+            {
+                TestTransp1().GetAwaiter().GetResult();
+            }
+            else if (key.KeyChar == '7')
+            {
+                TestBarcode1().GetAwaiter().GetResult();
             }
             else
             {
@@ -128,9 +138,9 @@ internal class TestDeviceService
     }
 
 
-    public async Task Test1()
+    public async Task TestCam()
     {
-        _log.Information("testsvc.Test1");
+        _log.Information("testsvc.TestCam");
 
         //var data1 = await _deviceService.ScaleStatus("HOH.FW1");
         //_log.Information($"Status Err:{data1.ErrorNr} Display:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
@@ -141,8 +151,6 @@ internal class TestDeviceService
         //var data12 = await _deviceService.ScaleRegister("HOH.FW1");
         //_log.Information($"Register Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
 
-        //var data3 = await _deviceService.CardRead("HOH.TRANSP1");
-        //_log.Information($"Read Err:{data3.ErrorNr} {data3.ErrorText} Card:{data3.CardNumber}");
 
         //var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
         ////var data4 = await _deviceService.DisplayShow("HOH.DISP1", message);
@@ -233,14 +241,12 @@ internal class TestDeviceService
         await _deviceService.DisposeAsync();
     }
 
-    /// <summary>
-    ///     Callback Card async Test
-    /// </summary>
-    public async Task Test4()
+    // Callback Card async Test
+    public async Task TestTransp1()
     {
-        _log.Information("testsvc.Test4");
+        _log.Information("testsvc.TestTransp1");
         var result = await _deviceService.CardReadStart("HOH.TRANSP1", MyCardRead);
-        _log.Information("testsvc.Test4 Started");
+        _log.Information("testsvc.TestTransp1 Started");
     }
 
     private void MyCardRead(CardData cardData)
@@ -249,14 +255,28 @@ internal class TestDeviceService
         if (cardData.CardNumber == "q") _ = _deviceService.CloseDevice(cardData.DeviceCode);
     }
 
+    // Callback Barcode async Test
+    public async Task TestBarcode1()
+    {
+        _log.Information("testsvc.TestBarcode1");
+        var result = await _deviceService.CardReadStart("HOH.BARCODE1", MyBarcodeRead);
+        _log.Information("testsvc.TestBarcode1 Started");
+    }
+
+    private void MyBarcodeRead(CardData cardData)
+    {
+        _log.Information($"### BarcodeRead {cardData.CardNumber} ###");
+        if (cardData.CardNumber == "q") _ = _deviceService.CloseDevice(cardData.DeviceCode);
+    }
+
     /// <summary>
     ///     Callback Scale async Test
     /// </summary>
-    public async Task Test5()
+    public async Task TestScaleStatus()
     {
-        _log.Information("testsvc.Test5");
+        _log.Information("testsvc.TestScaleStatus");
         var result = await _deviceService.ScaleStatusStart("HOH.FW1", MyScaleStatus);
-        _log.Information("testsvc.Test5 Started");
+        _log.Information("testsvc.TestScaleStatus Started");
     }
 
     private async void MyScaleStatus(ScaleData scaleData)
@@ -281,9 +301,9 @@ internal class TestDeviceService
     /// <summary>
     ///     Callback Display Test
     /// </summary>
-    public async Task Test6()
+    public async Task TestDisplayShowScale()
     {
-        _log.Information("testsvc.Test6");
+        _log.Information("testsvc.TestDisplayShowScale");
         //Microsoft.AspNetCore.Http.IResult result = await _deviceService.DisplayShowStart("HOH.DISP2", MyShow);
         //ScaleDisplay:
         var result = await _deviceService.DisplayShowScale("HOH.DISP2", "HOH.FW1");
@@ -291,7 +311,7 @@ internal class TestDeviceService
         {
         }
 
-        _log.Information("testsvc.Test6 Started");
+        _log.Information("testsvc.TestDisplayShowScale Started");
     }
 
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
