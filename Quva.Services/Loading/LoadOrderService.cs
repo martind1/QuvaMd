@@ -91,7 +91,7 @@ public class LoadOrderService : ILoadOrderService
                 MaxGross = delivery.MaxGross,
                 WeighingUnit = delivery.NetUnit,
 
-                ActivePartNumber = 1,
+                // no, let null - ActivePartNumber = 1,
                 // MoistLock (from CustAgree)
                 MoistLock = agr.GetParameter<decimal?>(TypeAgreementOptionCode.SPERR_FEUCHTE),
             };

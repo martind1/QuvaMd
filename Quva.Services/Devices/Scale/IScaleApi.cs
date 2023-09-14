@@ -7,6 +7,7 @@ namespace Quva.Services.Devices.Scale;
 /// </summary>
 public interface IScaleApi
 {
+    int PollInterval { get; set; }
     ScaleData StatusData { get; set; }
     Task<ScaleData> ScaleCommand(string command);
 

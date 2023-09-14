@@ -1,4 +1,6 @@
-﻿using Quva.Services.Services.Shared;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
+using Quva.Services.Services.Shared;
 using Serilog;
 
 namespace Quva.Services.Devices.ComPort;
@@ -15,7 +17,7 @@ public class HttpPort : IComPort
 
     public HttpPort(string deviceCode, string paramString)
     {
-        _log = Log.ForContext<DeviceService>();
+        _log = Log.ForContext(GetType());
         DeviceCode = deviceCode; //for Debug Output
         ComParameter = new ComParameter();
         _httpParameter = new HttpParameter();
@@ -49,6 +51,11 @@ public class HttpPort : IComPort
         _httpParameter.URL = paramstring;
     }
 
+    // Object als Parameter
+    public void SetParameter(object parameter)
+    {
+        //nothing to do
+    }
 
     public async Task OpenAsync()
     {

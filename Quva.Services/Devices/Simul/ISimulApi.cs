@@ -7,6 +7,7 @@ namespace Quva.Services.Devices.Simul;
 /// </summary>
 public interface ISimulApi
 {
+    int PollInterval { get; set; }
     Task<SimulData> SimulCommand();
 }
 

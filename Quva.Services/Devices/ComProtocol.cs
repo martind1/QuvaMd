@@ -1,7 +1,6 @@
 ﻿using Quva.Services.Devices.ComPort;
 using Quva.Services.Services.Shared;
 using Serilog;
-using System;
 using System.Text;
 
 namespace Quva.Services.Devices;
@@ -14,21 +13,20 @@ public class ComProtocol : IAsyncDisposable
 
     public ComProtocol(string deviceCode, IComPort? comPort)
     {
-        _log = Log.ForContext<DeviceService>();
+        _log = Log.ForContext(GetType());
         DeviceCode = deviceCode;
         _comPort = comPort;
         Description = new[] { "B:", "S:^M", "A:128,^M" }; //nur Demo
     }
 
     public string DeviceCode { get; }
-
     public IComPort ComPort
     {
         get => _comPort ?? throw new ArgumentNullException(nameof(_comPort));
         set => _comPort = value;
     }
-
     public string[] Description { get; set; }
+    public int PollInterval { get; set; } = 500;  //ms
 
     //Config:
     public int MaxDataLen { get; set; } = 2048;

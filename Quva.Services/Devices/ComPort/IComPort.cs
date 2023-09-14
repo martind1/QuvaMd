@@ -15,6 +15,7 @@ public interface IComPort : IAsyncDisposable
     // like "COM1:9600:8:1:N" or "localhost:1234" or "listen:1234"
     // see constructor 
     void SetParamString(string paramstring);
+    void SetParameter(object parameter);
     Task OpenAsync();
     Task CloseAsync();
     Task ResetAsync();
@@ -48,5 +49,6 @@ public enum PortType
     Udp,
     Serial,
     Http,
-    Modbus
+    Modbus,
+    Sql
 }

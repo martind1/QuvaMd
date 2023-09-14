@@ -22,34 +22,21 @@ public class LocationParameterService : ILocationParameterService
     }
 
     private long _cachedIdLocation = 0;
-    private List<VLocationParameter> _cachedLocationParameters = new();
+    private List<LocationParameter> _cachedLocationParameters = new();
 
-    //private async Task<VLocationParameter?> GetLocationParameter(long idLocation, string groupName, string keyName, long? idPlant)
-    //{
-    //    using var scope = _scopeFactory.CreateScope();
-    //    var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
-    //    var query = from locpar in context.VLocationParameter
-    //                where locpar.IdLocation == idLocation
-    //                   && locpar.GroupName == groupName
-    //                   && locpar.KeyName == keyName
-    //                   && locpar.IdPlant == idPlant
-    //                select locpar;
-    //    var result = await query.FirstOrDefaultAsync();
-    //    return result;
-    //}
-
-    private async Task<VLocationParameter?> GetValue(long idLocation, string groupDotKey, long? idPlant)
+    private async Task<LocationParameter?> GetValue(long idLocation, string groupDotKey, long? idPlant)
     {
         // PseudoKey ohne Group: Cache entfernen:
         if (groupDotKey == "ClearCache")
         {
             _log.Information($"LocationParameter.ClearCache");
             _cachedIdLocation = 0;
-            var dummy = new VLocationParameter()
+            var dummy = new LocationParameter
             {
-                Datatype = (int)DataTypeValues.t_string,
-                Value = "OK"
+                Value = "OK",
+                IdOptionKeyNavigation = new()
             };
+            dummy.IdOptionKeyNavigation.Datatype = (int)DataTypeValues.t_string;
             return dummy;
         }
 
@@ -66,15 +53,17 @@ public class LocationParameterService : ILocationParameterService
         if (_cachedIdLocation != idLocation)
         {
             _cachedIdLocation = idLocation;
-            var query0 = from locpar in _context.VLocationParameter
+            var query0 = from locpar in _context.LocationParameter
+                         .Include(key => key.IdOptionKeyNavigation)
+                            .ThenInclude(gru => gru.IdGroupNavigation)
                          where locpar.IdLocation == idLocation
                          select locpar;
             _cachedLocationParameters = await query0.ToListAsync();
         }
 
         var query = from locpar in _cachedLocationParameters
-                    where locpar.GroupName == groupName
-                       && locpar.KeyName == keyName
+                    where locpar.IdOptionKeyNavigation.IdGroupNavigation.GroupName == groupName
+                       && locpar.IdOptionKeyNavigation.KeyName == keyName
                        && locpar.IdPlant == idPlant
                     select locpar;
         var result = query.FirstOrDefault();
@@ -89,7 +78,7 @@ public class LocationParameterService : ILocationParameterService
     public async Task<T> GetParameter<T>(long idLocation, string groupDotKey, long? idPlant)
     {
         object result;
-        VLocationParameter? valueType = null;
+        LocationParameter? valueType = null;
         if (idPlant != null)
         {
             // named plant
@@ -102,7 +91,7 @@ public class LocationParameterService : ILocationParameterService
             throw new Exception($"Unknown LocationOption {idLocation}.{groupDotKey}.{idPlant}|null");
         }
         string value = valueType.Value;
-        DataTypeValues datatype = (DataTypeValues)valueType.Datatype;
+        DataTypeValues datatype = (DataTypeValues)valueType.IdOptionKeyNavigation.Datatype;
         switch (datatype)
         {
             case DataTypeValues.t_string:

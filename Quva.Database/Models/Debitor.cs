@@ -21,7 +21,7 @@ public partial class Debitor
 
     public string? Postcode { get; set; }
 
-    public string Location { get; set; } = null!;
+    public string? Location { get; set; }
 
     public string? Phone { get; set; }
 

@@ -71,7 +71,7 @@ public partial class Deliveryheadview
 
     public string? IdentificationCardCode { get; set; }
 
-    public int CumulativeFlag { get; set; }
+    public bool CumulativeFlag { get; set; }
 
     public long? IdDeliveryCollect { get; set; }
 

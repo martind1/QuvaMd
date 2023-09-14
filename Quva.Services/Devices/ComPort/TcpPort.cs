@@ -24,7 +24,7 @@ public class TcpPort : IComPort
 
     public TcpPort(string deviceCode, string paramString)
     {
-        _log = Log.ForContext<DeviceService>();
+        _log = Log.ForContext(GetType());
         DeviceCode = deviceCode; //for Debug Output
         ComParameter = new ComParameter();
         TcpParameter = new TcpParameter();
@@ -70,6 +70,12 @@ public class TcpPort : IComPort
             TcpParameter.Remote = Remote.Host;
             TcpParameter.Host = "localhost";
         }
+    }
+
+    // Object als Parameter
+    public void SetParameter(object parameter)
+    {
+        //nothing to do
     }
 
     public async Task OpenAsync()

@@ -23,7 +23,7 @@ public class ModbusPort : IComPort
 
     public ModbusPort(string deviceCode, string paramString)
     {
-        _log = Log.ForContext<ModbusPort>();
+        _log = Log.ForContext(GetType());
         DeviceCode = deviceCode; //for Debug Output
         ComParameter = new ComParameter();
         ModbusParameter = new ModbusParameter();
@@ -57,6 +57,12 @@ public class ModbusPort : IComPort
         ModbusParameter.ParamString = paramstring;
         ModbusParameter.Host = SL[0];
         ModbusParameter.Port = int.Parse(SL[1]);
+    }
+
+    // Object als Parameter
+    public void SetParameter(object parameter)
+    {
+        //nothing to do
     }
 
     public async Task OpenAsync()

@@ -27,7 +27,7 @@ public interface ICustomerAgreements
 {
     List<CustomerAgreement> Agreements { get; set; }
     List<TypeAgreementOption> DefaultValues { get; set; }
-    List<VCustomerAgrParameter> Parameters { get; set; }
+    List<CustomerAgrParameter> Parameters { get; set; }
 
     //object GetParameter(string code);
     T GetParameter<T>(string code);

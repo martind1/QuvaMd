@@ -3,6 +3,7 @@ using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
+using Quva.Services.Devices.Sps;
 using static Quva.Services.Devices.ComProtocol;
 
 namespace Quva.Services.Devices;
@@ -90,7 +91,8 @@ public partial class ComDevice
         ArgumentNullException.ThrowIfNull(ScaleApi);
         _onScaleStatus = onScaleStatus;
         _timerCommand = command;
-        _timerAsync = new TimerAsync(OnScaleCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+        var pollInterval = ScaleApi.PollInterval;
+        _timerAsync = new TimerAsync(OnScaleCommand, TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(pollInterval));
     }
 
     private async Task OnScaleCommand(CancellationToken arg)
@@ -163,7 +165,8 @@ public partial class ComDevice
         ArgumentNullException.ThrowIfNull(CardApi);
         _onCardRead = onCardRead;
         _timerCommand = command;
-        _timerAsync = new TimerAsync(OnCardCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
+        var pollInterval = CardApi.PollInterval;
+        _timerAsync = new TimerAsync(OnCardCommand, TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(pollInterval));
     }
 
     private async Task OnCardCommand(CancellationToken arg)
@@ -190,6 +193,69 @@ public partial class ComDevice
     }
 
     #endregion Card Commands
+
+    #region Sps Commands
+
+    public delegate void OnSpsRead(SpsData cardData);
+
+    private OnSpsRead? _onSpsRead { get; set; }
+
+    public async Task<SpsData> SpsCommand(string command)
+    {
+        SpsData result;
+        _log.Debug($"[{Code}] WAIT Device.SpsCommand({command})");
+        // das ComDevice darf nur ein Command gleichzeitig ausführen (sonst Protokoll/TCP Murks)
+        await _slim.WaitAsync();
+        try
+        {
+            _log.Information($"[{Code}] START Device.SpsCommand({command})");
+            ArgumentNullException.ThrowIfNull(SpsApi);
+            result = await SpsApi.SpsCommand(command);
+            _log.Debug($"[{Code}] END Device.SpsCommand({command})");
+        }
+        finally
+        {
+            _slim.Release();
+        }
+        return await Task.FromResult(result);
+    }
+
+    public void SpsCommandStart(string command, OnSpsRead onSpsRead)
+    {
+        if (_timerAsync != null)
+            throw new Exception("already started");
+        _log.Debug($"[{Code}] CALLBACK Device.SpsCommandStart({command})");
+        ArgumentNullException.ThrowIfNull(SpsApi);
+        _onSpsRead = onSpsRead;
+        _timerCommand = command;
+        var pollInterval = SpsApi.PollInterval;
+        _timerAsync = new TimerAsync(OnSpsCommand, TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(pollInterval));
+    }
+
+    private async Task OnSpsCommand(CancellationToken arg)
+    {
+        if (arg.IsCancellationRequested) return;
+        SpsData result;
+        _log.Debug($"[{Code}] OnSpsCommand({_timerCommand})");
+        try
+        {
+            await Open();
+            result = await SpsCommand(_timerCommand);
+        }
+        catch (Exception ex)
+        {
+            _log.Warning(ex, $"[{Code}] Error OnSpsCommand()");
+            await Close().ConfigureAwait(false);
+            result = new SpsData(Code, _timerCommand)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message
+            };
+        }
+        _onSpsRead?.Invoke(result);
+    }
+
+    #endregion Sps Commands
 
     #region Display Commands
 
@@ -223,12 +289,13 @@ public partial class ComDevice
     public void DisplayCommandStart(string command, OnDisplayShow onDisplayShow)
     {
         if (_timerAsync != null)
-            throw new Exception("already started"); 
+            throw new Exception("already started");
         _log.Debug($"[{Code}] CALLBACK Device.DisplayCommandStart({command})");
         ArgumentNullException.ThrowIfNull(DisplayApi);
         _onDisplayShow = onDisplayShow;
         _timerCommand = command;
-        _timerAsync = new TimerAsync(OnDisplayCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(500));
+        var pollInterval = DisplayApi.PollInterval;
+        _timerAsync = new TimerAsync(OnDisplayCommand, TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(pollInterval));
     }
 
     private async Task OnDisplayCommand(CancellationToken arg)
@@ -302,7 +369,8 @@ public partial class ComDevice
             ArgumentNullException.ThrowIfNull(ModbusApi);
             _onModbusRead = onModbusRead;
             _timerCommand = command;
-            _timerAsync = new TimerAsync(OnModbusCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(500));
+            var pollInterval = ModbusApi.PollInterval;
+            _timerAsync = new TimerAsync(OnModbusCommand, TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(pollInterval));
         }
         return ModbusApi.Data;  //for scale positioning
     }
@@ -378,8 +446,8 @@ public partial class ComDevice
         {
             throw new Exception("SimulApi missing or not of type ComProtocol");
         }
-        _timerAsync = new TimerAsync(OnSimulCommand, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200));
-    }
+        var pollInterval = SimulApi.PollInterval;
+        _timerAsync = new TimerAsync(OnSimulCommand, TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(pollInterval));     }
 
     private async Task OnSimulCommand(CancellationToken arg)
     {

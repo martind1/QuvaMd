@@ -1,5 +1,4 @@
-﻿using Quva.Services.Services.Shared;
-using Serilog;
+﻿using Serilog;
 using System.IO.Ports;
 
 namespace Quva.Services.Devices.ComPort;
@@ -23,7 +22,7 @@ public class ComxPort : IComPort
 
     public ComxPort(string deviceCode, string paramString)
     {
-        _log = Log.ForContext<DeviceService>();
+        _log = Log.ForContext(GetType());
         DeviceCode = deviceCode; //for Debug Output
         ComParameter = new ComParameter();
         SerialParameter = new SerialParameter();
@@ -84,6 +83,12 @@ public class ComxPort : IComPort
         {
             SerialParameter.Handshake = Handshake.None;
         }
+    }
+
+    // Object als Parameter
+    public void SetParameter(object parameter)
+    {
+        //nothing to do
     }
 
     public async Task OpenAsync()

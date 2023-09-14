@@ -2,6 +2,7 @@
 
 public interface ICardApi
 {
+    int PollInterval { get; set; }
     Task<CardData> CardCommand(string command);
 }
 

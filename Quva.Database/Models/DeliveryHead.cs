@@ -71,7 +71,7 @@ public partial class DeliveryHead
 
     public string? IdentificationCardCode { get; set; }
 
-    public int CumulativeFlag { get; set; }
+    public bool CumulativeFlag { get; set; }
 
     public long? IdDeliveryCollect { get; set; }
 
@@ -108,6 +108,8 @@ public partial class DeliveryHead
     public decimal? MaxGross { get; set; }
 
     public decimal? MaxNet { get; set; }
+
+    public bool CollectiveFlag { get; set; }
 
     public virtual ICollection<DeliveryDocument> DeliveryDocument { get; set; } = new List<DeliveryDocument>();
 

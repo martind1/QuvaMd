@@ -1,10 +1,12 @@
-﻿using Quva.Services.Devices.Cam;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Quva.Services.Devices.Cam;
 using Quva.Services.Devices.Card;
 using Quva.Services.Devices.ComPort;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Devices.Simul;
+using Quva.Services.Devices.Sps;
 
 namespace Quva.Services.Devices;
 
@@ -20,6 +22,7 @@ public class DeviceFactory
             PortType.Http => new HttpPort(device),
             PortType.Serial => new ComxPort(device),
             PortType.Modbus => new ModbusPort(device),
+            PortType.Sql => new SqlPort(device),
             PortType.Udp => throw new NotImplementedException("UDP not implemented"),
             PortType.None => null,
             _ => throw new NotImplementedException($"Porttype {portType} not implemented")
@@ -84,6 +87,18 @@ public class DeviceFactory
         {
             "HTTPCAM" => new HttpCam(device),
             _ => throw new NotImplementedException($"Modulcode.Cam {modulCode}")
+        };
+        return Api;
+    }
+
+    public static ISpsApi GetSpsApi(ComDevice device, IServiceScopeFactory serviceScopeFactory)
+    {
+        ArgumentNullException.ThrowIfNull(device.Device.ModuleCode);
+        var modulCode = device.Device.ModuleCode;
+        ISpsApi Api = modulCode.ToUpper() switch
+        {
+            "SPSSQL" => new SpsSql(device, serviceScopeFactory),
+            _ => throw new NotImplementedException($"Modulcode.Sps {modulCode}")
         };
         return Api;
     }

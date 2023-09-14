@@ -5,6 +5,7 @@
 /// </summary>
 public interface IDisplayApi
 {
+    int PollInterval { get; set; }
     DisplayData ShowData { get; set; }
     Task<DisplayData> DisplayCommand(string command, string message);
 }

@@ -2,6 +2,7 @@
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
+using Quva.Services.Devices.Sps;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
@@ -36,6 +37,7 @@ internal class TestDeviceService
             Console.WriteLine("5 = Camera Test");
             Console.WriteLine("6 = Test HOH.TRANSP1");
             Console.WriteLine("7 = Test HOH.BARCODE1");
+            Console.WriteLine("8 = Test HOH.SPS_LKW");
             Console.WriteLine("sonst = Ende");
             ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
             Console.WriteLine("");
@@ -66,6 +68,10 @@ internal class TestDeviceService
             else if (key.KeyChar == '7')
             {
                 TestBarcode1().GetAwaiter().GetResult();
+            }
+            else if (key.KeyChar == '8')
+            {
+                TestSps().GetAwaiter().GetResult();
             }
             else
             {
@@ -269,9 +275,7 @@ internal class TestDeviceService
         if (cardData.CardNumber == "q") _ = _deviceService.CloseDevice(cardData.DeviceCode);
     }
 
-    /// <summary>
-    ///     Callback Scale async Test
-    /// </summary>
+    // Callback Scale async Test
     public async Task TestScaleStatus()
     {
         _log.Information("testsvc.TestScaleStatus");
@@ -297,6 +301,22 @@ internal class TestDeviceService
             _ = _deviceService.CloseDevice("HOH.DISP1");
         }
     }
+
+    // Callback Sps async Test
+    public async Task TestSps()
+    {
+        _log.Information("testsvc.TestSps");
+        var result = await _deviceService.SpsReadStart("HOH.SPS_LKW", MySpsRead);
+        _log.Information("testsvc.TestScaleStatus Started");
+    }
+
+    private async void MySpsRead(SpsData spsData)
+    {
+        _log.Error($"### SpsRead {spsData.IdLoadorder} {spsData.LoadorderState} {spsData.ActualQuantity} t ###");
+        await Task.Delay(100);
+    }
+
+
 
     /// <summary>
     ///     Callback Display Test

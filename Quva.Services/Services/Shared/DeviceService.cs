@@ -10,6 +10,7 @@ using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
+using Quva.Services.Devices.Sps;
 using Quva.Services.Interfaces.Shared;
 using Serilog;
 using static Quva.Services.Devices.ComDevice;
@@ -19,7 +20,7 @@ namespace Quva.Services.Services.Shared;
 
 public class DeviceService : IAsyncDisposable, IDeviceService
 {
-    private readonly ILogger _log;    
+    private readonly ILogger _log;
     private readonly IServiceScopeFactory _scopeFactory;
     private bool _disposeFlag = true;
     private readonly SemaphoreSlim _slim;
@@ -27,13 +28,13 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     public DeviceService(IServiceScopeFactory scopeFactory)
     {
         DeviceList = new Dictionary<string, ComDevice>();
-        _log = Log.ForContext<DeviceService>();
-        _log.Information("creating DeviceService");        
+        _log = Log.ForContext(GetType());
+        _log.Information("creating DeviceService");
         _scopeFactory = scopeFactory;
         _slim = new SemaphoreSlim(1);
     }
 
-    public IDictionary<string, ComDevice> DeviceList { get; set; }
+    private IDictionary<string, ComDevice> DeviceList { get; set; }
 
     public async ValueTask DisposeAsync()
     {
@@ -59,17 +60,20 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     /// <returns></returns>
     public async Task<DeviceDto?> GetDevice(string code)
     {
-        using (var scope = _scopeFactory.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<QuvaContext>();
 
-            var query = (from d in context.Device
-                 .Include(p => p.DeviceParameter)
-                         where d.Code == code
-                         select d);
-            var value = await query.FirstOrDefaultAsync();
-            return await Task.FromResult(value?.Adapt<DeviceDto>());
-        }        
+        var query = (from d in context.Device
+             .Include(p => p.DeviceParameter)
+                     where d.Code == code
+                     select d);
+        var value = await query.FirstOrDefaultAsync();
+        return await Task.FromResult(value?.Adapt<DeviceDto>());
+    }
+
+    public IServiceScopeFactory GetServiceScopeFactory()
+    {
+        return _scopeFactory;
     }
 
 
@@ -81,7 +85,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     }
 
     // bevorzugter Rückgabewert: struct ScaleData
-    public async Task<CardData> CardCommand(string devicecode, string command)
+    private async Task<CardData> CardCommand(string devicecode, string command)
     {
         CardData result;
         ComDevice? device = null;
@@ -112,7 +116,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         return await CardCommandStart(devicecode, CardCommands.Read.ToString(), onCardRead);
     }
 
-    public async Task<IResult> CardCommandStart(string devicecode, string command, OnCardRead onCardRead)
+    private async Task<IResult> CardCommandStart(string devicecode, string command, OnCardRead onCardRead)
     {
         ComDevice? device;
         IResult? result;
@@ -133,6 +137,67 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     }
 
     #endregion Card
+
+    #region Sps
+
+    public async Task<SpsData> SpsRead(string devicecode)
+    {
+        return await SpsCommand(devicecode, SpsCommands.Read.ToString());
+    }
+
+    private async Task<SpsData> SpsCommand(string devicecode, string command)
+    {
+        SpsData result;
+        ComDevice? device = null;
+        try
+        {
+            device = await AddDevice(devicecode, true);
+            result = await device.SpsCommand(command);
+        }
+        catch (Exception ex)
+        {
+            _log.Error(ex, $"SpsCommand({devicecode}, {command})");
+            if (device != null)
+                await device.Close().ConfigureAwait(false);
+            result = new SpsData(devicecode, command)
+            {
+                ErrorNr = 99,
+                ErrorText = ex.Message
+            };
+        }
+
+        return await Task.FromResult(result);
+    }
+
+    //with callback:
+
+    public async Task<IResult> SpsReadStart(string devicecode, OnSpsRead onSpsRead)
+    {
+        return await SpsCommandStart(devicecode, SpsCommands.Read.ToString(), onSpsRead);
+    }
+
+    private async Task<IResult> SpsCommandStart(string devicecode, string command, OnSpsRead onSpsRead)
+    {
+        ComDevice? device;
+        IResult? result;
+        try
+        {
+            result = Results.Ok();
+            device = await AddDevice(devicecode, false);
+            device.SpsCommandStart(command, onSpsRead);
+        }
+        catch (Exception ex)
+        {
+            _log.Error(ex, $"SpsCommandStart({devicecode}, {command})");
+            result = Results.NotFound(ex.Message);
+            //beware device.Close()
+        }
+
+        return await Task.FromResult(result);
+    }
+
+
+    #endregion Sps
 
     #region Simul
 
@@ -165,7 +230,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     }
 
     // bevorzugter Rückgabewert: struct ScaleData
-    public async Task<CamData> CamCommand(string devicecode, string command, int camNumber)
+    private async Task<CamData> CamCommand(string devicecode, string command, int camNumber)
     {
         CamData result;
         ComDevice? device = null;
@@ -198,7 +263,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         return await DisplayCommand(devicecode, DisplayCommands.Show.ToString(), message);
     }
 
-    public async Task<DisplayData> DisplayCommand(string devicecode, string command, string message)
+    private async Task<DisplayData> DisplayCommand(string devicecode, string command, string message)
     {
         DisplayData result;
         ComDevice? device = null;
@@ -234,7 +299,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         return await DisplayCommandStart(devicecode, DisplayCommands.Show.ToString(), OnShowScale, scaleCode);
     }
 
-    public async Task<IResult> DisplayCommandStart(string devicecode, string command, OnDisplayShow onDisplayShow,
+    private async Task<IResult> DisplayCommandStart(string devicecode, string command, OnDisplayShow onDisplayShow,
         string? scaleCode)
     {
         ComDevice? device;
@@ -271,7 +336,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
     }
 
     // bevorzugter Rückgabewert: struct ScaleData
-    public async Task<ScaleData> ScaleCommand(string devicecode, string command)
+    private async Task<ScaleData> ScaleCommand(string devicecode, string command)
     {
         ScaleData result;
         ComDevice? device = null;
@@ -318,30 +383,6 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         return await Task.FromResult(result);
     }
 
-
-    // alternativer Rückgabewerte: Json String
-    //public async Task<string> ScaleCommand(string devicecode, string command)
-    //{
-    //    try
-    //    {
-    //        var _device = await AddDevice<ComDevice>(devicecode);
-    //        var result = await _device.Command(command);
-    //        return await Task.FromResult(result);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var data = new ScaleData()
-    //        {
-    //            ErrorNr = 99,
-    //            ErrorText = ex.Message,
-    //            Display = ex.Message
-    //        };
-    //        JsonSerializerOptions options = new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-    //        var result = JsonSerializer.Serialize<ScaleData>(data, options);
-    //        return await Task.FromResult(result);
-    //    }
-    //}
-
     #endregion Scale
 
     #region Modbus
@@ -383,7 +424,7 @@ public class DeviceService : IAsyncDisposable, IDeviceService
         return await ModbusCommand(devicecode, ModbusCommands.WriteVariable.ToString(), variableName, value);
     }
 
-    public async Task<ModbusData> ModbusCommand(string devicecode, string command, string variableName, string value)
+    private async Task<ModbusData> ModbusCommand(string devicecode, string command, string variableName, string value)
     {
         ModbusData result;
         ComDevice? device = null;

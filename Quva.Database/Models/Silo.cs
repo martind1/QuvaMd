@@ -65,6 +65,14 @@ public partial class Silo
 
     public bool LockForSensitiveCustomer { get; set; }
 
+    public bool? ReservedForRail { get; set; }
+
+    public bool? ReservedForDry { get; set; }
+
+    public DateTime? FilledDate { get; set; }
+
+    public bool? LockTruck2 { get; set; }
+
     public virtual ICollection<AdditionalBasicType> AdditionalBasicType { get; set; } = new List<AdditionalBasicType>();
 
     public virtual ICollection<ContingentSilo> ContingentSilo { get; set; } = new List<ContingentSilo>();

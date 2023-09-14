@@ -344,59 +344,7 @@
          "ObjectType": 3
       },
       {
-         "Name": "QUVA_API.V_AGR_CATEGORY_OPTION",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_APPLICATION_OPTION_KEY",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_AUDIT_CHANGES",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_AUDIT_ENTITY",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_BASIC_TYPE",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_BASIC_TYPE_REPORT",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_CONFIG_PRODUCTGROUP",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_CONTINGENT",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_CONTINGENT_SILOSET",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_CUSTOMER_AGR_PARAMETER",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_CUSTOMER_AGREEMENT",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_DELIVERY_HEAD_MD",
-         "ObjectType": 3
-      },
-      {
          "Name": "QUVA_API.V_DELIVERY_REPORT",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_DELIVERY_TRANSFER",
          "ObjectType": 3
       },
       {
@@ -405,26 +353,6 @@
       },
       {
          "Name": "QUVA_API.V_DELIVERYPOSITION",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_DEVICE_PARAMETER",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_LOCATION_PARAMETER",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_MAP_SILO_LOADPOINT",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_MATERIAL",
-         "ObjectType": 3
-      },
-      {
-         "Name": "QUVA_API.V_SILO",
          "ObjectType": 3
       },
       {

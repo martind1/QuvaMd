@@ -22,4 +22,6 @@ public partial class ServerPrinter
     public int ChangeNumber { get; set; }
 
     public string? Note { get; set; }
+
+    public string MaschineName { get; set; } = null!;
 }

@@ -64,7 +64,6 @@ internal class Program
 
         //Service dependency injection:
         var builder = WebApplication.CreateBuilder();
-        builder.Services.AddSingleton<IDeviceService, DeviceService>();
         builder.Services.AddDbContextPool<QuvaContext>(opt =>
                 {
                     opt.EnableSensitiveDataLogging();  //Serilog
@@ -79,6 +78,7 @@ internal class Program
         builder.Host.UseSerilog();  //log sql
 
         //My Services:
+        builder.Services.AddSingleton<IDeviceService, DeviceService>();
         builder.Services.AddScoped<ILocationParameterService, LocationParameterService>();
         builder.Services.AddScoped<IAgreementsService, AgreementsService>();
         builder.Services.AddScoped<ILoadingDbService, LoadingDbService>();

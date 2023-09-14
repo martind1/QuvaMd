@@ -12,7 +12,7 @@ public class DeviceOptions
 
     public DeviceOptions(string deviceCode, ICollection<DeviceParameterDto>? deviceParameters)
     {
-        _log = Log.ForContext<DeviceOptions>();
+        _log = Log.ForContext(GetType());
         DeviceCode = deviceCode;
         var comparer = StringComparer.OrdinalIgnoreCase;  //ignore case in key
         Options = new Dictionary<string, string>(comparer);

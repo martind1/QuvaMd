@@ -6,6 +6,7 @@ using Quva.Services.Devices.Display;
 using Quva.Services.Devices.Modbus;
 using Quva.Services.Devices.Scale;
 using Quva.Services.Devices.Simul;
+using Quva.Services.Devices.Sps;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Services.Shared;
 using Serilog;
@@ -23,11 +24,23 @@ public partial class ComDevice
     private TimerAsync? _timerAsync = null;
     public DeviceOptions? Options;
 
+    public string Code { get; set; }
+
+    // work items:
+    public IComPort? ComPort { get; set; }
+    public IScaleApi? ScaleApi { get; set; }
+    public ICardApi? CardApi { get; set; }
+    public IDisplayApi? DisplayApi { get; set; }
+    public ICamApi? CamApi { get; set; }
+    public ISpsApi? SpsApi { get; set; }
+    public ISimulApi? SimulApi { get; set; }
+    public IModbusApi? ModbusApi { get; set; }
+
 
     public ComDevice(IDeviceService dataService)
     {
         //Code = devicecode; * kein Parameter wg CS0304
-        _log = Log.ForContext<DeviceService>();
+        _log = Log.ForContext(GetType());
         Code = string.Empty;
         _slim = new SemaphoreSlim(1);
 
@@ -39,17 +52,6 @@ public partial class ComDevice
         get => _device ?? throw new ArgumentNullException(nameof(_device));
         set => _device = value;
     }
-
-    public string Code { get; set; }
-
-    // work items:
-    public IComPort? ComPort { get; set; }
-    public IScaleApi? ScaleApi { get; set; }
-    public ICardApi? CardApi { get; set; }
-    public IDisplayApi? DisplayApi { get; set; }
-    public ICamApi? CamApi { get; set; }
-    public ISimulApi? SimulApi { get; set; }
-    public IModbusApi? ModbusApi { get; set; }
 
     public virtual async Task Open()
     {
@@ -102,20 +104,32 @@ public partial class ComDevice
         Options = new DeviceOptions(Code, Device.DeviceParameter);
 
         ComPort = DeviceFactory.GetComPort(this);
-        if ((DeviceType)Device.DeviceType == DeviceType.Scale)
-            ScaleApi = DeviceFactory.GetScaleApi(this);
-        else if ((DeviceType)Device.DeviceType == DeviceType.Card)
-            CardApi = DeviceFactory.GetCardApi(this);
-        else if ((DeviceType)Device.DeviceType == DeviceType.Display)
-            DisplayApi = DeviceFactory.GetDisplayApi(this);
-        else if ((DeviceType)Device.DeviceType == DeviceType.Cam)
-            CamApi = DeviceFactory.GetCamApi(this);
-        else if ((DeviceType)Device.DeviceType == DeviceType.Simul)
-            SimulApi = DeviceFactory.GetSimulApi(this);
-        else if ((DeviceType)Device.DeviceType == DeviceType.Modbus)
-            ModbusApi = DeviceFactory.GetModbusApi(this);
-        else
-            throw new NotImplementedException($"DeviceType {(DeviceType)Device.DeviceType}");
+        switch ((DeviceType)Device.DeviceType)
+        {
+            case DeviceType.Scale:
+                ScaleApi = DeviceFactory.GetScaleApi(this);
+                break;
+            case DeviceType.Card:
+                CardApi = DeviceFactory.GetCardApi(this);
+                break;
+            case DeviceType.Display:
+                DisplayApi = DeviceFactory.GetDisplayApi(this);
+                break;
+            case DeviceType.Cam:
+                CamApi = DeviceFactory.GetCamApi(this);
+                break;
+            case DeviceType.Sps:
+                SpsApi = DeviceFactory.GetSpsApi(this, _dataService.GetServiceScopeFactory());
+                break;
+            case DeviceType.Simul:
+                SimulApi = DeviceFactory.GetSimulApi(this);
+                break;
+            case DeviceType.Modbus:
+                ModbusApi = DeviceFactory.GetModbusApi(this);
+                break;
+            default:
+                throw new NotImplementedException($"DeviceType {(DeviceType)Device.DeviceType}");
+        }
     }
 
 }

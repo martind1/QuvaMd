@@ -7,7 +7,7 @@ public enum DeviceType
     Card,
     Display,
     Cam,
-    SpsVisu,
+    Sps,
     Simul,
     Modbus
 }

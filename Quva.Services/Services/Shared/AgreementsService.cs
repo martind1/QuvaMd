@@ -142,17 +142,17 @@ public class AgreementsService : IAgreementsService
         }
 
         // unique Parameters of valid Agreements
-        var optionParameters = new Dictionary<long, VCustomerAgrParameter>();
+        var optionParameters = new Dictionary<long, CustomerAgrParameter>();
         foreach (var a in agreements)
         {
             long idAgreement = a.Id;
-            var agrParameters = await GetVCustomerAgrParameters(idAgreement);
+            var agrParameters = await GetCustomerAgrParameters(idAgreement);
             foreach (var agrParameter in agrParameters)
             {
                 bool setFlag = true;
                 if (optionParameters.TryGetValue(agrParameter.IdOption, out var agrParameterValue))
                 {
-                    setFlag = agrParameterValue.Value != agrParameterValue.DefaultValue;
+                    setFlag = agrParameterValue.ParameterValue != agrParameterValue.IdOptionNavigation.DefaultValue;
                 }
                 if (setFlag)
                 {
@@ -160,7 +160,7 @@ public class AgreementsService : IAgreementsService
                 }
             }
         }
-        List<VCustomerAgrParameter> parameters = optionParameters.Values.ToList();
+        List<CustomerAgrParameter> parameters = optionParameters.Values.ToList();
 
         var defaultValues = await GetTypeAgreementOptions();
 
@@ -215,10 +215,13 @@ public class AgreementsService : IAgreementsService
         return result;
     }
 
-    private async Task<List<VCustomerAgrParameter>> GetVCustomerAgrParameters(long idAgreement)
+    private async Task<List<CustomerAgrParameter>> GetCustomerAgrParameters(long idAgreement)
     {
-        _log.Debug($"GetVCustomerAgrParameters {idAgreement}");
-        var query = from par in _context.VCustomerAgrParameter
+        _log.Debug($"GetCustomerAgrParameters {idAgreement}");
+        var query = from par in _context.CustomerAgrParameter
+                    .Include(par => par.IdOptionNavigation)
+                    .Include(par => par.IdAgreementNavigation)
+                        .ThenInclude(cat => cat.IdCategoryNavigation)
                     where par.IdAgreement == idAgreement
                     select par;
         var result = await query.ToListAsync();
@@ -239,7 +242,7 @@ public record CustomerAgreements : ICustomerAgreements
 {
     private readonly ILogger _log;
     public List<CustomerAgreement> Agreements { get; set; }
-    public List<VCustomerAgrParameter> Parameters { get; set; }
+    public List<CustomerAgrParameter> Parameters { get; set; }
     public List<TypeAgreementOption> DefaultValues { get; set; }
 
     public CustomerAgreements(ILogger log)
@@ -252,7 +255,7 @@ public record CustomerAgreements : ICustomerAgreements
 
     public CustomerAgreements(ILogger log,
         List<CustomerAgreement> agreements,
-        List<VCustomerAgrParameter> parameters,
+        List<CustomerAgrParameter> parameters,
         List<TypeAgreementOption> defaultValues)
     {
         _log = log;
@@ -266,7 +269,7 @@ public record CustomerAgreements : ICustomerAgreements
         // z.B. "MAX_BRUTTO"
         value = null;
         datatype = DataTypeValues.t_string;
-        var agrParameter = Parameters.Where(par => par.OptionCode == code).FirstOrDefault();
+        var agrParameter = Parameters.Where(par => par.IdOptionNavigation.Code == code).FirstOrDefault();
         if (agrParameter == null)
         {
             var agrOption = DefaultValues.Where(par => par.Code == code).FirstOrDefault();
@@ -282,8 +285,8 @@ public record CustomerAgreements : ICustomerAgreements
         }
         else
         {
-            value = agrParameter.Value.Trim();  // " " -> ""
-            datatype = (DataTypeValues)agrParameter.Datatype;
+            value = agrParameter.ParameterValue.Trim();  // " " -> ""
+            datatype = (DataTypeValues)agrParameter.IdOptionNavigation.Datatype;
         }
     }
 

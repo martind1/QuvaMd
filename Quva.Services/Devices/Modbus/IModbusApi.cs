@@ -4,6 +4,7 @@ namespace Quva.Services.Devices.Modbus;
 
 public interface IModbusApi
 {
+    int PollInterval { get; set; }
     ModbusData Data { get; set; }
     Task<ModbusData> ModbusCommand(string command, string variableName, string value);
 }
