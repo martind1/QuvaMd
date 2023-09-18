@@ -1,4 +1,5 @@
 ﻿using Quva.Database.Models;
+using Quva.Services.Enums;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading.Interfaces;
 using Serilog;
@@ -11,7 +12,7 @@ public partial class BasetypeService : IBasetypeService
     private readonly ILoadingDbService _loadingDbService;
     private readonly IAgreementsService _agreementsService;
 
-    private readonly List<string> debugList = new();
+    private readonly List<ErrorLine> debugList = new();
 
     public BasetypeService(ILoadingDbService loadingDbService, IAgreementsService agreementsService)
     {
@@ -42,7 +43,8 @@ public partial class BasetypeService : IBasetypeService
         if (delivery == null)
         {
             BasetypeSilos result = new();
-            AddError(result, $"Delivery not found ID:{idDelivery}");
+            //AddError(result, $"Delivery not found ID:{idDelivery}");
+            result.AddError(TrCode.LoadingService.DeliveryNotFound, idDelivery);
             return result;
         }
         return await GetByDelivery(delivery, idLoadingPoint);
@@ -56,14 +58,16 @@ public partial class BasetypeService : IBasetypeService
         if (idDebitor == 0)
         {
             result = new();
-            AddError(result, $"Debitor not found: {debitorNumber ?? -1} in DeliveryId {delivery.Id}");
+            //AddError(result, $"Debitor not found: {debitorNumber ?? -1} in DeliveryId {delivery.Id}");
+            result.AddError(TrCode.LoadingService.DebitorNotFound, debitorNumber ?? -1, delivery.Id);
             //no return, only warning
         }
         long idLocation = delivery.DeliveryOrder?.IdPlantNavigation.IdLocation ?? 0;
         if (idLocation == 0)
         {
             result = new();
-            AddError(result, $"Location is null; in DeliveryId {delivery.Id}");
+            //AddError(result, $"Location is null; in DeliveryId {delivery.Id}");
+            result.AddError(TrCode.LoadingService.LocationNull, delivery.Id);
             return result;
         }
 
@@ -72,7 +76,8 @@ public partial class BasetypeService : IBasetypeService
         if (idMaterial == 0)
         {
             result = new();
-            AddError(result, $"Material not found; in DeliveryId Mat:{materialCode} DelId:{delivery.Id}");
+            //AddError(result, $"Material not found; in DeliveryId Mat:{materialCode} DelId:{delivery.Id}");
+            result.AddError(TrCode.LoadingService.MaterialNotFound, materialCode ?? "0", delivery.Id);
             return result;
         }
 
@@ -113,7 +118,8 @@ public partial class BasetypeService : IBasetypeService
                 //if KUVE.Kontingentpflicht then Error + Exit
                 if (filter.ContingentRequired)
                 {
-                    AddError(result, "keine gültigen Kontingente trotz Kontingentpflicht");
+                    //AddError(result, "keine gültigen Kontingente trotz Kontingentpflicht; IdDebitor:{} IdMaterial:{}");
+                    result.AddError(TrCode.LoadingService.ContingentRequired, filter.idDebitor, filter.idMaterial);
                     return result;
                 }
             }
@@ -131,9 +137,13 @@ public partial class BasetypeService : IBasetypeService
     }
 
 
-    public void AddError(BasetypeSilos result, string message)
+    public List<string> DebugStringList(LanguageEnum language)
     {
-        _log.Error(message);
-        result.ErrorLines.Add(message);
+        List<string> result = new();
+        foreach (var err in debugList)
+        {
+            result.Add(err.ToString(language));
+        }
+        return result;
     }
 }

@@ -36,4 +36,6 @@ public partial class ContingentSilo
     public virtual Contingent IdContingentNavigation { get; set; } = null!;
 
     public virtual Silo IdSiloNavigation { get; set; } = null!;
+
+    public virtual ICollection<LoadorderSilo> LoadorderSilo { get; set; } = new List<LoadorderSilo>();
 }

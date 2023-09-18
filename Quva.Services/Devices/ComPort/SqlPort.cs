@@ -92,6 +92,7 @@ public class SqlPort : IComPort
         var query = from d in context.LoadorderHead
                 .Include(p => p.LoadorderPart)
                 .Include(n => n.IdLoadingPointNavigation)
+                .AsNoTracking()
                     where d.IdLoadingPointNavigation.LoadingNumber == _sqlParameter.LoadingPoint
                       && d.IdLoadingPointNavigation.IdLoadorder == d.Id
                     select d;

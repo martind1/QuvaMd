@@ -22,3 +22,9 @@ public enum WeighingUnit
     Gram = 3
 }
 
+public enum LockRoleValues
+{
+    None = 0,
+    BigBag = 1,
+    Truck2 = 2,
+}

@@ -26,6 +26,7 @@ public class LoadingDbService : ILoadingDbService
         _log.Debug($"GetBasicTypesByMaterialId {idMaterial}");
         var query = from bt in _context.BasicType
                     .Include(bt => bt.IdMaterialNavigation)
+                    .AsNoTracking()
                     where bt.IdLocation == idLocation
                        && (idMaterial == null || bt.IdMaterial == idMaterial)
                        && (!onlyTrue || bt.MixIndex == 0)
@@ -41,6 +42,7 @@ public class LoadingDbService : ILoadingDbService
         var query = from mbt in _context.MappingBasicType
                     .Include(mbt => mbt.IdOtherTypeNavigation)
                         .ThenInclude(otn => otn.IdMaterialNavigation)
+                    .AsNoTracking()
                     where mbt.IdBasicType == idBasicType
                     orderby mbt.Position
                     select mbt;
@@ -75,6 +77,7 @@ public class LoadingDbService : ILoadingDbService
         var query = from lp in _context.MappingSiloLoadingPoint
                     .Include(lp => lp.IdSiloNavigation)
                     .Include(lp => lp.IdLoadingPointNavigation)
+                    .AsNoTracking()
                     where idSilos.Contains(lp.IdSiloNavigation.Id)
                        && (idLoadingPoint == null || lp.IdLoadingPointNavigation.Id == idLoadingPoint)
                     select lp;
@@ -88,6 +91,7 @@ public class LoadingDbService : ILoadingDbService
         _log.Debug($"GetIdLoadingPointsFromSilo {idSilo}");
         var query = from mlp in _context.MappingSiloLoadingPoint
                     .Include(mlp => mlp.IdLoadingPointNavigation)
+                    .AsNoTracking()
                     where mlp.IdSilo == idSilo
                     select mlp.IdLoadingPointNavigation;
         var result = await query.ToListAsync();
@@ -98,6 +102,7 @@ public class LoadingDbService : ILoadingDbService
     {
         _log.Debug($"GetLoadingPoints {idLocation}");
         var query = from lp in _context.LoadingPoint
+                    .AsNoTracking()
                     where lp.IdLocation == idLocation
                     select lp;
         var result = await query.ToListAsync();
@@ -106,8 +111,7 @@ public class LoadingDbService : ILoadingDbService
 
     public async Task<DeliveryHead?> FindDelivery(long idDelivery)
     {
-        // mit DeliverOrder, Plant, DeliverOrderDebitor, DeliveryOrderPosition (only mainPosition)
-        //   ShippingMethod
+        // mit DeliverOrder, Plant, ShippingMethod, DeliverOrderDebitor, Debitor.WE, DeliveryOrderPosition[mainPosition], DeliveryPosition
         _log.Debug($"FindDelivery {idDelivery}");
         var query = from del in _context.DeliveryHead
                     .Include(del => del.DeliveryOrder)
@@ -122,6 +126,7 @@ public class LoadingDbService : ILoadingDbService
                             .Where(dop => dop.MainPosition == true))
                         .ThenInclude(dop => dop.IdDeliveryPositionNavigation)
                     .AsSplitQuery()
+                    .AsNoTracking()
                     where del.Id == idDelivery
                     select del;
         var result = await query.FirstOrDefaultAsync();
@@ -141,6 +146,7 @@ public class LoadingDbService : ILoadingDbService
                         .Include(op => op!.OrderPosition
                             .Where(dop => dop.MainPosition == true))
                     .AsSplitQuery()
+                    .AsNoTracking()
                     where ord.Id == idOrder
                     select ord;
         var result = await query.FirstOrDefaultAsync();
@@ -151,6 +157,7 @@ public class LoadingDbService : ILoadingDbService
     {
         _log.Debug($"GetIdDebitorByNumber {debitorNumber}");
         var query = from lp in _context.Debitor
+                    .AsNoTracking()
                     where lp.DebitorNumber == debitorNumber
                     select lp.Id;
         var result = await query.FirstOrDefaultAsync();
@@ -161,6 +168,7 @@ public class LoadingDbService : ILoadingDbService
     {
         _log.Debug($"GetIdMaterialByCode {code}");
         var query = from lp in _context.Material
+                    .AsNoTracking()
                     where lp.Code == code
                     select lp.Id;
         var result = await query.FirstOrDefaultAsync();
@@ -171,6 +179,7 @@ public class LoadingDbService : ILoadingDbService
     {
         _log.Debug($"GetVehicleByPlate {plate}");
         var query = from ve in _context.Vehicle
+                    .AsNoTracking()
                     where ve.LicensePlate == plate
                     select ve;
         var result = await query.FirstOrDefaultAsync();
@@ -204,6 +213,7 @@ public class LoadingDbService : ILoadingDbService
         };
 
         var query = from lp in _context.LoadingPoint
+                    .AsNoTracking()
                     where allowedTransportTypes.Contains((TransportTypeValues)lp.TransportType)
                        && allowedPackagingTypes.Contains((PackagingTypeValues)lp.PackagingType)
                        && lp.IdLocation == idLocation
@@ -218,7 +228,7 @@ public class LoadingDbService : ILoadingDbService
         _log.Debug($"SaveLoadorder {loadorder.IdDelivery} Id:{loadorder.Id}");
         if (loadorder.Id == 0)
         {
-            loadorder.CreateUser = "LoadOrderService";  //is notnull and no trigger logic
+            // CreateUser see CreateLoadorder, from Delivery
             _context.LoadorderHead.Add(loadorder);
         }
         else
@@ -236,8 +246,9 @@ public class LoadingDbService : ILoadingDbService
 
     public async Task<LoadorderHead?> GetActiveLoadorder(long idDelivery, long idLoadingPoint, int[] activeStates)
     {
-        _log.Debug($"GetActiveLoadorder {idDelivery}, {idLoadingPoint}");
+        _log.Debug($"GetActiveLoadorder Del:{idDelivery}, Point:{idLoadingPoint}");
         var query = from lo in _context.LoadorderHead
+                    .AsNoTracking()
                     where lo.IdDelivery == idDelivery
                        && lo.IdLoadingPoint == idLoadingPoint
                        && activeStates.Contains(lo.LoadorderState)
@@ -250,12 +261,14 @@ public class LoadingDbService : ILoadingDbService
     {
         _log.Debug($"GetLoadingPointByLoadorder {idLoadorder}");
         var query1 = from lo in _context.LoadorderHead
-                    where lo.Id == idLoadorder
+                    .AsNoTracking()
+                     where lo.Id == idLoadorder
                     select lo.IdLoadingPoint;
         var idLoadingPoint = await query1.FirstOrDefaultAsync();
         if (idLoadingPoint == default) return null;
 
         var query = from lo in _context.LoadingPoint
+                    .AsNoTracking()
                     where lo.Id == idLoadingPoint
                     select lo;
         var result = await query.FirstOrDefaultAsync();
@@ -281,6 +294,7 @@ public class LoadingDbService : ILoadingDbService
                     .Include(csi => csi.ContingentSilo)
                         .ThenInclude(csi => csi.IdSiloNavigation)
                     .Include(cs => cs.IdLoadingPointNavigation)
+                    .AsNoTracking()
                     where cs.IdLocation == idLocation
                        && ((idDebitor == null && cs.IdDebitor == null) || cs.IdDebitor == (idDebitor ?? 0))
                        && cs.IdMaterial == idMaterial

@@ -13,10 +13,6 @@ public partial class ConfigSeal
 
     public long? IdSeal { get; set; }
 
-    public string FilterField { get; set; } = null!;
-
-    public string FilterExpression { get; set; } = null!;
-
     public int Kind { get; set; }
 
     public int Position { get; set; }
@@ -35,7 +31,15 @@ public partial class ConfigSeal
 
     public string? Note { get; set; }
 
+    public long? IdProductgroup { get; set; }
+
+    public long? IdConfigPlantMaterial { get; set; }
+
+    public virtual ConfigPlantMaterial? IdConfigPlantMaterialNavigation { get; set; }
+
     public virtual Plant IdPlantNavigation { get; set; } = null!;
+
+    public virtual Productgroup? IdProductgroupNavigation { get; set; }
 
     public virtual Seal? IdSealNavigation { get; set; }
 }

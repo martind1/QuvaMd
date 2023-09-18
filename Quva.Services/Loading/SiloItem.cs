@@ -6,6 +6,7 @@ public record SiloItem
 {
     // Verwaltung eines Silos einer Kombination
     public int Position { get; set; }  // ab 1
+    public ContingentSilo? TheContingentSilo { get; set; }
     public Silo? TheSilo { get; set; }
     private decimal _percentage = 0;
     public decimal Percentage

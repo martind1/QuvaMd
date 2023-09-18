@@ -43,7 +43,11 @@ public partial class LoadorderSilo
 
     public string? Note { get; set; }
 
+    public long? IdContingentSilo { get; set; }
+
     public virtual BasicType? IdBasicTypeNavigation { get; set; }
+
+    public virtual ContingentSilo? IdContingentSiloNavigation { get; set; }
 
     public virtual LoadorderHead IdLoadorderHeadNavigation { get; set; } = null!;
 

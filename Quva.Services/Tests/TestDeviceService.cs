@@ -307,7 +307,7 @@ internal class TestDeviceService
     {
         _log.Information("testsvc.TestSps");
         var result = await _deviceService.SpsReadStart("HOH.SPS_LKW", MySpsRead);
-        _log.Information("testsvc.TestScaleStatus Started");
+        _log.Information("testsvc.TestSpsStatus Started");
     }
 
     private async void MySpsRead(SpsData spsData)

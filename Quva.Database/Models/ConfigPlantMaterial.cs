@@ -31,6 +31,8 @@ public partial class ConfigPlantMaterial
 
     public virtual ICollection<Batch> Batch { get; set; } = new List<Batch>();
 
+    public virtual ICollection<ConfigSeal> ConfigSeal { get; set; } = new List<ConfigSeal>();
+
     public virtual Material IdMaterialNavigation { get; set; } = null!;
 
     public virtual Plant IdPlantNavigation { get; set; } = null!;

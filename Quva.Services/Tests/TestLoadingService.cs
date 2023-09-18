@@ -71,7 +71,9 @@ public class TestLoadingService
                     var view = BasetypeSilosView.FromBasetypeSilos(baseTypeSilos);
 
                     _log.Information($"BaseTypeSilos for Delivery {IdDelivery}:{Environment.NewLine}{view.ToCsv()}");
-                    _log.Information($"{string.Join(Environment.NewLine, baseTypeSilos.ErrorLines)}");
+                    //_log.Information($"{string.Join(Environment.NewLine, baseTypeSilos.ErrorLines)}");
+                    List<string> sl = baseTypeSilos.ErrorStringList(Enums.LanguageEnum.DE);
+                    _log.Information($"Errors: {string.Join(Environment.NewLine, sl)}");
                     Console.WriteLine($"done");
                 }
                 else if (key.KeyChar == '5')
@@ -87,7 +89,8 @@ public class TestLoadingService
                     _log.Information($"Created Loadorders {IdDelivery}: {string.Join(", ", loadingResult.IdLoadorders)}");
                     _log.Information($"Loadingpoints: {string.Join(", ", loadingResult.LoadingPoints)}");
 
-                    _log.Information($"Errors: {string.Join(Environment.NewLine, loadingResult.ErrorLines)}");
+                    List<string> sl = loadingResult.ErrorStringList(Enums.LanguageEnum.DE);
+                    _log.Information($"Errors: {string.Join(Environment.NewLine, sl)}");
                 }
                 else if (key.KeyChar == '6')
                 {

@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Quva.Database.Models;
 using Quva.Services.Devices.Card;
 using Quva.Services.Devices.Display;
@@ -67,6 +68,7 @@ internal class Program
         builder.Services.AddDbContextPool<QuvaContext>(opt =>
                 {
                     opt.EnableSensitiveDataLogging();  //Serilog
+                    opt.LogTo(Log.ForContext<QuvaContext>().Information, LogLevel.Information, null);
                     opt.UseOracle(conn.ConnectionString, opt =>
                     {
                         opt.UseOracleSQLCompatibility("11");

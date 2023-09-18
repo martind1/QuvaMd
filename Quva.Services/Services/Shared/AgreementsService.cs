@@ -185,6 +185,7 @@ public class AgreementsService : IAgreementsService
                     .Include(delhdr => delhdr.DeliveryPosition)
                         .ThenInclude(delpos => delpos.DeliveryOrderPosition)
                             .ThenInclude(delordpos => delordpos!.IdUnitNavigation)
+                    .AsNoTracking()
                     where delhdr.Id == idDeliveryHead
                     select delhdr;
         //(1) https://github.com/dotnet/efcore/issues/17212 wg !
@@ -198,6 +199,7 @@ public class AgreementsService : IAgreementsService
     {
         _log.Debug($"GetMaterialByCode");
         var query = from d in _context.Material
+                    .AsNoTracking()
                     where d.Code == code
                     select d;
         Material? value = await query.FirstOrDefaultAsync();
@@ -209,6 +211,7 @@ public class AgreementsService : IAgreementsService
     {
         _log.Debug($"GetCustomerAgreements {idLocation}");
         var query = from agr in _context.CustomerAgreement
+                    .AsNoTracking()
                     where agr.IdLocation == idLocation && (active == null || agr.Active == active)
                     select agr;
         var result = await query.ToListAsync();
@@ -222,6 +225,7 @@ public class AgreementsService : IAgreementsService
                     .Include(par => par.IdOptionNavigation)
                     .Include(par => par.IdAgreementNavigation)
                         .ThenInclude(cat => cat.IdCategoryNavigation)
+                    .AsNoTracking()
                     where par.IdAgreement == idAgreement
                     select par;
         var result = await query.ToListAsync();
@@ -232,6 +236,7 @@ public class AgreementsService : IAgreementsService
     {
         _log.Debug($"GetTypeAgreementOptions");
         var query = from par in _context.TypeAgreementOption
+                    .AsNoTracking()
                     select par;
         var result = await query.ToListAsync();
         return result;

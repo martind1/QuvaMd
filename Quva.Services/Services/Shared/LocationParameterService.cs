@@ -56,6 +56,7 @@ public class LocationParameterService : ILocationParameterService
             var query0 = from locpar in _context.LocationParameter
                          .Include(key => key.IdOptionKeyNavigation)
                             .ThenInclude(gru => gru.IdGroupNavigation)
+                        .AsNoTracking()
                          where locpar.IdLocation == idLocation
                          select locpar;
             _cachedLocationParameters = await query0.ToListAsync();

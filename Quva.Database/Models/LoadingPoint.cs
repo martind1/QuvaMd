@@ -33,6 +33,8 @@ public partial class LoadingPoint
 
     public long? IdLoadorder { get; set; }
 
+    public int LockRole { get; set; }
+
     public virtual ICollection<Contingent> Contingent { get; set; } = new List<Contingent>();
 
     public virtual LoadorderHead? IdLoadorderNavigation { get; set; }

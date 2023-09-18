@@ -16,7 +16,8 @@ public partial class BasetypeService
             {
                 if (basicType.MixIndex > 0)
                 {
-                    AddError(bts, $"Falscher MixIndex {basicType.MixIndex}. Muss 0 sein wenn kein Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
+                    //AddError(bts, $"Falscher MixIndex {basicType.MixIndex}. Muss 0 sein wenn kein Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
+                    bts.AddError(TrCode.LoadingService.WrongMixindex, basicType.MixIndex, basicType.IdMaterialNavigation.Code);
                     continue;  //produktiv
                 }
                 var lpSilos = await _loadingDbService.GetLoadingpointSilosByBasictype(basicType.Id, null);
@@ -41,12 +42,13 @@ public partial class BasetypeService
                         TheSilo = silo,
                         Percentage = 999,
                     };
-                    debugList.Add(silo.SiloNumber.ToString() + " " + siloItem.Percentage + '%');
+                    debugList.Add(new ErrorLine(silo.SiloNumber.ToString() + " " + siloItem.Percentage + '%'));
                     siloSet.SiloItems.Add(siloItem);
+                    var sl = DebugStringList(Enums.LanguageEnum.EN);
                     if (!bts.AddSiloSet(siloSet))  // mit Checks, Priority
-                        _log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+                        _log.Warning(string.Join(", ", sl) + ": Siloset bereits vorhanden");
                     else
-                        _log.Information(string.Join(", ", debugList));
+                        _log.Information(string.Join(", ", sl));
                 }
 
             }
@@ -66,7 +68,8 @@ public partial class BasetypeService
                 // Mischsorten:
                 if (basicType.MixIndex == 0)
                 {
-                    AddError(bts, $"Falscher MixIndex 0. Muss >0 sein bei Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
+                    //AddError(bts, $"Falscher MixIndex 0. Muss >0 sein bei Mix. BasicType:{basicType.IdMaterialNavigation.Code}");
+                    bts.AddError(TrCode.LoadingService.WrongMixindex0, basicType.IdMaterialNavigation.Code);
                     continue;  //produktiv
                 }
                 var loadingPoints = await _loadingDbService.GetLoadingPoints(bts.filter.IdLocation);
@@ -92,7 +95,9 @@ public partial class BasetypeService
                         }
                         if (lpSilos.Count == 0)
                         {
-                            debugList.Add(string.Format("kein Silo für Material:{0} BasicType:{1}.Mix{2} Point:{3}",
+                            //debugList.Add(string.Format("No Silo for Material:{0} BasicType:{1}.Mix{2} Point:{3}",
+                            //    basicType.IdMaterialNavigation.Code, basicType.Id, basicType.MixIndex, loadingPoint.Name));
+                            debugList.Add(new ErrorLine(TrCode.LoadingService.NoSiloMaterial, 
                                 basicType.IdMaterialNavigation.Code, basicType.Id, basicType.MixIndex, loadingPoint.Name));
                         }
                         var idsilos = lpSilos.Select(x => x.IdSiloNavigation.SiloNumber).ToList();
@@ -108,7 +113,11 @@ public partial class BasetypeService
                     }
                     if (siloLists.Count < mappedBasicTypes.Count)
                     {
-                        AddError(bts, string.Join(Environment.NewLine, debugList));
+                        //AddError(bts, string.Join(Environment.NewLine, debugList));
+                        foreach (var debug in debugList)
+                        {
+                            bts.AddError(debug.Code, debug.Parameter);
+                        }
                         continue;  //produktiv
                     }
 
@@ -135,15 +144,17 @@ public partial class BasetypeService
                                 TheSilo = silo.IdSiloNavigation,
                                 Percentage = percentageList[pos - 1],
                             };
-                            debugList.Add(silo.IdSiloNavigation.SiloNumber.ToString() + " " + siloItem.Percentage + '%');
+                            debugList.Add(new ErrorLine(
+                                silo.IdSiloNavigation.SiloNumber.ToString() + " " + siloItem.Percentage + '%'));
 
                             pos++;
                             siloSet.SiloItems.Add(siloItem);
                         }
+                        var sl = DebugStringList(Enums.LanguageEnum.EN);
                         if (!bts.AddSiloSet(siloSet))  // mit Checks, Priority
-                            _log.Warning(string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+                            _log.Warning(string.Join(", ", sl) + ": Siloset bereits vorhanden");
                         else
-                            _log.Information(string.Join(", ", debugList));
+                            _log.Information(string.Join(", ", sl));
                     }
 
                 }

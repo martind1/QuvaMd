@@ -16,6 +16,7 @@
       "Default": "Debug",
       "Override": {
         "Microsoft": "Warning",
+        "Quva.Database.Models.QuvaContext": "Error",
         "Microsoft.EntityFrameworkCore.Database.Command": "Error",
         "SapTransfer.Services.Services.FtpsService": "Information",
         "FTP": "Error",

@@ -24,4 +24,5 @@ public static class TypeAgreementOptionCode
     public const string MAX_NETTO = "MAX_NETTO"; // Maximale Ausladung für Lieferschein[t]
     public const string SCHIFFCONTAINER = "SCHIFFCONTAINER"; // Schiff Container
     public const string MITAUFLIEGER = "MITAUFLIEGER"; // Auflieger Eingabepflicht
+    public const string SENSITIVE_CUSTOMER = "SENSITIVE_CUSTOMER"; // Sensibler Kunde
 }

@@ -22,4 +22,6 @@ public partial class VDeliveryposition
     public string? Unit { get; set; }
 
     public bool? PrintMark { get; set; }
+
+    public bool MainPosition { get; set; }
 }

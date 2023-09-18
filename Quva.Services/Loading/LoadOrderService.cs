@@ -43,7 +43,8 @@ public class LoadOrderService : ILoadOrderService
         var delivery = await _loadingDbService.FindDelivery(parameter.IdDelivery);
         if (delivery == null)
         {
-            AddError(result, $"IdDelivery not found ({parameter.IdDelivery})");
+            //AddError(result, $"IdDelivery not found ({parameter.IdDelivery})");
+            AddError(result, TrCode.LoadingService.DeliveryNotFound, parameter.IdDelivery);
             return result;
         }
 
@@ -51,13 +52,15 @@ public class LoadOrderService : ILoadOrderService
             delivery.DeliveryOrder!.IdShippingMethodNavigation);
         if (loadingPoints.Count == 0)
         {
-            AddError(result, $"No Loading Points for IdDelivery:({parameter.IdDelivery})");
+            //AddError(result, $"No Loading Points for IdDelivery:({parameter.IdDelivery})");
+            AddError(result, TrCode.LoadingService.NoLoadingPoints, parameter.IdDelivery);
             return result;
         }
 
         if (delivery.DeliveryOrder.DeliveryOrderPosition.Count <= 0)
         {
-            AddError(result, $"No Main Positions for IdDelivery:({parameter.IdDelivery})");
+            //AddError(result, $"No Main Positions for IdDelivery:({parameter.IdDelivery})");
+            AddError(result, TrCode.LoadingService.NoMainPositions, parameter.IdDelivery);
             return result;
         }
 
@@ -74,7 +77,8 @@ public class LoadOrderService : ILoadOrderService
             var activeOrder = await _loadingDbService.GetActiveLoadorder(parameter.IdDelivery, loadingPoint.Id, activeStates);
             if (activeOrder != null)
             {
-                AddError(result, $"Active Loadorder already exists. Point({loadingPoint.Name}) ID({activeOrder.Id})");
+                //AddError(result, $"Active Loadorder already exists. Point({loadingPoint.Name}) ID({activeOrder.Id})");
+                AddError(result, TrCode.LoadingService.LoadorderExists, loadingPoint.Name, activeOrder.Id);
                 continue;
             }
             LoadorderHead hdr = new()
@@ -135,15 +139,27 @@ public class LoadOrderService : ILoadOrderService
             }
             else
             {
-                var silos = await _basetypeService.GetByDelivery(delivery, loadingPoint.Id);
-                result.AddErrorLines(silos.ErrorLines);
-                if (silos.SiloSets.Count == 0)
+                var basetypeSilos = await _basetypeService.GetByDelivery(delivery, loadingPoint.Id);
+
+                // Regeln prüfen, Silosets ggf entfernen:
+                basetypeSilos.ApplyRules(new RuleToApply()
                 {
-                    AddError(result, $"No Silos for IdDelivery:({parameter.IdDelivery}) Point({loadingPoint.LoadingNumber})");
+                    TransportType = (TransportTypeValues)delivery.DeliveryOrder.IdShippingMethodNavigation.TransportType,
+                    LoadingQuantity = parameter.TargetQuantity,
+                    SensitiveCustomer = agr.GetParameter<bool>(TypeAgreementOptionCode.SENSITIVE_CUSTOMER),
+                    LockRole = (LockRoleValues)loadingPoint.LockRole,  //BigBag, Truck2
+                    // TODO: wann CheckSilolevel
+                }) ;
+
+                result.AddErrorLines(basetypeSilos.ErrorLines);
+                if (basetypeSilos.SiloSets.Count == 0)
+                {
+                    //"No Silos for IdDelivery:({parameter.IdDelivery}) Point({loadingPoint.LoadingNumber})"
+                    AddError(result, TrCode.LoadingService.NoSiloDelivery, parameter.IdDelivery, loadingPoint.LoadingNumber);
                     return result;
                 }
-                silos.SortByPrio();  // sorts silosets
-                siloSets = silos.SiloSets;
+                basetypeSilos.SortByPrio();  // sorts silosets
+                siloSets = basetypeSilos.SiloSets;
             }
             int idx = 0;
             foreach (var siloset in siloSets)
@@ -155,6 +171,7 @@ public class LoadOrderService : ILoadOrderService
                         SiloSet = idx,
                         Position = siloitem.Position,
                         IdSilo = siloitem.TheSilo?.Id,
+                        IdContingentSilo = siloitem.TheContingentSilo?.Id,
                         SiloNumber = siloitem.TheSilo?.SiloNumber,
                         Akz = siloitem.TheSilo?.Akz,
                         SpsCode = siloitem.TheSilo?.SpsCode,
@@ -182,10 +199,11 @@ public class LoadOrderService : ILoadOrderService
         return result;
     }
 
-    private void AddError(LoadingResult loadingResult, string message)
+    private void AddError(LoadingResult loadingResult, string code, params object[] parameter)
     {
-        _log.Error(message);
-        loadingResult.ErrorLines.Add(message);
+        var line = new ErrorLine(code, parameter);
+        _log.Warning(line.ToString(LanguageEnum.EN));
+        loadingResult.ErrorLines.Add(line);
     }
 
 }

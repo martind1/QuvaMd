@@ -743,17 +743,15 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CREATE_USER");
-            entity.Property(e => e.FilterExpression)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("FILTER_EXPRESSION");
-            entity.Property(e => e.FilterField)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("FILTER_FIELD");
+            entity.Property(e => e.IdConfigPlantMaterial)
+                .HasPrecision(18)
+                .HasColumnName("ID_CONFIG_PLANT_MATERIAL");
             entity.Property(e => e.IdPlant)
                 .HasPrecision(18)
                 .HasColumnName("ID_PLANT");
+            entity.Property(e => e.IdProductgroup)
+                .HasPrecision(18)
+                .HasColumnName("ID_PRODUCTGROUP");
             entity.Property(e => e.IdSeal)
                 .HasPrecision(18)
                 .HasColumnName("ID_SEAL");
@@ -770,10 +768,18 @@ public partial class QuvaContext : DbContext
                 .HasPrecision(9)
                 .HasColumnName("WIDTH");
 
+            entity.HasOne(d => d.IdConfigPlantMaterialNavigation).WithMany(p => p.ConfigSeal)
+                .HasForeignKey(d => d.IdConfigPlantMaterial)
+                .HasConstraintName("FK_CONFIG_SEAL_CPM");
+
             entity.HasOne(d => d.IdPlantNavigation).WithMany(p => p.ConfigSeal)
                 .HasForeignKey(d => d.IdPlant)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CONFIG_SEAL_PLANT");
+
+            entity.HasOne(d => d.IdProductgroupNavigation).WithMany(p => p.ConfigSeal)
+                .HasForeignKey(d => d.IdProductgroup)
+                .HasConstraintName("FK_CONFIG_SEAL_PRODUCTGROUP");
 
             entity.HasOne(d => d.IdSealNavigation).WithMany(p => p.ConfigSeal)
                 .HasForeignKey(d => d.IdSeal)
@@ -2668,6 +2674,10 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.LoadingNumber)
                 .HasPrecision(9)
                 .HasColumnName("LOADING_NUMBER");
+            entity.Property(e => e.LockRole)
+                .HasPrecision(9)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("LOCK_ROLE");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -2684,6 +2694,7 @@ public partial class QuvaContext : DbContext
 
             entity.HasOne(d => d.IdLoadorderNavigation).WithMany(p => p.LoadingPoint)
                 .HasForeignKey(d => d.IdLoadorder)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_LOADING_POINT_LOADORDER");
 
             entity.HasOne(d => d.IdLocationNavigation).WithMany(p => p.LoadingPoint)
@@ -2923,7 +2934,6 @@ public partial class QuvaContext : DbContext
 
             entity.HasOne(d => d.IdLoadorderHeadNavigation).WithMany(p => p.LoadorderPart)
                 .HasForeignKey(d => d.IdLoadorderHead)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LOADPART_HEAD");
         });
 
@@ -2962,6 +2972,9 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.IdBasicType)
                 .HasPrecision(18)
                 .HasColumnName("ID_BASIC_TYPE");
+            entity.Property(e => e.IdContingentSilo)
+                .HasPrecision(18)
+                .HasColumnName("ID_CONTINGENT_SILO");
             entity.Property(e => e.IdLoadorderHead)
                 .HasPrecision(18)
                 .HasColumnName("ID_LOADORDER_HEAD");
@@ -2998,9 +3011,13 @@ public partial class QuvaContext : DbContext
                 .HasForeignKey(d => d.IdBasicType)
                 .HasConstraintName("FK_LOADSILO_BASIC_TYPE");
 
+            entity.HasOne(d => d.IdContingentSiloNavigation).WithMany(p => p.LoadorderSilo)
+                .HasForeignKey(d => d.IdContingentSilo)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_LOADSILO_CONTSILO");
+
             entity.HasOne(d => d.IdLoadorderHeadNavigation).WithMany(p => p.LoadorderSilo)
                 .HasForeignKey(d => d.IdLoadorderHead)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LOADSILO_HEAD");
 
             entity.HasOne(d => d.IdSiloNavigation).WithMany(p => p.LoadorderSilo)
@@ -3581,6 +3598,10 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.Note)
                 .IsUnicode(false)
                 .HasColumnName("NOTE");
+            entity.Property(e => e.UsageType)
+                .HasPrecision(9)
+                .HasDefaultValueSql("NULL ")
+                .HasColumnName("USAGE_TYPE");
 
             entity.HasOne(d => d.IdDeviceNavigation).WithMany(p => p.MappingWorkplaceDevice)
                 .HasForeignKey(d => d.IdDevice)
@@ -4777,7 +4798,7 @@ public partial class QuvaContext : DbContext
         {
             entity.ToTable("SERVER_PRINTER");
 
-            entity.HasIndex(e => e.Name, "UK_SERVER_PRINTER_NAME").IsUnique();
+            entity.HasIndex(e => new { e.Name, e.MaschineName }, "UK_SERVER_PRINTER_NAME").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasPrecision(18)
@@ -5778,6 +5799,9 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.LoadedQuantity)
                 .HasColumnType("NUMBER(18,3)")
                 .HasColumnName("LOADED_QUANTITY");
+            entity.Property(e => e.MainPosition)
+                .HasPrecision(1)
+                .HasColumnName("MAIN_POSITION");
             entity.Property(e => e.MaterialLongName)
                 .HasMaxLength(100)
                 .IsUnicode(false)

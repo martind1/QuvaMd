@@ -27,6 +27,8 @@ public partial class Productgroup
 
     public virtual ICollection<ConfigProductgroup> ConfigProductgroup { get; set; } = new List<ConfigProductgroup>();
 
+    public virtual ICollection<ConfigSeal> ConfigSeal { get; set; } = new List<ConfigSeal>();
+
     public virtual ICollection<DeliveryOrderPosition> DeliveryOrderPosition { get; set; } = new List<DeliveryOrderPosition>();
 
     public virtual ICollection<OrderPosition> OrderPosition { get; set; } = new List<OrderPosition>();

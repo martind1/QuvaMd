@@ -1,4 +1,6 @@
-﻿namespace Quva.Services.Loading;
+﻿using Quva.Services.Enums;
+
+namespace Quva.Services.Loading;
 
 public record LoadingResult
 {
@@ -9,16 +11,25 @@ public record LoadingResult
 
     // Error Text when no Loadorder created
     // Warnings when Loadorder created
-    public List<string> ErrorLines { get; set; } = new();
+    public List<ErrorLine> ErrorLines { get; set; } = new();
 
     // Angezeigte Beladestelle(n):
     public List<string> LoadingPoints { get; set; } = new();
 
 
-    public void AddErrorLines(List<string> otherLines)
+    public void AddErrorLines(List<ErrorLine> otherLines)
     {
         ErrorLines.AddRange(otherLines);
     }
+
+    public List<string> ErrorStringList(LanguageEnum language)
+    {
+        List<string> result = new();
+        foreach (var err in ErrorLines)
+        {
+            result.Add(err.ToString(language));
+        }
+        return result;
+    }
+
 }
-
-

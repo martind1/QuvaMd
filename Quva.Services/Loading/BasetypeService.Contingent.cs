@@ -35,7 +35,8 @@ public partial class BasetypeService
         var basicTypes = await _loadingDbService.GetBasicTypesByMaterialId(bts.filter.IdLocation, idMaterial, true);
         if (basicTypes.Count == 0)
         {
-            AddError(bts, $"Contingent Material no True Basic Type; MaterialId:{idMaterial}");
+            //AddError(bts, $"Contingent Material no True Basic Type; MaterialId:{idMaterial}");
+            bts.AddError(TrCode.LoadingService.NoTrueBasicType, idMaterial);
             return null;
         }
         return basicTypes.FirstOrDefault();
@@ -46,10 +47,11 @@ public partial class BasetypeService
         int maxSiloset = contingent.ContingentSilo.Select(x => x.SiloSet).Max();
         for (int iSet = 0; iSet <= maxSiloset; iSet++)
         {
-            var silos = contingent.ContingentSilo.Where(x => x.SiloSet == iSet).ToList();
-            if (silos.Count <= 0)
+            var contingentSilos = contingent.ContingentSilo.Where(x => x.SiloSet == iSet).ToList();
+            if (contingentSilos.Count <= 0)
             {
-                AddError(bts, $"Contingent Siloset keine Silos; Set:{iSet} Id:{contingent.Id}");
+                //AddError(bts, $"Contingent Siloset keine Silos; Set:{iSet} Id:{contingent.Id}");
+                bts.AddError(TrCode.LoadingService.NoContingentSilos, iSet, contingent.Id);
                 continue;  //produktiv
 
             }
@@ -62,23 +64,27 @@ public partial class BasetypeService
                 TheContingent = contingent,
                 ContingentSiloset = iSet,
             };
-            foreach (var silo in silos)
+            foreach (var contingentSilo in contingentSilos)
             {
                 SiloItem siloItem = new()
                 {
-                    Position = silo.Position,
-                    TheSilo = silo.IdSiloNavigation,
-                    Percentage = silo.Percentage ?? 0,
-                    PowerTh = silo.PowerTh ?? 0,
+                    Position = contingentSilo.Position,
+                    TheContingentSilo = contingentSilo,
+                    TheSilo = contingentSilo.IdSiloNavigation,
+                    Percentage = contingentSilo.Percentage ?? 0,
+                    PowerTh = contingentSilo.PowerTh ?? 0,
                 };
-                debugList.Add(silo.IdSiloNavigation.SiloNumber.ToString() + " " + siloItem.Percentage + '%');
+                debugList.Add(new ErrorLine(contingentSilo.IdSiloNavigation.SiloNumber.ToString() + " " + siloItem.Percentage + '%'));
                 siloSet.SiloItems.Add(siloItem);
             }
+            var sl = DebugStringList(Enums.LanguageEnum.EN);
             if (!bts.AddSiloSet(siloSet))  // mit Checks, Priority
-                _log.Warning("Cont: " + string.Join(", ", debugList) + ": Siloset bereits vorhanden");
+                _log.Warning("Cont: " + string.Join(", ", sl) + ": Siloset bereits vorhanden");
             else
-                _log.Information("Cont: " + string.Join(", ", debugList));
+                _log.Information("Cont: " + string.Join(", ", sl));
 
         }
     }
+
+
 }
