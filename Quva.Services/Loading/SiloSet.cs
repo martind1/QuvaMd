@@ -86,11 +86,8 @@ public record SiloSet
         }
         if (rule.CheckForSensitiveCustomer && LockForSensitiveCustomer)
         {
-            if (TheContingent == null || !TheContingent.CheckSilolock)
-            {
                 addError(TrCode.LoadingService.LockForSensitiveCustomer, SiloNumbers);
                 return false;
-            }
         }
 
         if (rule.CheckSilolevel && SiloItems.Count > 1)
