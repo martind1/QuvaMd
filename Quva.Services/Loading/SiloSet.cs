@@ -27,6 +27,7 @@ public record SiloSet
     public bool LockLaboratory { get => SiloItems.Where(si => si.TheSilo!.LockLaboratory == true).FirstOrDefault() != null; }
     public bool LockProduction { get => SiloItems.Where(si => si.TheSilo!.LockForProduction == true).FirstOrDefault() != null; }
     public bool LockForSensitiveCustomer { get => SiloItems.Where(si => si.TheSilo!.LockForSensitiveCustomer == true).FirstOrDefault() != null; }
+    public bool Wet { get => SiloItems.Where(si => si.TheSilo!.Dry == false).FirstOrDefault() != null; }
 
     public string SiloNumbers { get => string.Join(", ", SiloItems.Select(si => si.TheSilo!.SiloNumber).ToList()); }
 

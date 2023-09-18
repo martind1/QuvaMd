@@ -16,6 +16,8 @@ public static class TypeAgreementOptionCode
     public const string VERSANDAVIS_LFS_ANHANG = "VERSANDAVIS_LFS_ANHANG"; // Versandavis Lieferschein im Anhang
     public const string KUMULIERT = "KUMULIERT"; // Kumuliert
     public const string PROBE = "PROBE"; // Probe für Fahrer
+    public const string RUECKSTELLPROBE = "RUECKSTELLPROBE"; // Rückstellmuster
+    public const string ANALYSEPROBE = "ANALYSEPROBE";  // Analyseprobe Gambach (Tag, Woche, Kammer, Zeitplan)
     public const string LAB_WZ_FREQ = "LAB_WZ_FREQ"; // Werkszeugniss Häufigkeit(0=nie, 1, 2, 3)
     public const string Lab_Message = "Lab_Message"; // Labor Besonderheiten
     public const string MK_SGU = "MK_SGU"; // Mittlere Korngröße SGU

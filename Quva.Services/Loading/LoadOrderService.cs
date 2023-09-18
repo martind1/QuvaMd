@@ -99,7 +99,6 @@ public class LoadOrderService : ILoadOrderService
                 // MoistLock (from CustAgree)
                 MoistLock = agr.GetParameter<decimal?>(TypeAgreementOptionCode.SPERR_FEUCHTE),
             };
-            // TODO: set Flag* Fields = 0 or from CustAgree/LocParam
 
             // Teilmengen:
             if (parameter.PartQuantities == null || parameter.PartQuantities.Count <= 0)
@@ -131,10 +130,7 @@ public class LoadOrderService : ILoadOrderService
             List<SiloSet> siloSets;
             if (parameter.SiloSets.Count > 0)
             {
-                //AddError(result, "LoadingParameter SiloSet is not implemented");
-                //return result;
                 siloSets = parameter.SiloSets;
-
                 // TODO: unpassende wg LoadingPoint entfernen
             }
             else
@@ -187,6 +183,21 @@ public class LoadOrderService : ILoadOrderService
                 idx++;
             }
 
+            // Nachfolgende Tasks:
+            // set Flag* Fields
+            hdr.FlagManuell = loadingPoint.FlagManuell ?? false ||
+                                agr.GetParameter<bool>(TypeAgreementOptionCode.SENSITIVE_CUSTOMER);
+            hdr.FlagOffeneBel = siloSets.Where(si => si.Wet == true).FirstOrDefault() != null;
+            hdr.FlagSpsBel = !loadingPoint.FlagManuell;
+            hdr.FlagKombiKnz = delivery.CombinedTransport;
+            hdr.FlagQuittieren = false;  // nicht quittiert
+            hdr.FlagProbenahme = agr.GetParameter<bool>(TypeAgreementOptionCode.PROBE);
+            hdr.FlagPattern = agr.GetParameter<bool>(TypeAgreementOptionCode.RUECKSTELLPROBE);
+            hdr.FlagAnalyse = agr.GetParameter<bool>(TypeAgreementOptionCode.ANALYSEPROBE);
+            hdr.FlagAuftWdhlg = parameter.OrderRepetition;
+            hdr.FlagVerladesperre = false; // Verladesperre, muss von SPS/Visu freigegeben werden (WEF)
+
+
             // persist:
             var idLoadorder = await _loadingDbService.SaveLoadorder(hdr);
             result.IdLoadorders.Add(idLoadorder);
@@ -194,7 +205,6 @@ public class LoadOrderService : ILoadOrderService
 
         }  // loadingPoint
 
-        await Task.Delay(0);
         return result;
     }
 

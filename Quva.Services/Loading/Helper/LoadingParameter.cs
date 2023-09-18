@@ -7,6 +7,7 @@ public record LoadingParameter
     public long IdDelivery { get; set; }
     public decimal TargetQuantity { get; set; }
     public List<decimal> PartQuantities { get; set; } = new();
+    public bool OrderRepetition { get; set; } = false;
 
     //optional nach Silowechsel:
     public List<SiloSet> SiloSets { get; set; } = new();

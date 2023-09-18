@@ -1311,6 +1311,11 @@ public partial class QuvaContext : DbContext
             entity.Property(e => e.CollectiveFlag)
                 .HasPrecision(1)
                 .HasColumnName("COLLECTIVE_FLAG");
+            entity.Property(e => e.CombinedTransport)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("COMBINED_TRANSPORT");
             entity.Property(e => e.ContainerNumber)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -2665,6 +2670,11 @@ public partial class QuvaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("CREATE_USER");
+            entity.Property(e => e.FlagManuell)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("FLAG_MANUELL");
             entity.Property(e => e.IdLoadorder)
                 .HasPrecision(18)
                 .HasColumnName("ID_LOADORDER");
@@ -6111,6 +6121,7 @@ public partial class QuvaContext : DbContext
         modelBuilder.HasSequence("IDENTIFICATION_CARD_ID_SEQ");
         modelBuilder.HasSequence("LOADING_ORDERS_ID_SEQ");
         modelBuilder.HasSequence("LOADING_POINT_ID_SEQ");
+        modelBuilder.HasSequence("LOADORDER_CONTEXT_ID_SEQ");
         modelBuilder.HasSequence("LOADORDER_HEAD_ID_SEQ");
         modelBuilder.HasSequence("LOADORDER_PART_ID_SEQ");
         modelBuilder.HasSequence("LOADORDER_SILO_ID_SEQ");

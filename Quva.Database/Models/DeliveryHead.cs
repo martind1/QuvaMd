@@ -111,6 +111,8 @@ public partial class DeliveryHead
 
     public bool CollectiveFlag { get; set; }
 
+    public bool? CombinedTransport { get; set; }
+
     public virtual ICollection<DeliveryDocument> DeliveryDocument { get; set; } = new List<DeliveryDocument>();
 
     public virtual ICollection<DeliveryMessage> DeliveryMessage { get; set; } = new List<DeliveryMessage>();
