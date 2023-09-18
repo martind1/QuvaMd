@@ -4,7 +4,6 @@ using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading.Helper;
 using Quva.Services.Loading.Interfaces;
 using Serilog;
-using System.Reflection.Emit;
 
 namespace Quva.Services.Loading;
 
@@ -15,8 +14,8 @@ public class LoadOrderService : ILoadOrderService
     private readonly IBasetypeService _basetypeService;
     private readonly IAgreementsService _agreementsService;
 
-    public LoadOrderService(ILoadingDbService loadingDbService, 
-        IBasetypeService basetypeService, 
+    public LoadOrderService(ILoadingDbService loadingDbService,
+        IBasetypeService basetypeService,
         IAgreementsService agreementsService)
     {
         _log = Log.ForContext(GetType());
@@ -149,7 +148,7 @@ public class LoadOrderService : ILoadOrderService
                     LoadingQuantity = parameter.TargetQuantity,
                     SensitiveCustomer = agr.GetParameter<bool>(TypeAgreementOptionCode.SENSITIVE_CUSTOMER),
                     LockRole = (LockRoleValues)loadingPoint.LockRole,  //BigBag, Truck2
-                }) ;
+                });
 
                 result.AddErrorLines(basetypeSilos.ErrorLines);
                 if (basetypeSilos.SiloSets.Count == 0)
