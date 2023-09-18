@@ -1,11 +1,6 @@
 ﻿using Quva.Services.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Quva.Services.Loading;
+namespace Quva.Services.Loading.Helper;
 
 public static class TrText
 {

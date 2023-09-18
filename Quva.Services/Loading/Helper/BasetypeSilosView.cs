@@ -2,7 +2,7 @@
 using CsvHelper.Configuration;
 using System.Globalization;
 
-namespace Quva.Services.Loading;
+namespace Quva.Services.Loading.Helper;
 
 public class BasetypeSilosView
 {
@@ -62,7 +62,7 @@ public class BasetypeSilosView
         using (StreamReader reader = new(stream))
         using (var csv = new CsvWriter(writer, config))
         {
-            csv.WriteRecords<BasetypeSilosItem>(SiloSets);
+            csv.WriteRecords(SiloSets);
             writer.Flush();
             stream.Position = 0;
             result = reader.ReadToEnd();

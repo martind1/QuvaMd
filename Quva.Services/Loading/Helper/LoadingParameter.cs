@@ -1,4 +1,4 @@
-﻿namespace Quva.Services.Loading;
+﻿namespace Quva.Services.Loading.Helper;
 
 public record LoadingParameter
 {

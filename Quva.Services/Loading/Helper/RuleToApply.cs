@@ -1,6 +1,6 @@
 ﻿using Quva.Services.Enums;
 
-namespace Quva.Services.Loading;
+namespace Quva.Services.Loading.Helper;
 
 // Regel mit Soll und Istwerten zum prüfen
 public record RuleToApply

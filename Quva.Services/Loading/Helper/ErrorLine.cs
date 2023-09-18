@@ -1,6 +1,6 @@
 ﻿using Quva.Services.Enums;
 
-namespace Quva.Services.Loading;
+namespace Quva.Services.Loading.Helper;
 
 public record ErrorLine
 {

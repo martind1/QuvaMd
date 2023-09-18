@@ -1,4 +1,6 @@
-﻿namespace Quva.Services.Loading.Interfaces
+﻿using Quva.Services.Loading.Helper;
+
+namespace Quva.Services.Loading.Interfaces
 {
     public interface ILoadOrderService
     {

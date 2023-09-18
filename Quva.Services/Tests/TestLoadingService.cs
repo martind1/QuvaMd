@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Quva.Services.Interfaces.Shared;
-using Quva.Services.Loading;
+using Quva.Services.Loading.Helper;
 using Serilog;
 
 namespace Quva.Services.Tests;

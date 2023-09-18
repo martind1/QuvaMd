@@ -18,7 +18,6 @@ public class LoadingDbService : ILoadingDbService
     }
 
 
-
     // plus Material
     public async Task<List<BasicType>> GetBasicTypesByMaterialId(long idLocation, long? idMaterial, bool onlyTrue)
     {

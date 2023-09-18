@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Quva.Services.Loading;
+namespace Quva.Services.Loading.Helper;
 
 public static class CartesianProductContainer
 {
