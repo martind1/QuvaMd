@@ -1,5 +1,6 @@
 ﻿using Quva.Database.Models;
 using Quva.Services.Enums;
+using Quva.Services.Interfaces;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Loading.Helper;
 using Quva.Services.Loading.Interfaces;
@@ -13,15 +14,18 @@ public class LoadOrderService : ILoadOrderService
     private readonly ILoadingDbService _loadingDbService;
     private readonly IBasetypeService _basetypeService;
     private readonly IAgreementsService _agreementsService;
+    private readonly ILoadInfoService _loadInfoService;
 
     public LoadOrderService(ILoadingDbService loadingDbService,
         IBasetypeService basetypeService,
-        IAgreementsService agreementsService)
+        IAgreementsService agreementsService,
+        ILoadInfoService loadInfoService)
     {
         _log = Log.ForContext(GetType());
         _loadingDbService = loadingDbService;
         _basetypeService = basetypeService;
         _agreementsService = agreementsService;
+        _loadInfoService = loadInfoService;
     }
 
     public async Task ActivateLoadorder(long idLoadorder)
@@ -81,6 +85,9 @@ public class LoadOrderService : ILoadOrderService
                 AddError(result, TrCode.LoadingService.LoadorderExists, loadingPoint.Name, activeOrder.Id);
                 continue;
             }
+            var reducedMaxGross = await _loadInfoService.GetReducedMaxGross(parameter.IdLocation,
+                                                                            delivery.MaxGross ?? 0,
+                                                                            delivery.DeliveryOrder.IdPlant);
             LoadorderHead hdr = new()
             {
                 // obligatory:
@@ -92,7 +99,7 @@ public class LoadOrderService : ILoadOrderService
                 CreateUser = delivery.CreateUser,
 
                 TargetQuantity = parameter.TargetQuantity,
-                MaxGross = delivery.MaxGross,
+                MaxGross = reducedMaxGross,
                 WeighingUnit = delivery.NetUnit,
 
                 // no, let null - ActivePartNumber = 1,
@@ -192,7 +199,7 @@ public class LoadOrderService : ILoadOrderService
             hdr.FlagKombiKnz = delivery.CombinedTransport;
             hdr.FlagQuittieren = false;  // nicht quittiert
             hdr.FlagProbenahme = agr.GetParameter<bool>(TypeAgreementOptionCode.PROBE);
-            hdr.FlagPattern = agr.GetParameter<bool>(TypeAgreementOptionCode.RUECKSTELLPROBE);
+            hdr.FlagPattern = agr.GetParameter<bool>(TypeAgreementOptionCode.RUECKSTELLMUSTER);
             hdr.FlagAnalyse = agr.GetParameter<bool>(TypeAgreementOptionCode.ANALYSEPROBE);
             hdr.FlagAuftWdhlg = parameter.OrderRepetition;
             hdr.FlagVerladesperre = false; // Verladesperre, muss von SPS/Visu freigegeben werden (WEF)

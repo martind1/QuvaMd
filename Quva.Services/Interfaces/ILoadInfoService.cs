@@ -7,5 +7,7 @@ namespace Quva.Services.Interfaces
         Task<LoadingInfo> GetLoadInfoByDelivery(long idDelivery);
 
         Task<LoadingInfo> GetLoadInfoByOrder(long idOrder, string vehicleNumber);
+
+        Task<decimal> GetReducedMaxGross(long idLocation, decimal maxGross, long idPlant);
     }
 }

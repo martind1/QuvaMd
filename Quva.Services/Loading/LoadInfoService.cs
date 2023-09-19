@@ -146,4 +146,16 @@ public class LoadInfoService : ILoadInfoService
         return result;
     }
 
+    public async Task<decimal> GetReducedMaxGross(long idLocation, decimal maxGross, long idPlant)
+    {
+        var loadReductionAbsolute = await _locationParameterService.GetParameter<decimal>(idLocation,
+            ApplicationOption.WeighingMode.LoadReductionAbsolute, idPlant);
+        var loadReductionRelative = await _locationParameterService.GetParameter<decimal>(idLocation,
+            ApplicationOption.WeighingMode.LoadReductionRelative, idPlant);
+        var absuluteResult = maxGross - loadReductionAbsolute;
+        var relativeResult = maxGross - maxGross * loadReductionRelative / 100m;
+
+        return Math.Min(absuluteResult, relativeResult);
+    }
+
 }

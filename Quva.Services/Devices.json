@@ -13,7 +13,7 @@
       "Serilog.Enrichers.ShortTypeName"
     ],
     "MinimumLevel": {
-      "Default": "Debug",
+      "Default": "Error",
       "Override": {
         "Microsoft": "Warning",
         "Quva.Database.Models.QuvaContext": "Error",
@@ -21,7 +21,8 @@
         "SapTransfer.Services.Services.FtpsService": "Information",
         "FTP": "Error",
         "Devices": "Debug",
-        "Quva.Services.Loading.LoadingService": "Information"
+        "Quva.Services.Loading.LoadingService": "Information",
+        "Quva.Services.Devices.ComPort.ComxPort":  "Debug"
       }
     },
     "Enrich": [

@@ -18,8 +18,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        TextRange tr = new TextRange(LogRichTextBox.Document.ContentStart, LogRichTextBox.Document.ContentEnd);
-        tr.Text = "";
+        TextRange tr = new(LogRichTextBox.Document.ContentStart, LogRichTextBox.Document.ContentEnd)
+        {
+            Text = ""
+        };
         LogRichTextBox.Loaded += (s, e) =>
         {
             var scrollViewer = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(LogRichTextBox, 0), 0) as ScrollViewer;

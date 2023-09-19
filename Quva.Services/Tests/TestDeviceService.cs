@@ -324,9 +324,14 @@ internal class TestDeviceService
     public async Task TestDisplayShowScale()
     {
         _log.Information("testsvc.TestDisplayShowScale");
+
+        // Voraussetzung für Gewicht
+        await TestScaleStatus();
+
         //Microsoft.AspNetCore.Http.IResult result = await _deviceService.DisplayShowStart("HOH.DISP2", MyShow);
+
         //ScaleDisplay:
-        var result = await _deviceService.DisplayShowScale("HOH.DISP2", "HOH.FW1");
+        var result = await _deviceService.DisplayShowScale("HOH.DISP1", "HOH.FW1");
         if (result == null)
         {
         }

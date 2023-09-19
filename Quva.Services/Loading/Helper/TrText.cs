@@ -25,6 +25,7 @@ public static class TrText
                 TrCode.LoadingService.NoLoadingPoints => "No Loading Points for IdDelivery:({0})",
                 TrCode.LoadingService.NoMainPositions => "No Main Positions for IdDelivery:({0})",
                 TrCode.LoadingService.LoadorderExists => "Active Loadorder already exists. Point({0}) Load.ID({1})",
+                TrCode.LoadingService.NoSiloDelivery => "No Silos for IdDelivery:({0}) Point({1})",
 
                 TrCode.LoadingService.LockBigbag => "Locked for BigBag; Silos:{0}",
                 TrCode.LoadingService.LockTruck2 => "Locked for Truck2; Silos:{0}",
@@ -56,6 +57,7 @@ public static class TrText
                 TrCode.LoadingService.NoLoadingPoints => "Keine Beladestellen für Lieferschein Id:({0})",
                 TrCode.LoadingService.NoMainPositions => "Keine Hauptpositionen für Lieferschein Id:({0})",
                 TrCode.LoadingService.LoadorderExists => "Es gibt bereits einen aktiven Beladeauftrag. Stelle({0}) Bel.ID({1})",
+                TrCode.LoadingService.NoSiloDelivery => "Silobelegung fehlt für Lieferschein Id:({0}) Stelle({1})",
 
                 TrCode.LoadingService.LockBigbag => "Gesperrt für BigBag; Silos:{0}",
                 TrCode.LoadingService.LockTruck2 => "Gesperrt für Lkw2; Silos:{0}",

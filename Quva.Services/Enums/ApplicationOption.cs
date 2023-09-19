@@ -15,5 +15,7 @@ public static class ApplicationOption
         public const string MaxGross = "WeighingMode.MaxGross"; // Max. Bruttogewicht für Lieferschein.
         public const string MaxSingleQuantity = "WeighingMode.MaxSingleQuantity";
         public const string MinReloadQuantity = "WeighingMode.MinReloadQuantity";
+        public const string LoadReductionAbsolute = "WeighingMode.LoadReductionAbsolute";
+        public const string LoadReductionRelative = "WeighingMode.LoadReductionRelative";
     }
 }

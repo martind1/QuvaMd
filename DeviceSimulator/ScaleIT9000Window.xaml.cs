@@ -19,7 +19,7 @@ public partial class ScaleIT9000Window : Window
     private DeviceOptions? _deviceOptions;
     private DeviceOptions deviceOptions { get => _deviceOptions ?? throw new ArgumentNullException(nameof(_deviceOptions)); }
     private ComDevice? _comDevice;
-    private string _oldInstr = string.Empty;
+    private readonly string _oldInstr = string.Empty;
 
     public ScaleIT9000Window(IDeviceService svc)
     {
@@ -54,16 +54,18 @@ public partial class ScaleIT9000Window : Window
         double minWeight = deviceOptions.Option("MinWeight", 0.0);
         double maxWeight = deviceOptions.Option("MaxWeight", 49999.0);
 
-        var simulData = new SimulData("IT9000", inStr);  //<RM> or <RN>
-        //avoid System.InvalidOperationException Cross-thread operation not valid:
-        //Dispatcher.BeginInvoke(new Action(() =>
-        //{
-        simulData.ErrorNr = 0;
-        simulData.Weight = double.Parse(transferObject.edWeight_Text);
-        simulData.CalibrationNumber = 0;
-        simulData.unitStr = "kg";
-        simulData.Stillstand = transferObject.chbStandStill_Checked; // ?? false;
-        simulData.Negative = transferObject.edWeight_Text.Contains('-');
+        var simulData = new SimulData("IT9000", inStr)
+        {
+            //avoid System.InvalidOperationException Cross-thread operation not valid:
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
+            ErrorNr = 0,
+            Weight = double.Parse(transferObject.edWeight_Text),
+            CalibrationNumber = 0,
+            unitStr = "kg",
+            Stillstand = transferObject.chbStandStill_Checked, // ?? false;
+            Negative = transferObject.edWeight_Text.Contains('-')
+        };  //<RM> or <RN>
 
         if (_oldInstr != inStr)
         {
