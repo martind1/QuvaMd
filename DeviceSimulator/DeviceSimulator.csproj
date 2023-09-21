@@ -26,7 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Quva.Services\Quva.Services.csproj" />
+    <ProjectReference Include="..\..\..\Quva 2.0\Quva\Quva.Database\Quva.Database.csproj" />
+    <ProjectReference Include="..\..\..\Quva 2.0\Quva\Quva.Services\Quva.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
