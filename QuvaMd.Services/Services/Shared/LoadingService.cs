@@ -33,7 +33,7 @@ public class LoadingService : ILoadingService
 
     public async Task<BasetypeSilos> GetBasetypeSilosByDelivery(long idDelivery)
     {
-        return await _basetypeService.GetByDelivery(idDelivery, null);
+        return await _basetypeService.GetByDelivery(idDelivery);
     }
 
 
