@@ -13,16 +13,16 @@
       "Serilog.Enrichers.ShortTypeName"
     ],
     "MinimumLevel": {
-      "Default": "Error",
+      "Default": "Debug",
       "Override": {
         "Microsoft": "Warning",
-        "Quva.Database.Models.QuvaContext": "Error",
-        "Microsoft.EntityFrameworkCore.Database.Command": "Error",
+        "Quva.Database.Models.QuvaContext": "Information",
+        "Microsoft.EntityFrameworkCore.Database.Command": "Information",
         "SapTransfer.Services.Services.FtpsService": "Information",
         "FTP": "Error",
         "Devices": "Debug",
         "Quva.Services.Loading.LoadingService": "Information",
-        "Quva.Services.Devices.ComPort.ComxPort":  "Debug"
+        "Quva.Services.Devices.ComPort.ComxPort": "Debug"
       }
     },
     "Enrich": [

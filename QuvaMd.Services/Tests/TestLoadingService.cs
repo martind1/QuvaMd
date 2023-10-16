@@ -52,10 +52,10 @@ public class TestLoadingService
                     var agr = await _loadingService.GetBasetypeSilosAll(IdLocation);
                     //foreach (var siloset in agr.SiloSets)
                     //{
-                    //    _log.Information(siloset.ToString());
+                    //    _log.Error(siloset.ToString());
                     //}
                     BasetypeSilosView view = BasetypeSilosView.FromBasetypeSilos(agr);
-                    _log.Information("BaseTypeSilos All:" + Environment.NewLine + view.ToCsv());
+                    _log.Error("BaseTypeSilos All:" + Environment.NewLine + view.ToCsv());
                     Console.WriteLine($"OK");
                 }
                 else if (key.KeyChar == '3')
@@ -71,10 +71,10 @@ public class TestLoadingService
 
                     var view = BasetypeSilosView.FromBasetypeSilos(baseTypeSilos);
 
-                    _log.Information($"BaseTypeSilos for Delivery {IdDelivery}:{Environment.NewLine}{view.ToCsv()}");
-                    //_log.Information($"{string.Join(Environment.NewLine, baseTypeSilos.ErrorLines)}");
+                    _log.Error($"BaseTypeSilos for Delivery {IdDelivery}:{Environment.NewLine}{view.ToCsv()}");
+                    //_log.Error($"{string.Join(Environment.NewLine, baseTypeSilos.ErrorLines)}");
                     List<string> sl = baseTypeSilos.ErrorStringList(LanguageEnum.DE);
-                    _log.Information($"Errors: {string.Join(Environment.NewLine, sl)}");
+                    _log.Error($"Errors: {string.Join(Environment.NewLine, sl)}");
                     Console.WriteLine($"done");
                 }
                 else if (key.KeyChar == '5')
@@ -87,24 +87,24 @@ public class TestLoadingService
                         PartQuantities = new List<decimal> { 10, 10, 10 },
                     };
                     var loadingResult = await _loadingService.CreateLoadorder(parameter);
-                    _log.Information($"Created Loadorders {IdDelivery}: {string.Join(", ", loadingResult.IdLoadorders)}");
-                    _log.Information($"Loadingpoints: {string.Join(", ", loadingResult.LoadingPoints)}");
+                    _log.Error($"Created Loadorders {IdDelivery}: {string.Join(", ", loadingResult.IdLoadorders)}");
+                    _log.Error($"Loadingpoints: {string.Join(", ", loadingResult.LoadingPoints)}");
 
                     List<string> sl = loadingResult.ErrorStringList(LanguageEnum.DE);
-                    _log.Information($"Errors: {string.Join(Environment.NewLine, sl)}");
+                    _log.Error($"Errors: {string.Join(Environment.NewLine, sl)}");
                 }
                 else if (key.KeyChar == '6')
                 {
                     LoadingInfo info = await _loadingService.GetLoadInfoByDelivery(IdDelivery);
 
-                    _log.Information($"{IdDelivery}:{info}");
+                    _log.Error($"{IdDelivery}:{info}");
                     Console.WriteLine($"done");
                 }
                 else if (key.KeyChar == '7')
                 {
                     LoadingInfo info = await _loadingService.GetLoadInfoByOrder(IdOrder, VehicleNumber);
 
-                    _log.Information($"{IdOrder},{VehicleNumber}:{info}");
+                    _log.Error($"{IdOrder},{VehicleNumber}:{info}");
                     Console.WriteLine($"done");
                 }
                 else

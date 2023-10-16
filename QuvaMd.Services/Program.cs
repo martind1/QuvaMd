@@ -79,7 +79,7 @@ internal class Program
 
         //My Services:
         builder.Services.AddSingleton<IDeviceService, DeviceService>();
-        builder.Services.AddScoped<ILocationParameterService, LocationParameterService>();
+        builder.Services.AddScoped<ILocationParameterLoadingService, LocationParameterLoadingService>();
         builder.Services.AddScoped<IAgreementsService, AgreementsService>();
         builder.Services.AddScoped<ILoadingDbService, LoadingDbService>();
         builder.Services.AddScoped<IBasetypeService, BasetypeService>();

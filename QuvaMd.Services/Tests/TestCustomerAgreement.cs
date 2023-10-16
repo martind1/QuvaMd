@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace QuvaMd.Services.Tests;
@@ -19,7 +20,7 @@ public class TestCustomerAgreement
     }
 
     public long IdLocation = 100000009;  //HOH
-    public long IdDelivery = 100002669;
+    public long IdDelivery = 100002857;
 
     public async Task Menu()
     {
@@ -38,19 +39,25 @@ public class TestCustomerAgreement
                 {
                     Console.WriteLine("IdLocation:");
                     var s1 = Console.ReadLine();
-                    IdLocation = long.Parse(s1 ?? "100000009");
+                    if (long.TryParse(s1, out var id)) IdLocation = id;
                     Console.WriteLine(IdLocation);
                 }
                 else if (key.KeyChar == '2')
                 {
                     Console.WriteLine("IdDelivery:");
                     var s1 = Console.ReadLine();
-                    IdDelivery = long.Parse(s1 ?? "100002669");
+                    if (long.TryParse(s1, out var id)) IdDelivery = id;
                     Console.WriteLine(IdDelivery);
 
                     var agr = await _customerAgreementService.GetAgreementsByDeliveryId(IdDelivery);
 
                     Console.WriteLine($"Agr:{agr.Agreements.Count} Par:{agr.Parameters.Count} Def:{agr.DefaultValues.Count}");
+                    var l1 = agr.Agreements.Select(x => (x.Id, x.IdDebitor, x.IdMaterial)).ToList();
+                    Console.WriteLine($"Agr (Id, IdDebitor, IdMaterial): ");
+                    Console.WriteLine($"{string.Join(Environment.NewLine, l1)}");
+                    var l2 = agr.Parameters.Select(x => (x.IdOptionNavigation.Code, x.ParameterValue)).ToList();
+                    Console.WriteLine($"Par (Code, Value): ");
+                    Console.WriteLine($"{string.Join(Environment.NewLine, l2)}");
                 }
                 else if (key.KeyChar == '3')
                 {
