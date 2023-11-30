@@ -5,8 +5,11 @@ namespace Quva.Services.Interfaces.Shared
 {
     public interface ILoadingService
     {
-        Task ActivateLoadorder(long idLoadorder);
         Task<LoadingResult> CreateLoadorder(LoadingParameter parameter);
+        Task<LoadingResult> UpdateLoadorder(LoadingParameter parameter);
+        Task StartLoadorder(long idLoadorder);
+        Task ActivateLoadorder(long idLoadorder);
+        Task FinishDeliveryLoadorder(long idDelivery);
         Task<BasetypeSilos> GetBasetypeSilosAll(long idLocation);
         Task<BasetypeSilos> GetBasetypeSilosByDelivery(long idDelivery);
         Task<LoadingInfo> GetLoadInfoByDelivery(long idDelivery);

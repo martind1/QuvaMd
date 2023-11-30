@@ -1,8 +1,20 @@
 {
+  "application": {
+    "certname": "localhost",
+    "certfingerprint": "2baaffcf9e778f0aa8436f72f5647ba268473e4b",
+    "port": 5000,
+    "cors": [
+      "https://fre-apps-test.sand.int:5000",
+      "https://hoh-t-quva.sand.int:5000"
+    ],
+    "useAuditTrigger": true
+  },
+
   "database": {
     "user": "quva_api",
     "pw": "QUVATESTNEU",
-    "datasource": "TEST_FRECHEN19"
+    "datasource": "THOHDB",
+    "sqlCompatibility": "11"
   },
 
 
@@ -15,14 +27,11 @@
     "MinimumLevel": {
       "Default": "Debug",
       "Override": {
+        "Quva.Services.Services.Loading": "Debug",
+        "Quva.Database.Models.QuvaContext": "Error",
+        "Quva.Logging.Models.AuditContext": "Error",
         "Microsoft": "Warning",
-        "Quva.Database.Models.QuvaContext": "Information",
-        "Microsoft.EntityFrameworkCore.Database.Command": "Information",
-        "SapTransfer.Services.Services.FtpsService": "Information",
-        "FTP": "Error",
-        "Devices": "Debug",
-        "Quva.Services.Loading.LoadingService": "Information",
-        "Quva.Services.Devices.ComPort.ComxPort": "Debug"
+        "Microsoft.EntityFrameworkCore.Database.Command": "Error"
       }
     },
     "Enrich": [

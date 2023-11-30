@@ -35,9 +35,9 @@ internal class TestDeviceService
             Console.WriteLine("3 = Callback Scale async Test");
             Console.WriteLine("4 = Callback Display Test");
             Console.WriteLine("5 = Camera Test");
-            Console.WriteLine("6 = Test HOH.TRANSP1");
-            Console.WriteLine("7 = Test HOH.BARCODE1");
-            Console.WriteLine("8 = Test HOH.SPS_LKW");
+            Console.WriteLine("6 = Test TST.TRANSP1");
+            Console.WriteLine("7 = Test TST.BARCODE1");
+            Console.WriteLine("8 = Test TST.SPS_LKW");
             Console.WriteLine("sonst = Ende");
             ConsoleKeyInfo key = Console.ReadKey(); //warten auf Taste
             Console.WriteLine("");
@@ -84,29 +84,29 @@ internal class TestDeviceService
     {
         _log.Information("testsvc.TestModbus");
 
-        var T1 = _deviceService.ModbusWrite("HOH.WAGO", "BulbEntryGreen", "1");
-        var T2 = _deviceService.ModbusWrite("HOH.WAGO", "BulbExitGreen", "1");
-        var T3 = _deviceService.ModbusWrite("HOH.WAGO", "BulbExitRed", "1");
-        await Task.WhenAll(T1, T2, T3);
-        var data1 = await T1;
-        var data2 = await T2;
-        var data3 = await T3;
-        _log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText} Err2:{data2.ErrorNr} {data2.ErrorText} Err3:{data3.ErrorNr} {data3.ErrorText}");
-
-
-        //var T1 = _deviceService.ModbusCommand("HOH.WAGO", ModbusCommands.ReadBlock.ToString(), "Inputs", "1");
-        //var data1 = await T1;
-        //_log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText}");
-        //string v1 = _deviceService.GetModbusValue("HOH.WAGO", "EntryIsOccupied");
-        //string v2 = _deviceService.GetModbusValue("HOH.WAGO", "ExitIsOccupied");
-        //_log.Information($"ModbusRead V1.3:{v1} V2.4:{v2}");
-
-        //var T1 = _deviceService.ModbusReadStart("HOH.WAGO", MyModbusRead);
-        //var T2 = _deviceService.ModbusReadStart("HOH.WAGO", MyModbusRead);  //test doppelter Aufruf
+        //var T1 = _deviceService.ModbusWrite("TST.WAGO", "BulbEntryGreen", "1");
+        //var T2 = _deviceService.ModbusWrite("TST.WAGO", "BulbExitGreen", "1");
+        //var T3 = _deviceService.ModbusWrite("TST.WAGO", "BulbExitRed", "1");
+        //await Task.WhenAll(T1, T2, T3);
         //var data1 = await T1;
         //var data2 = await T2;
-        //_log.Error($"ModbusReadStart1:{data1}");
-        //_log.Error($"ModbusReadStart2:{data2}");
+        //var data3 = await T3;
+        //_log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText} Err2:{data2.ErrorNr} {data2.ErrorText} Err3:{data3.ErrorNr} {data3.ErrorText}");
+
+
+        //var T1 = _deviceService.ModbusCommand("TST.WAGO", ModbusCommands.ReadBlock.ToString(), "Inputs", "1");
+        //var data1 = await T1;
+        //_log.Information($"ModbusWrite Err1:{data1.ErrorNr} {data1.ErrorText}");
+        //string v1 = _deviceService.GetModbusValue("TST.WAGO", "EntryIsOccupied");
+        //string v2 = _deviceService.GetModbusValue("TST.WAGO", "ExitIsOccupied");
+        //_log.Information($"ModbusRead V1.3:{v1} V2.4:{v2}");
+
+        var T1 = _deviceService.ModbusReadStart("TST.WAGO", MyModbusRead);
+        var T2 = _deviceService.ModbusReadStart("TST.WAGO", MyModbusRead);  //test doppelter Aufruf
+        var data1 = await T1;
+        var data2 = await T2;
+        _log.Error($"ModbusReadStart1:{data1}");
+        _log.Error($"ModbusReadStart2:{data2}");
     }
 
     private void MyModbusRead(ModbusData Data)
@@ -114,8 +114,8 @@ internal class TestDeviceService
         if (Data.changedBlocks.Contains("Inputs"))
         {
             Data.changedBlocks.Remove("Inputs");
-            string v1 = _deviceService.GetModbusValue("HOH.WAGO", "EntryIsOccupied");
-            string v2 = _deviceService.GetModbusValue("HOH.WAGO", "ExitIsOccupied");
+            string v1 = _deviceService.GetModbusValue("TST.WAGO", "EntryIsOccupied");
+            string v2 = _deviceService.GetModbusValue("TST.WAGO", "ExitIsOccupied");
             _log.Error($"### MyModbus 3:{v1} 4:{v2}");
         }
     }
@@ -123,7 +123,7 @@ internal class TestDeviceService
     public async Task TestPosition()
     {
         _log.Information("Test IT9000 + Modbus Wago Positioning");
-        var T1 = await _deviceService.ScaleStatusStart("HOH.FW1", MyScalePosition);
+        var T1 = await _deviceService.ScaleStatusStart("TST.FW1", MyScalePosition);
 
     }
     private void MyScalePosition(ScaleData scaleData)
@@ -137,7 +137,7 @@ internal class TestDeviceService
         if (_oldSecond != DateTime.Now.ToFileTime() / 100000000)
         {
             _oldSecond = DateTime.Now.ToFileTime() / 100000000;
-            var T2 = _deviceService.ScaleRegister("HOH.FW1");
+            var T2 = _deviceService.ScaleRegister("TST.FW1");
             ScaleData data = T2.GetAwaiter().GetResult();
             _log.Information($"### Register:{data.ErrorNr} {data.Display} C:{data.CalibrationNumber} S:{data.Status:F}");
         }
@@ -148,32 +148,31 @@ internal class TestDeviceService
     {
         _log.Information("testsvc.TestCam");
 
-        //var data1 = await _deviceService.ScaleStatus("HOH.FW1");
+        //var data1 = await _deviceService.ScaleStatus("TST.FW1");
         //_log.Information($"Status Err:{data1.ErrorNr} Display:{data1.Display} Weight:{data1.Weight} Unit:{data1.Unit}");
 
-        //var data2 = await _deviceService.ScaleStatus("HOH.FW2");
+        //var data2 = await _deviceService.ScaleStatus("TST.FW2");
         //_log.Information($"Status Err:{data2.ErrorNr} Display:{data2.Display} Weight:{data2.Weight} Unit:{data2.Unit}");
 
-        //var data12 = await _deviceService.ScaleRegister("HOH.FW1");
+        //var data12 = await _deviceService.ScaleRegister("TST.FW1");
         //_log.Information($"Register Err:{data12.ErrorNr} Display:{data12.Display} Eichnr:{data12.CalibrationNumber} Weight:{data12.Weight} Unit:{data12.Unit}");
 
 
         //var message = DateTime.Now.ToString("G", CultureInfo.GetCultureInfo("de-DE"));
-        ////var data4 = await _deviceService.DisplayShow("HOH.DISP1", message);
-        //var data4 = await _deviceService.DisplayShow("HOH.DISP2", message);
+        ////var data4 = await _deviceService.DisplayShow("TST.DISP1", message);
+        //var data4 = await _deviceService.DisplayShow("TST.DISP2", message);
         //_log.Information($"Display Err:{data4.ErrorNr} {data4.ErrorText} Msg:{data4.Message}");
 
-        //var data5 = await _deviceService.CamLoad("HOH.CAMS", 0);
+        //var data5 = await _deviceService.CamLoad("TST.CAMS", 0);
 
-        var T1 = _deviceService.CamLoad("HOH.CAMS", 0);
-        var T2 = _deviceService.CamLoad("HOH.CAMS", 1);
-        var T3 = _deviceService.CamLoad("HOH.CAMS", 2);
-        var T4 = _deviceService.CamLoad("HOH.CAMS", 3);  //nicht vorhanden
+        var T1 = _deviceService.CamLoad("TST.CAMS", 0);
+        var T2 = _deviceService.CamLoad("TST.CAMS", 1);
+        var T3 = _deviceService.CamLoad("TST.CAMS", 2);
+        var T4 = _deviceService.CamLoad("TST.CAMS", 3);  //nicht vorhanden
         await Task.WhenAll(T1, T2, T3, T4);
         var data1 = await T1;
         var data2 = await T2;
         var data3 = await T3;
-        var data4 = await T4;
         //var data4 = await T4;
         _log.Information($"CamLoad0 Err:{data1.ErrorNr} {data1.ErrorText} Size:{data1.ImageSize}");
         //ArgumentNullException.ThrowIfNull(data1.ImageBytes);
@@ -206,13 +205,13 @@ internal class TestDeviceService
         var registerTrigger = 10;
         do
         {
-            var T1 = _deviceService.ScaleStatus("HOH.FW1");
+            var T1 = _deviceService.ScaleStatus("TST.FW1");
             d1 = T1.Result;
             Console.Write($"\r{d1.Display}          ");
             if (d1.Weight == registerTrigger)
             {
                 registerTrigger++;
-                var T2 = _deviceService.ScaleRegister("HOH.FW1");
+                var T2 = _deviceService.ScaleRegister("TST.FW1");
                 var d2 = T2.Result;
                 Console.Write($"\r\n{d2.Display}\r\n");
             }
@@ -226,11 +225,11 @@ internal class TestDeviceService
     {
         _log.Information("testsvc.Test3");
 
-        var T1 = _deviceService.ScaleStatus("HOH.FW1");
+        var T1 = _deviceService.ScaleStatus("TST.FW1");
 
-        var T2 = _deviceService.ScaleStatus("HOH.FW2");
+        var T2 = _deviceService.ScaleStatus("TST.FW2");
 
-        var T12 = _deviceService.ScaleRegister("HOH.FW1");
+        var T12 = _deviceService.ScaleRegister("TST.FW1");
 
 
         await Task.WhenAll(T1, T2, T12);
@@ -251,7 +250,7 @@ internal class TestDeviceService
     public async Task TestTransp1()
     {
         _log.Information("testsvc.TestTransp1");
-        var result = await _deviceService.CardReadStart("HOH.TRANSP1", MyCardRead);
+        var result = await _deviceService.CardReadStart("TST.TRANSP1", MyCardRead);
         _log.Information("testsvc.TestTransp1 Started");
     }
 
@@ -265,7 +264,7 @@ internal class TestDeviceService
     public async Task TestBarcode1()
     {
         _log.Information("testsvc.TestBarcode1");
-        var result = await _deviceService.CardReadStart("HOH.BARCODE1", MyBarcodeRead);
+        var result = await _deviceService.CardReadStart("TST.BARCODE1", MyBarcodeRead);
         _log.Information("testsvc.TestBarcode1 Started");
     }
 
@@ -279,7 +278,7 @@ internal class TestDeviceService
     public async Task TestScaleStatus()
     {
         _log.Information("testsvc.TestScaleStatus");
-        var result = await _deviceService.ScaleStatusStart("HOH.FW1", MyScaleStatus);
+        var result = await _deviceService.ScaleStatusStart("TST.FW1", MyScaleStatus);
         _log.Information("testsvc.TestScaleStatus Started");
     }
 
@@ -297,8 +296,8 @@ internal class TestDeviceService
             _ = _deviceService.CloseDevice(scaleData.DeviceCode);
             await Task.Delay(100);
 
-            _log.Error("### ScaleStatus 5 close HOH.DISP1 ###");
-            _ = _deviceService.CloseDevice("HOH.DISP1");
+            _log.Error("### ScaleStatus 5 close TST.DISP1 ###");
+            _ = _deviceService.CloseDevice("TST.DISP1");
         }
     }
 
@@ -306,7 +305,7 @@ internal class TestDeviceService
     public async Task TestSps()
     {
         _log.Information("testsvc.TestSps");
-        var result = await _deviceService.SpsReadStart("HOH.SPS_LKW", MySpsRead);
+        var result = await _deviceService.SpsReadStart("TST.SPS_LKW", MySpsRead);
         _log.Information("testsvc.TestSpsStatus Started");
     }
 
@@ -328,10 +327,10 @@ internal class TestDeviceService
         // Voraussetzung für Gewicht
         await TestScaleStatus();
 
-        //Microsoft.AspNetCore.Http.IResult result = await _deviceService.DisplayShowStart("HOH.DISP2", MyShow);
+        //Microsoft.AspNetCore.Http.IResult result = await _deviceService.DisplayShowStart("TST.DISP2", MyShow);
 
         //ScaleDisplay:
-        var result = await _deviceService.DisplayShowScale("HOH.DISP1", "HOH.FW1");
+        var result = await _deviceService.DisplayShowScale("TST.DISP1", "TST.FW1");
         if (result == null)
         {
         }
