@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Quva.Services.Interfaces.Loading;
 using Quva.Services.Interfaces.Shared;
 using Quva.Services.Interfaces.WeighingOperation;
 using Quva.Services.Loading.Helper;
@@ -17,14 +18,16 @@ public class TestsController : ControllerBase
     private readonly IOdcAdjustmentQuantityService _odcAdjustmentQuantityService;
     private readonly IDeliveryBasetypeService _deliveryBasetypeService;
     private readonly IDeliveryHeadService _deliveryHeadService;
+    private readonly ILoadOrderService _loadOrderService;
     //private readonly ILogger _log;
 
-    public TestsController(IOdcAdjustmentQuantityService odcAdjustmentQuantityService, IDeliveryBasetypeService deliveryBasetypeService, IDeliveryHeadService deliveryHeadService)
+    public TestsController(IOdcAdjustmentQuantityService odcAdjustmentQuantityService, IDeliveryBasetypeService deliveryBasetypeService, IDeliveryHeadService deliveryHeadService, ILoadOrderService loadOrderService)
     {
         //_log = Log.ForContext(GetType());
         _odcAdjustmentQuantityService = odcAdjustmentQuantityService;
         _deliveryBasetypeService = deliveryBasetypeService;
         _deliveryHeadService = deliveryHeadService;
+        _loadOrderService = loadOrderService;
     }
 
     [HttpGet("basetypesByDelivery")]
@@ -65,6 +68,20 @@ public class TestsController : ControllerBase
     public async Task<IResult> CreateDeliveryFromOrderNumber([FromQuery] long orderNumber, [FromQuery] long? vehicleId, [FromQuery] string user)
     {
         return await _deliveryHeadService.CreateDeliveryFromOrderNumber(orderNumber, vehicleId, user);
+    }
+
+    [HttpPost("refreshLoadorder")]
+    public async Task<IActionResult> RefreshLoadorder([FromQuery] long idLoadorder)
+    {
+        try
+        {
+            var loadingResult = await _loadOrderService.RefreshLoadorder(idLoadorder);
+            return Ok(loadingResult);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
 }

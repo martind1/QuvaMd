@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,8 @@ using QuvaMd.Services.Tests;
 using Serilog;
 using Serilog.Debugging;
 using System.Security.Cryptography.X509Certificates;
+using Quva.Services.HostedServices;
+using Quva.Services.Registration;
 
 namespace QuvaMd.Services;
 
@@ -40,25 +43,30 @@ internal class Program
     {
         SelfLog.Enable(
             msg => Console.WriteLine("Error from Serilog: {0}", msg));
-        IConfiguration configSerilog = new ConfigurationBuilder()
-            //.AddJsonFile(@"c:\Keyfiles\quva-config.json", true, true)
-            .AddJsonFile(@"Devices.json", true, true)
-            .Build();
-        Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(configSerilog)
-            .CreateLogger();
+        //IConfiguration configSerilog = new ConfigurationBuilder()
+        //    .AddJsonFile(@"Devices.json", true, true)
+        //    .Build();
+
+        //Service dependency injection:
+        var builder = WebApplication.CreateBuilder();
+
+        //Configuration
+        builder.Configuration.AddJsonFile(@"Devices.json");
+        builder.Services.AddSerilogServices(builder.Configuration);
+        builder.Host.UseSerilog();  //log sql
+        //Log.Logger = new LoggerConfiguration().CreateLogger();
         Log.Error("\r\n");
         Log.Error("Initializing Serilog....");
         if (args.Length > 0)
         {
             Log.Debug("args: " + string.Join(',', args));
         }
-        //var cs = Crypt.EncryptString("b14ca5898a4e4133bbce2ea2315a1916", "QUVATESTNEU");
+        //var cs = Crypt.EncryptString("b14ca5898a4e4133bbce2ea2315a1916", "***");
         //Log.Error($"cs:{cs}");
 
-        User = configSerilog.GetSection("database").GetSection("user").Value;
-        Pw = configSerilog.GetSection("database").GetSection("pw").Value;
-        Datasource = configSerilog.GetSection("database").GetSection("datasource").Value;
+        User = builder.Configuration.GetSection("database").GetSection("user").Value;
+        Pw = builder.Configuration.GetSection("database").GetSection("pw").Value;
+        Datasource = builder.Configuration.GetSection("database").GetSection("datasource").Value;
         var conn = new SqlConnectionStringBuilder
         {
             Password = Pw,
@@ -66,16 +74,13 @@ internal class Program
             UserID = User,
             PersistSecurityInfo = false
         };
-        sqlCompatibility = configSerilog.GetSection("database").GetSection("sqlCompatibility").Value ?? "11";
-        string trigger = configSerilog.GetSection("application").GetSection("useAuditTrigger").Value ?? "false";
+        sqlCompatibility = builder.Configuration.GetSection("database").GetSection("sqlCompatibility").Value ?? "11";
+        string trigger = builder.Configuration.GetSection("application").GetSection("useAuditTrigger").Value ?? "false";
         UseAuditTrigger = bool.Parse(trigger);
 
-        //Service dependency injection:
-        var builder = WebApplication.CreateBuilder();
-
         // TK Controller:
-        Certname = configSerilog.GetSection("application").GetSection("certname").Value;
-        Port = Convert.ToInt32(configSerilog.GetSection("application").GetSection("port").Value);
+        Certname = builder.Configuration.GetSection("application").GetSection("certname").Value;
+        Port = Convert.ToInt32(builder.Configuration.GetSection("application").GetSection("port").Value);
 
         // Add services to the container.
         builder.Services.AddAuthorization();
@@ -176,6 +181,7 @@ internal class Program
             });
             opt.UseTriggers(triggerOpts =>
             {
+                //triggerOpts.CascadeBehavior(CascadeBehavior.None);  //NoCascade dangerous!
                 triggerOpts.AddTrigger<DeliveryHeadTrigger>();
                 triggerOpts.AddTrigger<DeliveryPositionTrigger>();
             });
@@ -197,9 +203,7 @@ internal class Program
             });
         });
 
-        builder.Host.UseSerilog();  //log sql
-        //builder.Services.AddSerilogServices(builder.Configuration);
-        builder.Services.AddSingleton(Log.Logger);
+        //builder.Services.AddSingleton(Log.Logger);
         builder.Services.AddMapster();
 
 
@@ -218,6 +222,9 @@ internal class Program
         //29.11.23:
         builder.Services.AddScoped<IDeliveryHeadService, DeliveryHeadService>();
         builder.Services.AddScoped<IOdcAdjustmentDayService, OdcAdjustmentDayService>();
+        //01.12.23:
+        builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+        builder.Services.AddHostedService<RefreshLoadorderService>();
 
         Log.Information("Services added");
 

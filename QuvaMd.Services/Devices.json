@@ -17,6 +17,9 @@
     "sqlCompatibility": "11"
   },
 
+  "DefaultLocation": {
+    "Id": 100000009
+  },
 
   "Serilog": {
     "Using": [
