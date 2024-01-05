@@ -225,6 +225,8 @@ internal class Program
         //01.12.23:
         builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
         builder.Services.AddHostedService<RefreshLoadorderService>();
+        //12.12.23
+        builder.Services.AddHostedService<UpdateOdcQuantityService>();
 
         Log.Information("Services added");
 

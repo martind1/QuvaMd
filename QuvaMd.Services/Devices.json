@@ -11,14 +11,14 @@
   },
 
   "database": {
-    "user": "quva_api",
+    "user": "t_quva_api",
     "pw": "QUVATESTNEU",
-    "datasource": "THOHDB",
+    "datasource": "HOHENBOCKA",
     "sqlCompatibility": "11"
   },
 
   "DefaultLocation": {
-    "Id": 100000009
+    "Id": 10000000598
   },
 
   "Serilog": {
@@ -31,7 +31,7 @@
       "Default": "Debug",
       "Override": {
         "Quva.Services.Services.Loading": "Debug",
-        "Quva.Database.Models.QuvaContext": "Error",
+        "Quva.Database.Models.QuvaContext": "Information",
         "Quva.Logging.Models.AuditContext": "Error",
         "Microsoft": "Warning",
         "Microsoft.EntityFrameworkCore.Database.Command": "Error"
